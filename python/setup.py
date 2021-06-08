@@ -4,8 +4,8 @@ from numpy.distutils.core import setup, Extension
 # read the contents of your README file
 from os import path
 this_directory = path.abspath(path.dirname(__file__))
-print(this_directory[:-5])
-with open(path.join(this_directory[:-5], 'README.md')) as f:
+print(this_directory[:-6])
+with open(path.join(this_directory[:-6], 'README.md')) as f:
     long_description = f.read()
 
 ext1 = Extension(name='fiesta.src.grid', sources=['fiesta/src/grid.f90'])
