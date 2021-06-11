@@ -8,8 +8,8 @@ print(this_directory[:-6])
 with open(path.join(this_directory[:-6], 'README.md')) as f:
     long_description = f.read()
 
-ext1 = Extension(name='fiesta.src.grid', sources=['fiesta/src/grid.f90'])
-exts = []
+ext1 = Extension(name='shift.src.pft', sources=['shift/src/pft.f90'])
+exts = [ext1]
 
 setup(name = 'shift',
       version = '0.0.0',
@@ -22,7 +22,7 @@ setup(name = 'shift',
       license='MIT',
       packages=setuptools.find_packages(),
       install_requires=['numpy', 'scipy'],
-      #ext_modules = exts,
+      ext_modules = exts,
       python_requires = '>=3',
       classifiers=[
         'Development Status :: 5 - Production/Stable',

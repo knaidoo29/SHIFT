@@ -5,6 +5,7 @@ from . import grid
 from . import pft_basis
 
 from .. import cart
+from .. import src
 from .. import utils
 
 
@@ -137,9 +138,7 @@ class PFT:
         Pnm : 2darray
             Polar fourier coefficients.
         """
-        Pnm = np.zeros(len(self.m2d)) + 1j*np.zeros(len(self.m2d))
         Pm = np.array([cart.forward_fft_1D(f[:,i], 2.*np.pi) for i in range(0, len(f[0]))]).T
-        Pm.flatten()
         Pnm = np.zeros(len(self.m2d_flat)) + 1j*np.zeros(len(self.m2d_flat))
         r = self.r2d[0]
         for i in range(0, len(self.m2d_flat)):
@@ -151,6 +150,31 @@ class PFT:
             Pnm.real[i] = np.sum(r*Rnm*Pm.real[m_index])*self.dr
             Pnm.imag[i] = np.sum(r*Rnm*Pm.imag[m_index])*self.dr
             utils.progress_bar(i, len(self.m2d_flat))
+        Pnm = Pnm.reshape(np.shape(self.m2d))
+        return Pnm
+
+
+    def _half_fft_half_fort_forward(self, f):
+        """Computes the polar Fourier coefficients using FFT for the angular components
+        and fortran for the rest.
+
+        Parameters
+        ----------
+        f : 2darray
+            Field values on a 2D polar grid.
+
+        Returns
+        -------
+        Pnm : 2darray
+            Polar fourier coefficients.
+        """
+        Pm = np.array([cart.forward_fft_1D(f[:,i], 2.*np.pi) for i in range(0, len(f[0]))]).T
+        Pm = Pm.flatten()
+        r = self.r2d[0]
+        pnm = src.forward_half_pft(r=r, pm_real=Pm.real, pm_imag=Pm.imag, knm_flat=self.knm_flat,
+                              nnm_flat=self.Nnm_flat, m2d_flat=self.m2d_flat, lenr=self.Nr, lenp=self.Np)
+        pnm = pnm.reshape((self.Nr*self.Np, 2))
+        Pnm = pnm[:, 0] + 1j*pnm[:, 1]
         Pnm = Pnm.reshape(np.shape(self.m2d))
         return Pnm
 
@@ -212,8 +236,35 @@ class PFT:
         return f
 
 
-    def forward(self, f, method='half_fft'):
-        """Computes the forward PFT.
+    def _half_fft_half_fort_backward(self, Pnm):
+        """Computes the polar Fourier coefficients using FFT for the angular components
+        which means each coefficient is calculated from a single integral rather than a
+        double integral.
+
+        Parameters
+        ----------
+        Pnm : 2darray
+            Polar fourier coefficients.
+
+        Returns
+        -------
+        f : 2darray
+            Field values on a 2D polar grid.
+        """
+        r = self.r2d[0]
+        Pnm = Pnm.flatten()
+        pm = src.backward_half_pft(r=r, pnm_real=Pnm.real, pnm_imag=Pnm.imag, knm_flat=self.knm_flat,
+                                   nnm_flat=self.Nnm_flat, m2d_flat=self.m2d_flat, n2d_flat=self.n2d_flat,
+                                   lenr=self.Nr, lenp=self.Np)
+        pm = pm.reshape((self.Nr*self.Np, 2))
+        Pm = pm[:, 0] + 1j*pm[:, 1]
+        Pm = Pm.reshape(np.shape(self.m2d))
+        f = np.array([cart.backward_fft_1D(Pm[:, i], 2.*np.pi) for i in range(0, len(Pm[0]))]).T
+        return f
+
+
+    def forward(self, f, method='half_fft_half_fort'):
+        """Computes the forward PFT. Use method='half_fft_half_fort' for fatest calculation.
 
         Parameters
         ----------
@@ -223,6 +274,8 @@ class PFT:
             Method for computing the PFT:
                 - 'benchmark' : slow calculation with no optimisations for testing and benchmarking.
                 - 'half_fft' : uses FFT for the angular components for faster computation.
+                - 'half_fft_half_fort' : Like the above but used fortran source code to do the other half.
+
         Returns
         -------
         Pnm : 2darray
@@ -232,11 +285,13 @@ class PFT:
             Pnm = self._benchmark_forward(f)
         elif method == 'half_fft':
             Pnm = self._half_fft_forward(f)
+        elif method == 'half_fft_half_fort':
+            Pnm = self._half_fft_half_fort_forward(f)
         return Pnm
 
 
-    def backward(self, Pnm, method='half_fft'):
-        """Computes the forward PFT.
+    def backward(self, Pnm, method='half_fft_half_fort'):
+        """Computes the forward PFT. Use method='half_fft_half_fort' for fatest calculation.
 
         Parameters
         ----------
@@ -246,6 +301,8 @@ class PFT:
             Method for computing the PFT:
                 - 'benchmark' : slow calculation with no optimisations for testing and benchmarking.
                 - 'half_fft' : uses FFT for the angular components for faster computation.
+                - 'half_fft_half_fort' : Like the above but used fortran source code to do the other half.
+
         Returns
         -------
         f : 2darray
@@ -255,6 +312,8 @@ class PFT:
             f = self._benchmark_backward(Pnm)
         elif method == 'half_fft':
             f = self._half_fft_backward(Pnm)
+        elif method == 'half_fft_half_fort':
+            f = self._half_fft_half_fort_backward(Pnm)
         return f
 
 
