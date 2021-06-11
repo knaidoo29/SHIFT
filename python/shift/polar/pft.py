@@ -35,7 +35,7 @@ class PFT:
         self.Nnm_flat = None
 
 
-    def prep(self, Nr, Np, Rmax, boundary='zero', nswitch=10, mswitch=5):
+    def prep(self, Nr, Np, Rmax, boundary='zero', nswitch=2, mswitch=20):
         """Prepare PFT for Polar Fourier Transform
 
         Parameters
@@ -66,7 +66,8 @@ class PFT:
         self.xnm = np.zeros(np.shape(self.m2d))
         self.knm = np.zeros(np.shape(self.m2d))
         self.Nnm = np.zeros(np.shape(self.m2d))
-        for i in range(0, len(self.m2d)):
+        lenm = len(self.m2d)
+        for i in range(0, int(lenm/2)+1):
             mval = self.m[i]
             nval = self.n[-1]
             if self.boundary == 'zero':
@@ -90,7 +91,11 @@ class PFT:
             self.xnm[i] = _xnm
             self.knm[i] = _knm
             self.Nnm[i] = _Nnm
-            utils.progress_bar(i, len(self.m2d))
+            if i != lenm-i and i != 0:
+                self.xnm[lenm-i] = _xnm
+                self.knm[lenm-i] = _knm
+                self.Nnm[lenm-i] = _Nnm
+            utils.progress_bar(i, int(lenm/2)+1)
         self.m2d_flat = np.copy(self.m2d).flatten()
         self.n2d_flat = np.copy(self.n2d).flatten()
         self.xnm_flat = np.copy(self.xnm).flatten()
