@@ -1,10 +1,11 @@
 import numpy as np
+from knpy import bins
 
 from .. import cart
 
 
-def get_pofk_2D(density, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
-    """Returns the power spectrum of the input particle data in 2D.
+def get_pofk_2D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
+    """Returns the power spectrum of a 2D data set.
 
     Parameters
     ----------
@@ -43,12 +44,23 @@ def get_pofk_2D(density, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
     pk = np.zeros(len(k))
     keff = np.zeros(len(k))
     kf = cart.get_kf(boxsize)
-    for i in range(0, len(k)):
-        condition = np.where((kmag >= k[i] - 0.5*dk) & (kmag < k[i] + 0.5*dk))
-        kvals = kmag[condition]
-        delta2 = dkgrid.real[condition]**2. + dkgrid.imag[condition]**2.
-        pk[i] = np.mean(delta2)*(2.*np.pi/boxsize)**3.
-        keff[i] = np.sum(delta2 * kvals)/np.sum(delta2)
+    kmag = kmag.flatten()
+    dkgrid = dkgrid.flatten()
+    k_index = (kmag - kmin)/dk
+    k_index = np.floor(k_index).astype(int)
+    # cut data outside of range
+    numk = len(k)
+    condition = np.where((k_index >= 0) & (k_index < numk))[0]
+    k_index = k_index[condition]
+    kvals = kmag[condition]
+    delta2 = dkgrid.real[condition]**2. + dkgrid.imag[condition]**2.
+    counts = np.zeros(numk)
+    counts = bins.bin_by_index(k_index, counts)
+    pk = np.zeros(numk)
+    keff = np.zeros(numk)
+    pk = bins.bin_by_index(k_index, pk, weights=delta2)
+    keff = bins.bin_by_index(k_index, keff, weights=delta2*kvals) / pk
+    pk *= ((2*np.pi/boxsize)**2.)/counts
     return k, keff, pk
 
 
@@ -92,10 +104,21 @@ def get_pofk_3D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
     pk = np.zeros(len(k))
     keff = np.zeros(len(k))
     kf = cart.get_kf(boxsize)
-    for i in range(0, len(k)):
-        condition = np.where((kmag >= k[i] - 0.5*dk) & (kmag < k[i] + 0.5*dk))
-        kvals = kmag[condition]
-        delta2 = dkgrid.real[condition]**2. + dkgrid.imag[condition]**2.
-        pk[i] = np.mean(delta2)*(2.*np.pi/boxsize)**3.
-        keff[i] = np.sum(delta2 * kvals)/np.sum(delta2)
+    kmag = kmag.flatten()
+    dkgrid = dkgrid.flatten()
+    k_index = (kmag - kmin)/dk
+    k_index = np.floor(k_index).astype(int)
+    # cut data outside of range
+    numk = len(k)
+    condition = np.where((k_index >= 0) & (k_index < numk))[0]
+    k_index = k_index[condition]
+    kvals = kmag[condition]
+    delta2 = dkgrid.real[condition]**2. + dkgrid.imag[condition]**2.
+    counts = np.zeros(numk)
+    counts = bins.bin_by_index(k_index, counts)
+    pk = np.zeros(numk)
+    keff = np.zeros(numk)
+    pk = bins.bin_by_index(k_index, pk, weights=delta2)
+    keff = bins.bin_by_index(k_index, keff, weights=delta2*kvals) / pk
+    pk *= ((2*np.pi/boxsize)**3.)/counts
     return k, keff, pk
