@@ -18,3 +18,7 @@ from .kgrid import get_fourier_grid_3D
 
 from .utils import get_kf
 from .utils import get_kn
+from .utils import fftshift
+from .utils import ifftshift
+from .utils import normalise_freq
+from .utils import unnormalise_freq

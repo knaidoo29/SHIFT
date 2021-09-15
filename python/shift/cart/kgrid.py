@@ -22,7 +22,7 @@ def get_fourier_grid_1D(boxsize, ngrid):
     kf = utils.get_kf(boxsize)
     # Fourier modes along one axis
     k = np.arange(0., ngrid, 1.)
-    condition = np.where(k > ngrid/2.)[0]
+    condition = np.where(k >= ngrid/2.)[0]
     k[condition] -= ngrid
     k *= kf
     return k
