@@ -16,6 +16,9 @@ from .kgrid import get_fourier_grid_1D
 from .kgrid import get_fourier_grid_2D
 from .kgrid import get_fourier_grid_3D
 
+from .multiply import fourier_multiply_2D
+from .multiply import fourier_multiply_3D
+
 from .utils import get_kf
 from .utils import get_kn
 from .utils import fftshift
