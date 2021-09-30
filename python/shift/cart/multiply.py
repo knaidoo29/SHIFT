@@ -27,6 +27,7 @@ def fourier_multiply_2D(dgrid, boxsize, k, fk, ncpu=None):
     # Build K-grid
     kx2d, ky2d = kgrid.get_fourier_grid_2D(boxsize, ngrid)
     kmag = np.sqrt(kx2d**2. + ky2d**2.)
+    kmag = kmag.flatten()
     # Check interpolation range
     if kmag[1:].min() > k.min():
         interpcheck1 = True
@@ -46,7 +47,7 @@ def fourier_multiply_2D(dgrid, boxsize, k, fk, ncpu=None):
     else:
         dkgrid *= fk_interpolator(kmag)
     # Backward FFT
-    dgrid = fft.backward_fft_2D(dkgrid.reshape(ngrid, ngrid)).real
+    dgrid = fft.backward_fft_2D(dkgrid.reshape(ngrid, ngrid), boxsize, ncpu=ncpu).real
     return dgrid
 
 
@@ -71,7 +72,8 @@ def fourier_multiply_3D(dgrid, boxsize, k, fk, ncpu=None):
     fk_interpolator = interp1d(k, fk, kind='cubic')
     # Build K-grid
     kx3d, ky3d, kz3d = kgrid.get_fourier_grid_3D(boxsize, ngrid)
-    kmag = np.sqrt(kx3d**2. + ky3d**2. + kz3d)
+    kmag = np.sqrt(kx3d**2. + ky3d**2. + kz3d**2.)
+    kmag = kmag.flatten()
     # Check interpolation range
     if kmag[1:].min() > k.min():
         interpcheck1 = True
@@ -91,5 +93,5 @@ def fourier_multiply_3D(dgrid, boxsize, k, fk, ncpu=None):
     else:
         dkgrid *= fk_interpolator(kmag)
     # Backward FFT
-    dgrid = fft.backward_fft_3D(dkgrid.reshape(ngrid, ngrid, ngrid)).real
+    dgrid = fft.backward_fft_3D(dkgrid.reshape(ngrid, ngrid, ngrid), boxsize, ncpu=ncpu).real
     return dgrid
