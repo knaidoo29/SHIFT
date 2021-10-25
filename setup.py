@@ -8,8 +8,9 @@ this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, 'README.md')) as f:
     long_description = f.read()
 
-ext1 = Extension(name='shift.src.pft', sources=['shift/src/pft.f90'])
-exts = [ext1]
+ext1 = Extension(name='shift.src.bin', sources=['shift/src/bin.f90'])
+ext2 = Extension(name='shift.src.pft', sources=['shift/src/pft.f90'])
+exts = [ext1, ext2]
 
 setup(name = 'shift',
       version = '0.0.0',

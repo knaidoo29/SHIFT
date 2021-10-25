@@ -135,8 +135,6 @@ def get_Jm_large_zeros(m, nmax, nstop=10, xnm2=None, xnm1=None):
                 n += 1
     else:
         xnm = []
-        #xnm = get_Jm_zeros(nstop, m).tolist()
-        #if nstop != nmax:
         dxnm = xnm1 - xnm2
         xnm_approx = 0.5 * ((xnm1 + dxnm) + (xnm2 + 2*dxnm))
         for i in range(0, len(xnm_approx)):
@@ -192,8 +190,6 @@ def get_dJm_large_zeros(m, nmax, nstop=10, xnm2=None, xnm1=None):
                 xnm.append(val)
                 n += 1
     else:
-        #xnm = get_dJm_zeros(nstop, m).tolist()
-        #if nstop != nmax:
         xnm = []
         dxnm = xnm1 - xnm2
         xnm_approx = 0.5 * ((xnm1 + dxnm) + (xnm2 + 2*dxnm))

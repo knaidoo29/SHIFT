@@ -323,5 +323,5 @@ class PFT:
 
 
     def clean(self):
-        """Reinitialises the ckass."""
+        """Reinitialises the class."""
         self.__init__()

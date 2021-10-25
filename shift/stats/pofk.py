@@ -1,7 +1,7 @@
 import numpy as np
-from knpy import bins
 
 from .. import cart
+from .. import src
 
 
 def get_pofk_2D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
@@ -54,12 +54,10 @@ def get_pofk_2D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
     k_index = k_index[condition]
     kvals = kmag[condition]
     delta2 = dkgrid.real[condition]**2. + dkgrid.imag[condition]**2.
-    counts = np.zeros(numk)
-    counts = bins.bin_by_index(k_index, counts)
-    pk = np.zeros(numk)
-    keff = np.zeros(numk)
-    pk = bins.bin_by_index(k_index, pk, weights=delta2)
-    keff = bins.bin_by_index(k_index, keff, weights=delta2*kvals) / pk
+    counts = src.binbyindex(ind=k_index, weights=np.ones(len(k_index)), indlength=len(k_index), binlength=numk)
+    pk = src.binbyindex(ind=k_index, weights=delta2, indlength=len(k_index), binlength=numk)
+    keff = src.binbyindex(ind=k_index, weights=delta2*kvals, indlength=len(k_index), binlength=numk)
+    keff /= pk
     pk *= ((2*np.pi/boxsize)**2.)/counts
     return k, keff, pk
 
@@ -114,11 +112,9 @@ def get_pofk_3D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
     k_index = k_index[condition]
     kvals = kmag[condition]
     delta2 = dkgrid.real[condition]**2. + dkgrid.imag[condition]**2.
-    counts = np.zeros(numk)
-    counts = bins.bin_by_index(k_index, counts)
-    pk = np.zeros(numk)
-    keff = np.zeros(numk)
-    pk = bins.bin_by_index(k_index, pk, weights=delta2)
-    keff = bins.bin_by_index(k_index, keff, weights=delta2*kvals) / pk
+    counts = src.binbyindex(ind=k_index, weights=np.ones(len(k_index)), indlength=len(k_index), binlength=numk)
+    pk = src.binbyindex(ind=k_index, weights=delta2, indlength=len(k_index), binlength=numk)
+    keff = src.binbyindex(ind=k_index, weights=delta2*kvals, indlength=len(k_index), binlength=numk)
+    keff /= pk
     pk *= ((2*np.pi/boxsize)**3.)/counts
     return k, keff, pk

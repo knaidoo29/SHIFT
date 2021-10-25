@@ -1,8 +1,29 @@
 
 subroutine get_rnm(r, m, knm, nnm, lenr, rnm)
 
+  ! Returns the radial function Rnm which is dependent on the radius, angular mode m
+  ! and radial mode n.
+  !
+  ! Parameters
+  ! ----------
+  ! r : array
+  !   Radial array.
+  ! m : int
+  !   Angular m mode.
+  ! nnm : int
+  !   Normalisation constant.
+  ! lenr : int
+  !   Length of the array r.
+  !
+  ! Returns
+  ! -------
+  ! rnm : array
+  !   Radial function rnm
+
   implicit none
   integer, parameter :: dp = kind(1.d0)
+
+  ! Parameter declarations.
 
   integer, intent(in) :: lenr
   real(kind=dp), intent(in) :: r(lenr), knm, nnm
@@ -11,8 +32,10 @@ subroutine get_rnm(r, m, knm, nnm, lenr, rnm)
 
   integer :: i
 
+  ! main
+
   do i = 1, lenr
-    rnm(i) = (1./SQRT(Nnm))*BESSEL_JN(m, knm*r(i))
+    rnm(i) = (1./SQRT(nnm))*BESSEL_JN(m, knm*r(i))
   end do
 
 end subroutine get_rnm
@@ -20,8 +43,36 @@ end subroutine get_rnm
 
 subroutine forward_half_pft(r, pm_real, pm_imag, knm_flat, nnm_flat, m2d_flat, lenr, lenp, pnm)
 
+  ! Performs the radial component of the Polar Fourier Transform.
+  !
+  ! Parameters
+  ! ----------
+  ! r : array
+  !   Radial array.
+  ! pm_real : array
+  !   Real component of the PFT performed halfway (only in the angular component).
+  ! pm_imag : array
+  !   Imaginary component of the PFT performed halfway (only in the angular component).
+  ! knm_flat : array
+  !   Fourier scales for the PFT modes.
+  ! nnm_flat : array
+  !   Normalisation constant.
+  ! m2d_flat : array
+  !   PFT angular m modes.
+  ! lenr : int
+  !   Length of the radial axis r.
+  ! lenp : int
+  !   Length of the angular axis p.
+  !
+  ! Returns
+  ! -------
+  ! pnm : float
+  !   PFT modes.
+
   implicit none
   integer, parameter :: dp = kind(1.d0)
+
+  ! Parameter declarations
 
   integer, intent(in) :: lenr, lenp
   real(kind=dp), intent(in) :: r(lenr)
@@ -32,6 +83,8 @@ subroutine forward_half_pft(r, pm_real, pm_imag, knm_flat, nnm_flat, m2d_flat, l
 
   integer :: i, j, m_index, pm_index
   real(kind=dp) :: dr, rnm(lenr)
+
+  ! main
 
   dr = r(2) - r(1)
 
@@ -64,8 +117,38 @@ end subroutine forward_half_pft
 
 subroutine backward_half_pft(r, pnm_real, pnm_imag, knm_flat, nnm_flat, m2d_flat, n2d_flat, lenr, lenp, pm)
 
+  ! Performs the radial component of the Polar Fourier Transform.
+  !
+  ! Parameters
+  ! ----------
+  ! r : array
+  !   Radial array.
+  ! pnm_real : float
+  !   Real components of the PFT.
+  ! pnm_imag : float
+  !   Imaginary components of the PFT.
+  ! knm_flat : array
+  !   Fourier scales for the PFT modes.
+  ! nnm_flat : array
+  !   Normalisation constant.
+  ! m2d_flat : array
+  !   PFT angular m modes.
+  ! n2d_flat : array
+  !   PFT angular n modes.
+  ! lenr : int
+  !   Length of the radial axis r.
+  ! lenp : int
+  !   Length of the angular axis p.
+  !
+  ! Returns
+  ! -------
+  ! pm : array
+  !   Component of the PFT performed halfway (only in the angular component).
+
   implicit none
   integer, parameter :: dp = kind(1.d0)
+
+  ! Parameter declarations
 
   integer, intent(in) :: lenr, lenp
   real(kind=dp), intent(in) :: r(lenr)
@@ -76,6 +159,8 @@ subroutine backward_half_pft(r, pnm_real, pnm_imag, knm_flat, nnm_flat, m2d_flat
 
   integer :: i, j, m_index, n_index, pm_index, pnm_index
   real(kind=dp) :: dr, rnm(lenr)
+
+  ! main
 
   dr = r(2) - r(1)
 
