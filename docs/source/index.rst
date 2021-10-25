@@ -74,10 +74,8 @@ Version History
 
 **Version 0.0**:
 
-  * Fast fourier transforms in cartesian coordinates up to 3D with additional utility
-  functions.
+  * Fast fourier transforms in cartesian coordinates up to 3D with additional utility functions.
 
-  * Polar Fourier Transform with FFT used for the angular component while the radial
-  component is calculated using Fortran source code.
+  * Polar Fourier Transform with FFT used for the angular component while the radial component is calculated using Fortran source code.
 
   * Spherical Bessel Transform.
