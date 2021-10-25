@@ -8,6 +8,11 @@ from .fft import backward_fft_2D
 from .fft import forward_fft_3D
 from .fft import backward_fft_3D
 
+from .conv import convolve_gaussian
+
+from .diff import dfdk
+from .diff import dfdk2
+
 from .grid import grid1d
 from .grid import grid2d
 from .grid import grid3d

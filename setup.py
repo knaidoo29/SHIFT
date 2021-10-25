@@ -4,8 +4,8 @@ from numpy.distutils.core import setup, Extension
 # read the contents of your README file
 from os import path
 this_directory = path.abspath(path.dirname(__file__))
-print(this_directory[:-6])
-with open(path.join(this_directory[:-6], 'README.md')) as f:
+
+with open(path.join(this_directory, 'README.md')) as f:
     long_description = f.read()
 
 ext1 = Extension(name='shift.src.pft', sources=['shift/src/pft.f90'])
