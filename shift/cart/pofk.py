@@ -1,6 +1,9 @@
 import numpy as np
 
-from .. import cart
+from . import kgrid
+from . import fft
+from . import utils
+
 from .. import src
 
 
@@ -31,19 +34,19 @@ def get_pofk_2D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
     pk : array
         Measure power spectrum.
     """
-    kx2d, ky2d = cart.get_fourier_grid_2D(boxsize, ngrid)
+    kx2d, ky2d = kgrid.get_fourier_grid_2D(boxsize, ngrid)
     kmag = np.sqrt(kx2d**2. + ky2d**2.)
-    dkgrid = cart.forward_fft_2D(dgrid, boxsize, ncpu=ncpu)
+    dkgrid = fft.forward_fft_2D(dgrid, boxsize, ncpu=ncpu)
     if kmin is None:
-        kmin = cart.get_kf(boxsize)
+        kmin = utils.get_kf(boxsize)
     if kmax is None:
-        kmax = np.sqrt(2.)*cart.get_kn(boxsize, ngrid)
+        kmax = np.sqrt(2.)*utils.get_kn(boxsize, ngrid)
     kedges = np.linspace(kmin, kmax, int((kmax-kmin)/kmin)+1)
     k = 0.5 * (kedges[1:] + kedges[:-1])
     dk = kedges[1] - kedges[0]
     pk = np.zeros(len(k))
     keff = np.zeros(len(k))
-    kf = cart.get_kf(boxsize)
+    kf = utils.get_kf(boxsize)
     kmag = kmag.flatten()
     dkgrid = dkgrid.flatten()
     k_index = (kmag - kmin)/dk
@@ -89,19 +92,19 @@ def get_pofk_3D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
     pk : array
         Measure power spectrum.
     """
-    kx3d, ky3d, kz3d = cart.get_fourier_grid_3D(boxsize, ngrid)
+    kx3d, ky3d, kz3d = kgrid.get_fourier_grid_3D(boxsize, ngrid)
     kmag = np.sqrt(kx3d**2. + ky3d**2. + kz3d**2.)
-    dkgrid = cart.forward_fft_3D(dgrid, boxsize, ncpu=ncpu)
+    dkgrid = fft.forward_fft_3D(dgrid, boxsize, ncpu=ncpu)
     if kmin is None:
-        kmin = cart.get_kf(boxsize)
+        kmin = utils.get_kf(boxsize)
     if kmax is None:
-        kmax = np.sqrt(3.)*cart.get_kn(boxsize, ngrid)
+        kmax = np.sqrt(3.)*utils.get_kn(boxsize, ngrid)
     kedges = np.linspace(kmin, kmax, int((kmax-kmin)/kmin)+1)
     k = 0.5 * (kedges[1:] + kedges[:-1])
     dk = kedges[1] - kedges[0]
     pk = np.zeros(len(k))
     keff = np.zeros(len(k))
-    kf = cart.get_kf(boxsize)
+    kf = utils.get_kf(boxsize)
     kmag = kmag.flatten()
     dkgrid = dkgrid.flatten()
     k_index = (kmag - kmin)/dk
