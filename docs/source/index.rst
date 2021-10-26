@@ -16,8 +16,8 @@ SpHerIcal fast Fourier Transforms
 Introduction
 ============
 
-SHIFT performs Fourier transforms of data in polar, spherical and cartesian
-coordinates. SHIFT is mostly written in python but uses Fortran subroutines for
+SHIFT performs Fast Fourier transforms on data in polar, spherical and cartesian
+coordinates. SHIFT is written mostly in python but uses Fortran subroutines for
 heavy computation and speed.
 
 MPI functionality can be enabled through the installation of the python library
