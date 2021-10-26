@@ -28,10 +28,10 @@ for parallelisation.
 
 
 Contents
---------
+========
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    pft_index
    sht_index
@@ -41,7 +41,7 @@ Contents
 
 
 Dependencies
-------------
+============
 
 SHIFT is being developed in Python 3.8 but should work on all versions >3.4. SHIFT
 is written mostly in python but the heavy computation is carried out in Fortran.
@@ -58,7 +58,7 @@ For testing you will require `nose <https://nose.readthedocs.io/en/latest/>`_ or
 
 
 Installation
-------------
+============
 
 SHIFT can be installed by cloning the github repository::
 
@@ -75,7 +75,7 @@ Once this is done you should be able to call SHIFT from python:
 
 
 Support
--------
+=======
 
 If you have any issues with the code or want to suggest ways to improve it please
 open a new issue (`here <https://github.com/knaidoo29/SHIFT/issues>`_)
@@ -83,7 +83,7 @@ or (if you don't have a github account) email krishna.naidoo.11@ucl.ac.uk.
 
 
 Version History
----------------
+===============
 
 **Version 0.0**:
 
