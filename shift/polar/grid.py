@@ -3,7 +3,7 @@ import numpy as np
 from .. import cart
 
 
-def polargrid(Rmax, Nr, Np):
+def polargrid(Rmax, Nr, Nphi):
     """Returns a 2D polar grid.
 
     Parameters
@@ -12,7 +12,7 @@ def polargrid(Rmax, Nr, Np):
         Maximum radius.
     Nr : int
         Number of elements along the radial axis.
-    Np : int
+    Nphi : int
         Number of elements along the angular axis.
 
     Returns
@@ -22,9 +22,9 @@ def polargrid(Rmax, Nr, Np):
     p2d : array
         Phi grid.
     """
-    redges, r = cart.grid1d(Rmax, Nr-1)
-    pedges, p = cart.grid1d(2.*np.pi, Np)
-    p2d, r2d = np.meshgrid(pedges[:-1], redges, indexing='ij')
+    redges, r = cart.grid1d(Rmax, Nr)
+    pedges, p = cart.grid1d(2.*np.pi, Nphi)
+    p2d, r2d = np.meshgrid(p, r, indexing='ij')
     return p2d, r2d
 
 

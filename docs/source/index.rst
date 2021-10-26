@@ -1,3 +1,4 @@
+============================
 SpHerIcal Fourier Transforms
 ============================
 
@@ -14,7 +15,7 @@ SpHerIcal Fourier Transforms
 
 
 Introduction
-------------
+============
 
 SHIFT performs Fourier transforms of data in cartesian (using functions that wrap
 scipy FFT functions), polar and spherical polar coordinates. SHIFT is mostly written
@@ -24,6 +25,19 @@ MPI functionality can be enabled through the installation of the python library
 mpi4py but will require the additional installation of MPIutils which handles
 all of the MPI enabled functions. The class MPI is passed as an additional argument
 for parallelisation.
+
+
+Contents
+--------
+
+.. toctree::
+   :maxdepth: 1
+
+   pft_index
+   sht_index
+   sbt_index
+   cart_index
+   api
 
 
 Dependencies
@@ -59,6 +73,7 @@ Once this is done you should be able to call SHIFT from python:
 
     import shift
 
+
 Support
 -------
 
@@ -66,8 +81,6 @@ If you have any issues with the code or want to suggest ways to improve it pleas
 open a new issue (`here <https://github.com/knaidoo29/SHIFT/issues>`_)
 or (if you don't have a github account) email krishna.naidoo.11@ucl.ac.uk.
 
-Contents
---------
 
 Version History
 ---------------
