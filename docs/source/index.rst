@@ -13,6 +13,9 @@ SpHerIcal fast Fourier Transforms
 | Documentation | https://shift-docs.readthedocs.io/     |
 +---------------+-----------------------------------------+
 
+.. warning ::
+  SHIFT is in development.
+
 Introduction
 ============
 
@@ -51,6 +54,11 @@ The following Python modules are required.
 
 * `numpy <http://www.numpy.org/>`_
 * `scipy <https://scipy.org/>`_
+
+If you want to run with MPI you will need the following:
+
+* `mpi4py <https://mpi4py.readthedocs.io/en/stable/>`_
+* `MPIutils <https://github.com/knaidoo29/MPIutils>`_
 
 For testing you will require `nose <https://nose.readthedocs.io/en/latest/>`_ or
 `pytest <http://pytest.org/en/latest/>`_ .
