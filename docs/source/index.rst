@@ -8,13 +8,13 @@ SpHerIcal fast Fourier Transforms
 +---------------+-----------------------------------------+
 | Version       | 0.0.1                                   |
 +---------------+-----------------------------------------+
-| Repository    | https://github.com/knaidoo29/SHIFT     |
+| Repository    | https://github.com/knaidoo29/SHIFT      |
 +---------------+-----------------------------------------+
-| Documentation | https://shift-docs.readthedocs.io/     |
+| Documentation | https://shift-docs.readthedocs.io/      |
 +---------------+-----------------------------------------+
 
 .. warning ::
-  SHIFT is in development.
+  SHIFT is currently in development. Functions and classes may change. Use with caution.
 
 Introduction
 ============
@@ -54,6 +54,7 @@ The following Python modules are required.
 
 * `numpy <http://www.numpy.org/>`_
 * `scipy <https://scipy.org/>`_
+* `healpy <https://healpy.readthedocs.io/>`_
 
 If you want to run with MPI you will need the following:
 
@@ -79,7 +80,6 @@ Once this is done you should be able to call SHIFT from python:
 .. code-block:: python
 
     import shift
-
 
 Support
 =======
