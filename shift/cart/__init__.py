@@ -8,6 +8,12 @@ from .fft import backward_fft_2D
 from .fft import forward_fft_3D
 from .fft import backward_fft_3D
 
+from .mpi_fft import forward_mpi_fft_2D
+from .mpi_fft import backward_mpi_fft_2D
+
+from .mpi_fft import forward_mpi_fft_3D
+from .mpi_fft import backward_mpi_fft_3D
+
 from .conv import convolve_gaussian
 
 from .diff import dfdk
