@@ -12,7 +12,7 @@ def get_pofk_2D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
 
     Parameters
     ----------
-    density : 2darray
+    dgrid : 2darray
         Density contrast.
     boxsize : float
         Box size.
@@ -36,7 +36,7 @@ def get_pofk_2D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
     """
     kx2d, ky2d = kgrid.get_fourier_grid_2D(boxsize, ngrid)
     kmag = np.sqrt(kx2d**2. + ky2d**2.)
-    dkgrid = fft.forward_fft_2D(dgrid, boxsize, ncpu=ncpu)
+    dkgrid = fft.fft2D(dgrid, boxsize, ncpu=ncpu)
     if kmin is None:
         kmin = utils.get_kf(boxsize)
     if kmax is None:
@@ -70,7 +70,7 @@ def get_pofk_3D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
 
     Parameters
     ----------
-    density : 3darray
+    dgrid : 3darray
         Density contrast.
     boxsize : float
         Box size.
@@ -94,7 +94,7 @@ def get_pofk_3D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
     """
     kx3d, ky3d, kz3d = kgrid.get_fourier_grid_3D(boxsize, ngrid)
     kmag = np.sqrt(kx3d**2. + ky3d**2. + kz3d**2.)
-    dkgrid = fft.forward_fft_3D(dgrid, boxsize, ncpu=ncpu)
+    dkgrid = fft.fft3D(dgrid, boxsize, ncpu=ncpu)
     if kmin is None:
         kmin = utils.get_kf(boxsize)
     if kmax is None:

@@ -1,34 +1,42 @@
 
-from .fft import forward_fft_1D
-from .fft import backward_fft_1D
+from .fft import fft1D
+from .fft import ifft1D
 
-from .fft import forward_fft_2D
-from .fft import backward_fft_2D
+from .fft import fft2D
+from .fft import ifft2D
 
-from .fft import forward_fft_3D
-from .fft import backward_fft_3D
+from .fft import fft3D
+from .fft import ifft3D
 
-from .mpi_fft import forward_mpi_fft_2D
-from .mpi_fft import backward_mpi_fft_2D
+from .mpi_fft import mpi_fft2D
+from .mpi_fft import mpi_ifft2D
 
-from .mpi_fft import forward_mpi_fft_3D
-from .mpi_fft import backward_mpi_fft_3D
+from .mpi_fft import mpi_fft3D
+from .mpi_fft import mpi_ifft3D
 
 from .conv import convolve_gaussian
 
 from .diff import dfdk
 from .diff import dfdk2
 
-from .grid import grid1d
-from .grid import grid2d
-from .grid import grid3d
+from .grid import grid1D
+from .grid import grid2D
+from .grid import grid3D
 
-from .kgrid import get_fourier_grid_1D
-from .kgrid import get_fourier_grid_2D
-from .kgrid import get_fourier_grid_3D
+from .mpi_grid import mpi_grid1D
+from .mpi_grid import mpi_grid2D
+from .mpi_grid import mpi_grid3D
 
-from .multiply import fourier_multiply_2D
-from .multiply import fourier_multiply_3D
+from .kgrid import kgrid1D
+from .kgrid import kgrid2D
+from .kgrid import kgrid3D
+
+from .mpi_kgrid import mpi_kgrid1D
+from .mpi_kgrid import mpi_kgrid2D
+from .mpi_kgrid import mpi_kgrid3D
+
+from .multiply import mult_fk_2D
+from .multiply import mult_fk_3D
 
 from .pofk import get_pofk_2D
 from .pofk import get_pofk_3D

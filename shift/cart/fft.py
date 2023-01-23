@@ -2,7 +2,7 @@ import numpy as np
 import scipy.fft as scfft
 
 
-def forward_fft_1D(f_real, boxsize, ncpu=None):
+def fft1D(f_real, boxsize, ncpu=None):
     """Performs Forward FFT on input grid data.
 
     Parameters
@@ -25,7 +25,7 @@ def forward_fft_1D(f_real, boxsize, ncpu=None):
     return f_fourier
 
 
-def backward_fft_1D(f_fourier, boxsize, ncpu=None):
+def ifft1D(f_fourier, boxsize, ncpu=None):
     """Performs backward fft of a Fourier grid.
 
     Parameters
@@ -46,7 +46,7 @@ def backward_fft_1D(f_fourier, boxsize, ncpu=None):
     return f_real
 
 
-def forward_fft_2D(f_real, boxsize, ncpu=None):
+def fft2D(f_real, boxsize, ncpu=None):
     """Performs Forward FFT on input grid data.
 
     Parameters
@@ -67,7 +67,7 @@ def forward_fft_2D(f_real, boxsize, ncpu=None):
     return f_fourier
 
 
-def backward_fft_2D(f_fourier, boxsize, ncpu=None):
+def ifft2D(f_fourier, boxsize, ncpu=None):
     """Performs backward fft of a Fourier grid.
 
     Parameters
@@ -88,7 +88,7 @@ def backward_fft_2D(f_fourier, boxsize, ncpu=None):
     return f_real
 
 
-def forward_fft_3D(f_real, boxsize, ncpu=None):
+def fft3D(f_real, boxsize, ncpu=None):
     """Performs Forward FFT on input grid data.
 
     Parameters
@@ -109,7 +109,7 @@ def forward_fft_3D(f_real, boxsize, ncpu=None):
     return f_fourier
 
 
-def backward_fft_3D(f_fourier, boxsize, ncpu=None):
+def ifft3D(f_fourier, boxsize, ncpu=None):
     """Performs backward fft of a Fourier grid.
 
     Parameters

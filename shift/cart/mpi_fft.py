@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def forward_mpi_fft_2D(f_real, f_shape, boxsize, ngrid, FFT):
+def mpi_fft2D(f_real, f_shape, boxsize, ngrid, FFT):
     """Performs MPI Forward FFT on input grid data.
 
     Parameters
@@ -29,7 +29,7 @@ def forward_mpi_fft_2D(f_real, f_shape, boxsize, ngrid, FFT):
     return f_fourier
 
 
-def backward_mpi_fft_2D(f_fourier, f_shape, boxsize, ngrid, FFT):
+def mpi_ifft2D(f_fourier, f_shape, boxsize, ngrid, FFT):
     """Performs MPI Forward FFT on input grid data.
 
     Parameters
@@ -51,14 +51,13 @@ def backward_mpi_fft_2D(f_fourier, f_shape, boxsize, ngrid, FFT):
         Input grid data, assumed to be real.
     """
     dx = boxsize / float(ngrid)
-    f_real = np.zeros(f_shape)
-    f_real = FFT.backward(f_fourier, f_real, normalize=True)
-    f_real /= (dx/np.sqrt(2.*np.pi))**2.
-    f_real = f_real.real
-    return f_real
+    f = np.zeros(f_shape)
+    f = FFT.backward(f_fourier, f, normalize=True)
+    f /= (dx/np.sqrt(2.*np.pi))**2.
+    return f
 
 
-def forward_mpi_fft_3D(f_real, f_shape, boxsize, ngrid, FFT):
+def mpi_fft3D(f_real, f_shape, boxsize, ngrid, FFT):
     """Performs MPI Forward FFT on input grid data.
 
     Parameters
@@ -86,7 +85,7 @@ def forward_mpi_fft_3D(f_real, f_shape, boxsize, ngrid, FFT):
     return f_fourier
 
 
-def backward_mpi_fft_3D(f_fourier, f_shape, boxsize, ngrid, FFT):
+def mpi_ifft3D(f_fourier, f_shape, boxsize, ngrid, FFT):
     """Performs MPI Forward FFT on input grid data.
 
     Parameters
@@ -104,12 +103,11 @@ def backward_mpi_fft_3D(f_fourier, f_shape, boxsize, ngrid, FFT):
 
     Returns
     -------
-    f_real : ndarray
-        Input grid data, assumed to be real.
+    f : ndarray
+        Input grid data.
     """
     dx = boxsize / float(ngrid)
-    f_real = np.zeros(f_shape)
-    f_real = FFT.backward(f_fourier, f_real, normalize=True)
-    f_real /= (dx/np.sqrt(2.*np.pi))**3.
-    f_real = f_real.real
-    return f_real
+    f = np.zeros(f_shape)
+    f = FFT.backward(f_fourier, f, normalize=True)
+    f /= (dx/np.sqrt(2.*np.pi))**3.
+    return f

@@ -1,7 +1,8 @@
 import numpy as np
 
+from . import grid
 
-def grid1D(boxsize, ngrid, origin=0.):
+def mpi_grid1d(boxsize, ngrid, MPI, origin=0.):
     """Returns the x coordinates of a cartesian grid.
 
     Parameters
@@ -22,10 +23,13 @@ def grid1D(boxsize, ngrid, origin=0.):
     """
     xedges = np.linspace(0., boxsize, ngrid + 1) + origin
     x = 0.5*(xedges[1:] + xedges[:-1])
+    split1, split2 = MPI.split(len(x))
+    x = x[split1[MPI.rank]:split2[MPI.rank]]
+    xedges = xedges[split1[MPI.rank]:split2[MPI.rank]+1]
     return xedges, x
 
 
-def grid2D(boxsize, ngrid, origin=0.):
+def mpi_grid2D(boxsize, ngrid, MPI, origin=0.):
     """Returns the x, y coordinates of a cartesian grid.
 
     Parameters
@@ -59,13 +63,13 @@ def grid2D(boxsize, ngrid, origin=0.):
         origins = [origin, origin]
     else:
         origins = origin
-    xedges, x = grid1D(boxsizes[0], ngrids[0], origin=origins[0])
-    yedges, y = grid1D(boxsizes[1], ngrids[1], origin=origins[1])
+    xedges, x = mpi_grid1d(boxsizes[0], ngrids[0], MPI, origin=origins[0])
+    yedges, y = grid.grid1d(boxsizes[1], ngrids[1], origin=origins[1])
     x2D, y2D = np.meshgrid(x, y, indexing='ij')
     return x2D, y2D
 
 
-def grid3D(boxsize, ngrid, origin=0.):
+def mpi_grid3D(boxsize, ngrid, MPI, origin=0.):
     """Returns the x, y, z coordinates of a cartesian grid.
 
     Parameters
@@ -101,8 +105,8 @@ def grid3D(boxsize, ngrid, origin=0.):
         origins = [origin, origin, origin]
     else:
         origins = origin
-    xedges, x = grid1D(boxsizes[0], ngrids[0], origin=origins[0])
-    yedges, y = grid1D(boxsizes[1], ngrids[1], origin=origins[1])
-    zedges, z = grid1D(boxsizes[2], ngrids[2], origin=origins[2])
+    xedges, x = mpi_grid1d(boxsizes[0], ngrids[0], MPI, origin=origins[0])
+    yedges, y = grid.grid1d(boxsizes[1], ngrids[1], origin=origins[1])
+    zedges, z = grid.grid1d(boxsizes[2], ngrids[2], origin=origins[2])
     x3D, y3D, z3D = np.meshgrid(x, y, z, indexing='ij')
     return x3D, y3D, z3D
