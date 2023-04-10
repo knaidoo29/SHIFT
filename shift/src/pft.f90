@@ -118,7 +118,7 @@ subroutine forward_half_pft(r, pm_real, pm_imag, knm_flat, nnm_flat, m2d_flat, l
   integer, intent(in) :: m2d_flat(lenp*lenr)
   real(kind=dp), intent(out) :: pnm(2*lenp*lenr)
 
-  integer :: i, j, r_i, m_index, pm_index
+  integer :: i, j, m_index, pm_index
   real(kind=dp) :: dr, rnm(lenr)
 
   ! main
@@ -144,7 +144,7 @@ subroutine forward_half_pft(r, pm_real, pm_imag, knm_flat, nnm_flat, m2d_flat, l
       pm_index = m_index*lenr + j
       pnm(2*i-1) = pnm(2*i-1) + r(j)*rnm(j)*pm_real(pm_index)*dr
       pnm(2*i) = pnm(2*i) + r(j)*rnm(j)*pm_imag(pm_index)*dr
-
+      
     end do
 
   end do
