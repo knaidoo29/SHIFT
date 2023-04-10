@@ -22,8 +22,8 @@ def polargrid(Rmax, Nr, Nphi):
     p2d : array
         Phi grid.
     """
-    redges, r = cart.grid1d(Rmax, Nr)
-    pedges, p = cart.grid1d(2.*np.pi, Nphi)
+    redges, r = cart.grid1D(Rmax, Nr)
+    pedges, p = cart.grid1D(2.*np.pi, Nphi)
     p2d, r2d = np.meshgrid(p, r, indexing='ij')
     return p2d, r2d
 

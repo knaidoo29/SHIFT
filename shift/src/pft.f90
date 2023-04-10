@@ -1,4 +1,40 @@
 
+subroutine get_rnm_single(r, m, knm, nnm, rnm)
+
+  ! Returns the radial function Rnm which is dependent on the radius, angular mode m
+  ! and radial mode n.
+  !
+  ! Parameters
+  ! ----------
+  ! r : array
+  !   Radial array.
+  ! m : int
+  !   Angular m mode.
+  ! nnm : int
+  !   Normalisation constant.
+  ! lenr : int
+  !   Length of the array r.
+  !
+  ! Returns
+  ! -------
+  ! rnm : array
+  !   Radial function rnm
+
+  implicit none
+  integer, parameter :: dp = kind(1.d0)
+
+  ! Parameter declarations.
+
+  real(kind=dp), intent(in) :: r, knm, nnm
+  integer, intent(in) :: m
+  real(kind=dp), intent(out) :: rnm
+
+  ! main
+
+  rnm = (1./SQRT(nnm))*BESSEL_JN(m, knm*r)
+
+end subroutine get_rnm_single
+
 subroutine get_rnm(r, m, knm, nnm, lenr, rnm)
 
   ! Returns the radial function Rnm which is dependent on the radius, angular mode m
@@ -35,7 +71,8 @@ subroutine get_rnm(r, m, knm, nnm, lenr, rnm)
   ! main
 
   do i = 1, lenr
-    rnm(i) = (1./SQRT(nnm))*BESSEL_JN(m, knm*r(i))
+    ! rnm(i) = (1./SQRT(nnm))*BESSEL_JN(m, knm*r(i))
+    call get_rnm_single(r(i), m, knm, nnm, rnm(i))
   end do
 
 end subroutine get_rnm
@@ -81,7 +118,7 @@ subroutine forward_half_pft(r, pm_real, pm_imag, knm_flat, nnm_flat, m2d_flat, l
   integer, intent(in) :: m2d_flat(lenp*lenr)
   real(kind=dp), intent(out) :: pnm(2*lenp*lenr)
 
-  integer :: i, j, m_index, pm_index
+  integer :: i, j, r_i, m_index, pm_index
   real(kind=dp) :: dr, rnm(lenr)
 
   ! main

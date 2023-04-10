@@ -143,7 +143,7 @@ class PFT:
         Pnm : 2darray
             Polar fourier coefficients.
         """
-        Pm = np.array([cart.forward_fft_1D(f[:,i], 2.*np.pi) for i in range(0, len(f[0]))]).T
+        Pm = cart.fft1D(f, 2*np.pi, axis=0)
         Pnm = np.zeros(len(self.m2d_flat)) + 1j*np.zeros(len(self.m2d_flat))
         r = self.r2d[0]
         for i in range(0, len(self.m2d_flat)):
@@ -173,11 +173,11 @@ class PFT:
         Pnm : 2darray
             Polar fourier coefficients.
         """
-        Pm = np.array([cart.forward_fft_1D(f[:,i], 2.*np.pi) for i in range(0, len(f[0]))]).T
+        Pm = cart.fft1D(f, 2*np.pi, axis=0)
         Pm = Pm.flatten()
         r = self.r2d[0]
         pnm = src.forward_half_pft(r=r, pm_real=Pm.real, pm_imag=Pm.imag, knm_flat=self.knm_flat,
-                              nnm_flat=self.Nnm_flat, m2d_flat=self.m2d_flat, lenr=self.Nr, lenp=self.Np)
+            nnm_flat=self.Nnm_flat, m2d_flat=self.m2d_flat, lenr=self.Nr, lenp=self.Np)
         pnm = pnm.reshape((self.Nr*self.Np, 2))
         Pnm = pnm[:, 0] + 1j*pnm[:, 1]
         Pnm = Pnm.reshape(np.shape(self.m2d))
@@ -237,7 +237,7 @@ class PFT:
             Pm.real[m_index] += Rnm*Pnm.real[m_index, n_index]
             Pm.imag[m_index] += Rnm*Pnm.imag[m_index, n_index]
             utils.progress_bar(i, len(self.m2d_flat))
-        f = np.array([cart.backward_fft_1D(Pm[:, i], 2.*np.pi) for i in range(0, len(Pm[0]))]).T
+        f = cart.ifft1D(Pm, 2.*np.pi, axis=0)
         return f
 
 
@@ -264,7 +264,7 @@ class PFT:
         pm = pm.reshape((self.Nr*self.Np, 2))
         Pm = pm[:, 0] + 1j*pm[:, 1]
         Pm = Pm.reshape(np.shape(self.m2d))
-        f = np.array([cart.backward_fft_1D(Pm[:, i], 2.*np.pi) for i in range(0, len(Pm[0]))]).T
+        f = cart.ifft1D(Pm, 2.*np.pi, axis=0)
         return f
 
 
@@ -279,7 +279,7 @@ class PFT:
             Method for computing the PFT:
                 - 'benchmark' : slow calculation with no optimisations for testing and benchmarking.
                 - 'half_fft' : uses FFT for the angular components for faster computation.
-                - 'half_fft_half_fort' : Like the above but used fortran source code to do the other half.
+                - 'half_fft_half_fort' : Like the above but uses fortran source code to do the other half.
 
         Returns
         -------
@@ -306,7 +306,7 @@ class PFT:
             Method for computing the PFT:
                 - 'benchmark' : slow calculation with no optimisations for testing and benchmarking.
                 - 'half_fft' : uses FFT for the angular components for faster computation.
-                - 'half_fft_half_fort' : Like the above but used fortran source code to do the other half.
+                - 'half_fft_half_fort' : Like the above but uses fortran source code to do the other half.
 
         Returns
         -------

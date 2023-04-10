@@ -2,6 +2,7 @@ import numpy as np
 
 from . import grid
 
+
 def mpi_grid1D(boxsize, ngrid, MPI, origin=0.):
     """Returns the x coordinates of a cartesian grid.
 
@@ -13,7 +14,7 @@ def mpi_grid1D(boxsize, ngrid, MPI, origin=0.):
         Grid division along one axis.
     origin : float, optional
         Start point of the grid.
-
+    
     Returns
     -------
     xedges : array

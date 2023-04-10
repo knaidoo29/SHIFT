@@ -51,10 +51,10 @@ def mpi_ifft2D(f_fourier, f_shape, boxsize, ngrid, FFT):
         Input grid data, assumed to be real.
     """
     dx = boxsize / float(ngrid)
-    f = np.zeros(f_shape)
+    f = np.zeros(f_shape) + 1j*np.zeros(f_shape)
     f = FFT.backward(f_fourier, f, normalize=True)
     f /= (dx/np.sqrt(2.*np.pi))**2.
-    return f
+    return f.real
 
 
 def mpi_fft3D(f_real, f_shape, boxsize, ngrid, FFT):
@@ -107,7 +107,7 @@ def mpi_ifft3D(f_fourier, f_shape, boxsize, ngrid, FFT):
         Input grid data.
     """
     dx = boxsize / float(ngrid)
-    f = np.zeros(f_shape)
+    f = np.zeros(f_shape) + 1j*np.zeros(f_shape)
     f = FFT.backward(f_fourier, f, normalize=True)
     f /= (dx/np.sqrt(2.*np.pi))**3.
-    return f
+    return f.real
