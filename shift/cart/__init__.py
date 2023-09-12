@@ -8,6 +8,12 @@ from .fft import ifft2D
 from .fft import fft3D
 from .fft import ifft3D
 
+from .mpi_fft import redistribute_backward_2D
+from .mpi_fft import redistribute_forward_2D
+
+from .mpi_fft import redistribute_backward_3D
+from .mpi_fft import redistribute_forward_3D
+
 from .mpi_fft import mpi_fft2D
 from .mpi_fft import mpi_ifft2D
 
