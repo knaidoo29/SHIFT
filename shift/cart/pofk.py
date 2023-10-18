@@ -34,9 +34,9 @@ def get_pofk_2D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
     pk : array
         Measure power spectrum.
     """
-    kx2d, ky2d = kgrid.get_fourier_grid_2D(boxsize, ngrid)
+    kx2d, ky2d = kgrid.kgrid2D(boxsize, ngrid)
     kmag = np.sqrt(kx2d**2. + ky2d**2.)
-    dkgrid = fft.fft2D(dgrid, boxsize, ncpu=ncpu)
+    dkgrid = fft.fft2D(dgrid, boxsize)
     if kmin is None:
         kmin = utils.get_kf(boxsize)
     if kmax is None:
@@ -92,9 +92,9 @@ def get_pofk_3D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
     pk : array
         Measure power spectrum.
     """
-    kx3d, ky3d, kz3d = kgrid.get_fourier_grid_3D(boxsize, ngrid)
+    kx3d, ky3d, kz3d = kgrid.kgrid3D(boxsize, ngrid)
     kmag = np.sqrt(kx3d**2. + ky3d**2. + kz3d**2.)
-    dkgrid = fft.fft3D(dgrid, boxsize, ncpu=ncpu)
+    dkgrid = fft.fft3D(dgrid, boxsize)
     if kmin is None:
         kmin = utils.get_kf(boxsize)
     if kmax is None:
