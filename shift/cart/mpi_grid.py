@@ -14,7 +14,7 @@ def mpi_grid1D(boxsize, ngrid, MPI, origin=0.):
         Grid division along one axis.
     origin : float, optional
         Start point of the grid.
-    
+
     Returns
     -------
     xedges : array

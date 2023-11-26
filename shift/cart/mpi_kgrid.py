@@ -72,11 +72,4 @@ def mpi_kgrid3D(boxsize, ngrid, MPI):
     k = kgrid.kgrid1D(boxsize, ngrid)
     # Create Fourier grid
     kx3D, ky3D, kz3D = np.meshgrid(k, _k, k, indexing='ij')
-    # return kx3D, ky3D, kz3D
-    # kx = kgrid.kgrid1D(boxsize, ngrid)
-    # ky = np.copy(kx)
-    # kz = np.copy(kx)
-    # Ngrids = np.array([ngrid, ngrid, ngrid], dtype='int')
-    # partitionk = MPI.check_partition(Ngrids, np.array(shape))
-    # kx3D, ky3D, kz3D = MPI.create_split_ndgrid([kx, ky, kz], partitionk)
     return kx3D, ky3D, kz3D
