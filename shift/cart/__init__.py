@@ -1,12 +1,24 @@
 
 from .fft import fft1D
 from .fft import ifft1D
-
 from .fft import fft2D
 from .fft import ifft2D
-
 from .fft import fft3D
 from .fft import ifft3D
+
+from .fft import dct1D
+from .fft import idct1D
+from .fft import dct2D
+from .fft import idct2D
+from .fft import dct3D
+from .fft import idct3D
+
+from .fft import dst1D
+from .fft import idst1D
+from .fft import dst2D
+from .fft import idst2D
+from .fft import dst3D
+from .fft import idst3D
 
 from .mpi_fft import redistribute_backward_2D
 from .mpi_fft import redistribute_forward_2D
@@ -36,6 +48,12 @@ from .mpi_grid import mpi_grid3D
 from .kgrid import kgrid1D
 from .kgrid import kgrid2D
 from .kgrid import kgrid3D
+from .kgrid import kgrid1D_dct
+from .kgrid import kgrid2D_dct
+from .kgrid import kgrid3D_dct
+from .kgrid import kgrid1D_dst
+from .kgrid import kgrid2D_dst
+from .kgrid import kgrid3D_dst
 
 from .mpi_kgrid import mpi_kgrid1D
 from .mpi_kgrid import mpi_kgrid2D
