@@ -2,8 +2,54 @@ import numpy as np
 import scipy.fft as scfft
 
 
-def slab_fft1D(f_real, boxsize, ngrid, axis=None):
-    """Performs Forward FFT on input grid data.
+def slab_fft1D(f_real, boxsize, ngrid, axis=-1):
+    """Performs forward FFT on real space data.
+
+    Parameters
+    ----------
+    f_real : ndarray
+        Real space data.
+    boxsize : float
+        Box size.
+    axis : int, optional
+        Axis to perform FFT.
+
+    Returns
+    -------
+    f_fourier : ndarray
+        Fourier modes.
+    """
+    dx = boxsize / float(ngrid)
+    f_fourier = scfft.fft(f_real, axis=axis)
+    f_fourier *= (dx/np.sqrt(2.*np.pi))
+    return f_fourier
+
+
+def slab_ifft1D(f_fourier, boxsize, ngrid, axis=-1):
+    """Performs backward FFT on Fourier modes.
+
+    Parameters
+    ----------
+    f_fourier : ndarray
+        Fourier modes.
+    boxsize : float
+        Box size.
+    axis : int, optional
+        Axis to perform FFT.
+
+    Returns
+    -------
+    f_real : ndarray
+        Real space data.
+    """
+    dx = boxsize / float(ngrid)
+    f_real = scfft.ifft(f_fourier, axis=axis)
+    f_real *= (np.sqrt(2.*np.pi)/dx)
+    return f_real
+
+
+def slab_dct1D(f_real, boxsize, ngrid, axis=-1, type=2):
+    """Performs forward DCT on real space data.
 
     Parameters
     ----------
@@ -13,45 +59,91 @@ def slab_fft1D(f_real, boxsize, ngrid, axis=None):
         Box size.
     axis : int, optional
         Axis to perform FFT.
+    type : int, optional
+        Type of DCT for scipy to perform.
 
     Returns
     -------
     f_fourier : ndarray
-        Output Fourier grid data.
+        Fourier modes.
     """
     dx = boxsize / float(ngrid)
-    if axis is None:
-        f_fourier = scfft.fft(f_real)
-    else:
-        f_fourier = scfft.fft(f_real, axis=axis)
+    f_fourier = scfft.dct(f_real, axis=axis, type=type)
     f_fourier *= (dx/np.sqrt(2.*np.pi))
     return f_fourier
 
 
-def slab_ifft1D(f_fourier, boxsize, ngrid, axis=None):
-    """Performs backward fft of a Fourier grid.
+def slab_idct1D(f_fourier, boxsize, ngrid, axis=-1, type=2):
+    """Performs backward DCT on Fourier modes.
 
     Parameters
     ----------
     f_fourier : ndarray
-        Input Fourier grid data.
+        Fourier modes.
     boxsize : float
         Box size.
-    ncpu : int, optional
-        Number of cpus.
     axis : int, optional
         Axis to perform FFT.
+    type : int, optional
+        Type of iDCT for scipy to perform.
 
     Returns
     -------
     f_real : ndarray
-        Output grid data.
+        Real space data.
     """
     dx = boxsize / float(ngrid)
-    if axis is None:
-        f_real = scfft.ifft(f_fourier)
-    else:
-        f_real = scfft.ifft(f_fourier, axis=axis)
+    f_real = scfft.idct(f_fourier, axis=axis, type=type)
+    f_real *= (np.sqrt(2.*np.pi)/dx)
+    return f_real
+
+
+def slab_dst1D(f_real, boxsize, ngrid, axis=-1, type=2):
+    """Performs forward DST on real space data.
+
+    Parameters
+    ----------
+    f_real : ndarray
+        Input grid data.
+    boxsize : float
+        Box size.
+    axis : int, optional
+        Axis to perform FFT.
+    type : int, optional
+        Type of DST for scipy to perform.
+
+    Returns
+    -------
+    f_fourier : ndarray
+        Fourier modes.
+    """
+    dx = boxsize / float(ngrid)
+    f_fourier = scfft.dst(f_real, axis=axis, type=type)
+    f_fourier *= (dx/np.sqrt(2.*np.pi))
+    return f_fourier
+
+
+def slab_idst1D(f_fourier, boxsize, ngrid, axis=-1, type=2):
+    """Performs backward DST on Fourier modes.
+
+    Parameters
+    ----------
+    f_fourier : ndarray
+        Fourier modes.
+    boxsize : float
+        Box size.
+    axis : int, optional
+        Axis to perform FFT.
+    type : int, optional
+        Type of iDST for scipy to perform.
+
+    Returns
+    -------
+    f_real : ndarray
+        Real space data.
+    """
+    dx = boxsize / float(ngrid)
+    f_real = scfft.idst(f_fourier, axis=axis, type=type)
     f_real *= (np.sqrt(2.*np.pi)/dx)
     return f_real
 
@@ -341,12 +433,12 @@ def redistribute_backward_3D(f, ngrid, MPI, iscomplex=False):
 
 
 def mpi_fft2D(f_real, boxsize, ngrid, MPI):
-    """Performs MPI Forward FFT on input grid data.
+    """Performs MPI forward FFT on real space data.
 
     Parameters
     ----------
-    f_real : ndarray
-        Input grid data, assumed to be real.
+    f_real : 1darray or ndarray
+        Real space data.
     boxsize : float
         Box size.
     ngrid : int
@@ -357,7 +449,7 @@ def mpi_fft2D(f_real, boxsize, ngrid, MPI):
     Returns
     -------
     f_fourier : ndarray
-        Output Fourier grid data.
+        Fourier modes.
     """
     f_fourier = slab_fft1D(f_real, boxsize, ngrid, axis=1)
     f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI, iscomplex=True)
@@ -366,12 +458,12 @@ def mpi_fft2D(f_real, boxsize, ngrid, MPI):
 
 
 def mpi_ifft2D(f_fourier, boxsize, ngrid, MPI):
-    """Performs MPI Forward FFT on input grid data.
+    """Performs MPI backward FFT on Fourier modes.
 
     Parameters
     ----------
     f_fourier : ndarray
-        Output Fourier grid data.
+        Fourier modes.
     boxsize : float
         Box size.
     ngrid : int
@@ -381,8 +473,8 @@ def mpi_ifft2D(f_fourier, boxsize, ngrid, MPI):
 
     Returns
     -------
-    f : ndarray
-        Input grid data.
+    f_real : 1darray or ndarray
+        Real space data.
     """
     _f_fourier = slab_ifft1D(f_fourier, boxsize, ngrid, axis=0)
     _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI, iscomplex=True)
@@ -390,13 +482,121 @@ def mpi_ifft2D(f_fourier, boxsize, ngrid, MPI):
     return f.real
 
 
+def mpi_dct2D(f_real, boxsize, ngrid, MPI, type=2):
+    """Performs MPI forward DCT on real space data.
+
+    Parameters
+    ----------
+    f_real : 1darray or ndarray
+        Real space data.
+    boxsize : float
+        Box size.
+    ngrid : int
+        Size of the grid along one axis.
+    MPI : obj
+        MPIutils MPI object.
+    type : int, optional
+        Type of DCT for scipy to perform.
+
+    Returns
+    -------
+    f_fourier : ndarray
+        Fourier modes.
+    """
+    f_fourier = slab_dct1D(f_real, boxsize, ngrid, axis=1, type=type)
+    f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI, iscomplex=True)
+    f_fourier = slab_dct1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    return f_fourier
+
+
+def mpi_idct2D(f_fourier, boxsize, ngrid, MPI, type=2):
+    """Performs MPI backward DCT on Fourier modes.
+
+    Parameters
+    ----------
+    f_fourier : ndarray
+        Fourier modes.
+    boxsize : float
+        Box size.
+    ngrid : int
+        Size of the grid along one axis.
+    MPI : obj
+        MPIutils MPI object.
+    type : int, optional
+        Type of iDCT for scipy to perform.
+
+    Returns
+    -------
+    f_real : 1darray or ndarray
+        Real space data.
+    """
+    _f_fourier = slab_idct1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI, iscomplex=True)
+    f = slab_idct1D(_f_fourier, boxsize, ngrid, axis=1, type=type)
+    return f
+
+
+def mpi_dst2D(f_real, boxsize, ngrid, MPI, type=2):
+    """Performs MPI forward DST on real space data.
+
+    Parameters
+    ----------
+    f_real : 1darray or ndarray
+        Real space data.
+    boxsize : float
+        Box size.
+    ngrid : int
+        Size of the grid along one axis.
+    MPI : obj
+        MPIutils MPI object.
+    type : int, optional
+        Type of DST for scipy to perform.
+
+    Returns
+    -------
+    f_fourier : ndarray
+        Fourier modes.
+    """
+    f_fourier = slab_dst1D(f_real, boxsize, ngrid, axis=1, type=type)
+    f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI, iscomplex=True)
+    f_fourier = slab_dst1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    return f_fourier
+
+
+def mpi_idst2D(f_fourier, boxsize, ngrid, MPI, type=2):
+    """Performs MPI backward DST on Fourier modes.
+
+    Parameters
+    ----------
+    f_fourier : ndarray
+        Fourier modes.
+    boxsize : float
+        Box size.
+    ngrid : int
+        Size of the grid along one axis.
+    MPI : obj
+        MPIutils MPI object.
+    type : int, optional
+        Type of iDST for scipy to perform.
+
+    Returns
+    -------
+    f_real : 1darray or ndarray
+        Real space data.
+    """
+    _f_fourier = slab_idst1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI, iscomplex=True)
+    f = slab_idst1D(_f_fourier, boxsize, ngrid, axis=1, type=type)
+    return f
+
+
 def mpi_fft3D(f_real, boxsize, ngrid, MPI):
-    """Performs MPI Forward FFT on input grid data.
+    """Performs MPI forward FFT on real space data.
 
     Parameters
     ----------
     f_real : ndarray
-        Input grid data, assumed to be real.
+        Real space data.
     boxsize : float
         Box size.
     ngrid : int
@@ -407,7 +607,7 @@ def mpi_fft3D(f_real, boxsize, ngrid, MPI):
     Returns
     -------
     f_fourier : ndarray
-        Output Fourier grid data.
+        Fourier modes.
     """
     f_fourier = slab_fft1D(f_real, boxsize, ngrid, axis=1)
     f_fourier = slab_fft1D(f_fourier, boxsize, ngrid, axis=2)
@@ -417,12 +617,12 @@ def mpi_fft3D(f_real, boxsize, ngrid, MPI):
 
 
 def mpi_ifft3D(f_fourier, boxsize, ngrid, MPI):
-    """Performs MPI Forward FFT on input grid data.
+    """Performs MPI backward FFT on Fourier modes.
 
     Parameters
     ----------
     f_fourier : ndarray
-        Output Fourier grid data.
+        Fourier modes.
     boxsize : float
         Box size.
     ngrid : int
@@ -433,10 +633,122 @@ def mpi_ifft3D(f_fourier, boxsize, ngrid, MPI):
     Returns
     -------
     f : ndarray
-        Input grid data.
+        Real space data.
     """
     _f_fourier = slab_ifft1D(f_fourier, boxsize, ngrid, axis=0)
     _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI, iscomplex=True)
     _f_fourier = slab_ifft1D(_f_fourier, boxsize, ngrid, axis=1)
     f = slab_ifft1D(_f_fourier, boxsize, ngrid, axis=2)
     return f.real
+
+
+def mpi_dct3D(f_real, boxsize, ngrid, MPI, type=2):
+    """Performs MPI forward DCT on real space data.
+
+    Parameters
+    ----------
+    f_real : ndarray
+        Real space data.
+    boxsize : float
+        Box size.
+    ngrid : int
+        Size of the grid along one axis.
+    MPI : obj
+        MPIutils MPI object.
+    type : int, optional
+        Type of DCT for scipy to perform.
+
+    Returns
+    -------
+    f_fourier : ndarray
+        Fourier modes.
+    """
+    f_fourier = slab_dct1D(f_real, boxsize, ngrid, axis=1, type=type)
+    f_fourier = slab_dct1D(f_fourier, boxsize, ngrid, axis=2, type=type)
+    f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI, iscomplex=True)
+    f_fourier = slab_dct1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    return f_fourier
+
+
+def mpi_idct3D(f_fourier, boxsize, ngrid, MPI, type=2):
+    """Performs MPI backward DCT on Fourier modes.
+
+    Parameters
+    ----------
+    f_fourier : ndarray
+        Fourier modes.
+    boxsize : float
+        Box size.
+    ngrid : int
+        Size of the grid along one axis.
+    MPI : obj
+        MPIutils MPI object.
+    type : int, optional
+        Type of iDCT for scipy to perform.
+
+    Returns
+    -------
+    f : ndarray
+        Real space data.
+    """
+    _f_fourier = slab_idct1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI, iscomplex=True)
+    _f_fourier = slab_idct1D(_f_fourier, boxsize, ngrid, axis=1, type=type)
+    f = slab_idct1D(_f_fourier, boxsize, ngrid, axis=2, type=type)
+    return f
+
+
+def mpi_dst3D(f_real, boxsize, ngrid, MPI, type=2):
+    """Performs MPI forward DST on real space data.
+
+    Parameters
+    ----------
+    f_real : ndarray
+        Real space data.
+    boxsize : float
+        Box size.
+    ngrid : int
+        Size of the grid along one axis.
+    MPI : obj
+        MPIutils MPI object.
+    type : int, optional
+        Type of DST for scipy to perform.
+
+    Returns
+    -------
+    f_fourier : ndarray
+        Fourier modes.
+    """
+    f_fourier = slab_dst1D(f_real, boxsize, ngrid, axis=1, type=type)
+    f_fourier = slab_dst1D(f_fourier, boxsize, ngrid, axis=2, type=type)
+    f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI, iscomplex=True)
+    f_fourier = slab_dst1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    return f_fourier
+
+
+def mpi_idst3D(f_fourier, boxsize, ngrid, MPI, type=2):
+    """Performs MPI backward DST on Fourier modes.
+
+    Parameters
+    ----------
+    f_fourier : ndarray
+        Fourier modes.
+    boxsize : float
+        Box size.
+    ngrid : int
+        Size of the grid along one axis.
+    MPI : obj
+        MPIutils MPI object.
+    type : int, optional
+        Type of iDST for scipy to perform.
+
+    Returns
+    -------
+    f : ndarray
+        Real space data.
+    """
+    _f_fourier = slab_idst1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI, iscomplex=True)
+    _f_fourier = slab_idst1D(_f_fourier, boxsize, ngrid, axis=1, type=type)
+    f = slab_idst1D(_f_fourier, boxsize, ngrid, axis=2, type=type)
+    return f

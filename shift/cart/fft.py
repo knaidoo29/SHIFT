@@ -3,7 +3,7 @@ import scipy.fft as scfft
 
 
 def fft1D(f_real, boxsize, axis=-1):
-    """Performs Forward FFT on input grid data.
+    """Performs Forward FFT on real space data.
 
     Parameters
     ----------
@@ -147,6 +147,8 @@ def dct1D(f_real, boxsize, axis=-1, type=2):
         Box size.
     axis : int, optional
         Axis to perform DCT.
+    type : int, optional
+        Type of DCT for scipy to perform.
 
     Returns
     -------
@@ -168,10 +170,10 @@ def idct1D(f_fourier, boxsize, axis=-1, type=2):
         Fourier modes.
     boxsize : float
         Box size.
-    ncpu : int, optional
-        Number of cpus.
     axis : int, optional
         Axis to perform DCT.
+    type : int, optional
+        Type of iDCT for scipy to perform.
 
     Returns
     -------
@@ -184,7 +186,7 @@ def idct1D(f_fourier, boxsize, axis=-1, type=2):
     return f_real
 
 
-def dct2D(f_real, boxsize):
+def dct2D(f_real, boxsize, type=2):
     """Performs forward DCT in 2D.
 
     Parameters
@@ -193,6 +195,8 @@ def dct2D(f_real, boxsize):
         Real space data.
     boxsize : float
         Box size.
+    type : int, optional
+        Type of DCT for scipy to perform.
 
     Returns
     -------
@@ -201,12 +205,12 @@ def dct2D(f_real, boxsize):
     """
     assert f_real.ndim == 2, "Data must be 2 dimensional"
     dx = boxsize / float(len(f_real))
-    f_fourier = scfft.dctn(f_real)
+    f_fourier = scfft.dctn(f_real, type=type)
     f_fourier *= (dx/np.sqrt(2.*np.pi))**2.
     return f_fourier
 
 
-def idct2D(f_fourier, boxsize):
+def idct2D(f_fourier, boxsize, type=-2):
     """Performs backward DCT in 2D.
 
     Parameters
@@ -215,6 +219,8 @@ def idct2D(f_fourier, boxsize):
         Fourier modes.
     boxsize : float
         Box size.
+    type : int, optional
+        Type of iDCT for scipy to perform.
 
     Returns
     -------
@@ -223,12 +229,12 @@ def idct2D(f_fourier, boxsize):
     """
     assert f_fourier.ndim == 2, "Data must be 2 dimensional"
     dx = boxsize / float(len(f_fourier))
-    f_real = scfft.idctn(f_fourier)
+    f_real = scfft.idctn(f_fourier, type=type)
     f_real *= (np.sqrt(2.*np.pi)/dx)**2.
     return f_real
 
 
-def dct3D(f_real, boxsize):
+def dct3D(f_real, boxsize, type=2):
     """Performs forward DCT in 3D.
 
     Parameters
@@ -237,6 +243,8 @@ def dct3D(f_real, boxsize):
         Real space data.
     boxsize : float
         Box size.
+    type : int, optional
+        Type of DCT for scipy to perform.
 
     Returns
     -------
@@ -245,12 +253,12 @@ def dct3D(f_real, boxsize):
     """
     assert f_real.ndim == 3, "Data must be 3 dimensional"
     dx = boxsize / float(len(f_real))
-    f_fourier = scfft.dctn(f_real)
+    f_fourier = scfft.dctn(f_real, type=type)
     f_fourier *= (dx/np.sqrt(2.*np.pi))**3.
     return f_fourier
 
 
-def idct3D(f_fourier, boxsize):
+def idct3D(f_fourier, boxsize, type=2):
     """Performs backward DCT in 3D.
 
     Parameters
@@ -259,6 +267,8 @@ def idct3D(f_fourier, boxsize):
         Fourier modes.
     boxsize : float
         Box size.
+    type : int, optional
+        Type of iDCT for scipy to perform.
 
     Returns
     -------
@@ -267,7 +277,7 @@ def idct3D(f_fourier, boxsize):
     """
     assert f_fourier.ndim == 3, "Data must be 3 dimensional"
     dx = boxsize / float(len(f_fourier))
-    f_real = scfft.idctn(f_fourier)
+    f_real = scfft.idctn(f_fourier, type=type)
     f_real *= (np.sqrt(2.*np.pi)/dx)**3.
     return f_real
 
@@ -283,6 +293,8 @@ def dst1D(f_real, boxsize, axis=-1, type=2):
         Box size.
     axis : int, optional
         Axis to perform DST.
+    type : int, optional
+        Type of DST for scipy to perform.
 
     Returns
     -------
@@ -304,10 +316,10 @@ def idst1D(f_fourier, boxsize, axis=-1, type=2):
         Fourier modes.
     boxsize : float
         Box size.
-    ncpu : int, optional
-        Number of cpus.
     axis : int, optional
         Axis to perform DST.
+    type : int, optional
+        Type of iDST for scipy to perform.
 
     Returns
     -------
@@ -320,7 +332,7 @@ def idst1D(f_fourier, boxsize, axis=-1, type=2):
     return f_real
 
 
-def dst2D(f_real, boxsize):
+def dst2D(f_real, boxsize, type=2):
     """Performs forward DST in 2D.
 
     Parameters
@@ -329,6 +341,8 @@ def dst2D(f_real, boxsize):
         Real space data.
     boxsize : float
         Box size.
+    type : int, optional
+        Type of DST for scipy to perform.
 
     Returns
     -------
@@ -337,12 +351,12 @@ def dst2D(f_real, boxsize):
     """
     assert f_real.ndim == 2, "Data must be 2 dimensional"
     dx = boxsize / float(len(f_real))
-    f_fourier = scfft.dstn(f_real)
+    f_fourier = scfft.dstn(f_real, type=type)
     f_fourier *= (dx/np.sqrt(2.*np.pi))**2.
     return f_fourier
 
 
-def idst2D(f_fourier, boxsize):
+def idst2D(f_fourier, boxsize, type=2):
     """Performs backward DST in 2D.
 
     Parameters
@@ -351,6 +365,8 @@ def idst2D(f_fourier, boxsize):
         Fourier modes.
     boxsize : float
         Box size.
+    type : int, optional
+        Type of iDST for scipy to perform.
 
     Returns
     -------
@@ -359,12 +375,12 @@ def idst2D(f_fourier, boxsize):
     """
     assert f_fourier.ndim == 2, "Data must be 2 dimensional"
     dx = boxsize / float(len(f_fourier))
-    f_real = scfft.idstn(f_fourier)
+    f_real = scfft.idstn(f_fourier, type=type)
     f_real *= (np.sqrt(2.*np.pi)/dx)**2.
     return f_real
 
 
-def dst3D(f_real, boxsize):
+def dst3D(f_real, boxsize, type=2):
     """Performs forward DST in 3D.
 
     Parameters
@@ -373,6 +389,8 @@ def dst3D(f_real, boxsize):
         Real space data.
     boxsize : float
         Box size.
+    type : int, optional
+        Type of DST for scipy to perform.
 
     Returns
     -------
@@ -381,12 +399,12 @@ def dst3D(f_real, boxsize):
     """
     assert f_real.ndim == 3, "Data must be 3 dimensional"
     dx = boxsize / float(len(f_real))
-    f_fourier = scfft.dstn(f_real)
+    f_fourier = scfft.dstn(f_real, type=type)
     f_fourier *= (dx/np.sqrt(2.*np.pi))**3.
     return f_fourier
 
 
-def idst3D(f_fourier, boxsize):
+def idst3D(f_fourier, boxsize, type=2):
     """Performs backward DST in 3D.
 
     Parameters
@@ -395,6 +413,8 @@ def idst3D(f_fourier, boxsize):
         Fourier modes.
     boxsize : float
         Box size.
+    type : int, optional
+        Type of iDST for scipy to perform.
 
     Returns
     -------
@@ -403,6 +423,6 @@ def idst3D(f_fourier, boxsize):
     """
     assert f_fourier.ndim == 3, "Data must be 3 dimensional"
     dx = boxsize / float(len(f_fourier))
-    f_real = scfft.idstn(f_fourier)
+    f_real = scfft.idstn(f_fourier, type=type)
     f_real *= (np.sqrt(2.*np.pi)/dx)**3.
     return f_real

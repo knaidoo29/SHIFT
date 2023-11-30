@@ -5,7 +5,7 @@
 |              |                                    |
 |--------------|------------------------------------|
 |Author        | Krishna Naidoo                     |
-|Version       | 0.0.1                              |
+|Version       | 0.0.2                              |
 |Documentation | https://shift-doc.readthedocs.io/  |
 |Repository    | https://github.com/knaidoo29/SHIFT |
 

@@ -13,7 +13,7 @@ ext2 = Extension(name='shift.src.pft', sources=['shift/src/pft.f90'])
 exts = [ext1, ext2]
 
 setup(name = 'shift',
-      version = '0.0.0',
+      version = '0.0.2',
       description       = "SpHerIcal Fourier Transforms",
       long_description  = long_description,
       long_description_content_type = 'text/markdown',

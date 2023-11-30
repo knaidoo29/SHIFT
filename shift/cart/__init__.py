@@ -22,15 +22,23 @@ from .fft import idst3D
 
 from .mpi_fft import redistribute_backward_2D
 from .mpi_fft import redistribute_forward_2D
-
 from .mpi_fft import redistribute_backward_3D
 from .mpi_fft import redistribute_forward_3D
 
 from .mpi_fft import mpi_fft2D
 from .mpi_fft import mpi_ifft2D
-
 from .mpi_fft import mpi_fft3D
 from .mpi_fft import mpi_ifft3D
+
+from .mpi_fft import mpi_dct2D
+from .mpi_fft import mpi_idct2D
+from .mpi_fft import mpi_dct3D
+from .mpi_fft import mpi_idct3D
+
+from .mpi_fft import mpi_dst2D
+from .mpi_fft import mpi_idst2D
+from .mpi_fft import mpi_dst3D
+from .mpi_fft import mpi_idst3D
 
 from .conv import convolve_gaussian
 
@@ -58,6 +66,12 @@ from .kgrid import kgrid3D_dst
 from .mpi_kgrid import mpi_kgrid1D
 from .mpi_kgrid import mpi_kgrid2D
 from .mpi_kgrid import mpi_kgrid3D
+from .mpi_kgrid import mpi_kgrid1D_dst
+from .mpi_kgrid import mpi_kgrid2D_dst
+from .mpi_kgrid import mpi_kgrid3D_dst
+from .mpi_kgrid import mpi_kgrid1D_dct
+from .mpi_kgrid import mpi_kgrid2D_dct
+from .mpi_kgrid import mpi_kgrid3D_dct
 
 from .multiply import mult_fk_2D
 from .multiply import mult_fk_3D
