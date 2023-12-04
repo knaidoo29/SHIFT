@@ -92,7 +92,7 @@ def kgrid1D_dct(boxsize, ngrid):
         Fourier modes.
     """
     # fundamental frequency
-    kf = shift.cart.get_kf(boxsize)
+    kf = utils.get_kf(boxsize)
     # Fourier modes along one axis
     k = np.arange(0., ngrid, 1.)
     k *= kf/2.
@@ -163,7 +163,7 @@ def kgrid1D_dst(boxsize, ngrid):
         Fourier modes.
     """
     # fundamental frequency
-    kf = shift.cart.get_kf(boxsize)
+    kf = utils.get_kf(boxsize)
     # Fourier modes along one axis
     k = np.arange(0., ngrid, 1.)+1
     k *= kf/2.
