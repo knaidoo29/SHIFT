@@ -504,7 +504,7 @@ def mpi_dct2D(f_real, boxsize, ngrid, MPI, type=2):
         Fourier modes.
     """
     f_fourier = slab_dct1D(f_real, boxsize, ngrid, axis=1, type=type)
-    f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI, iscomplex=True)
+    f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI, iscomplex=False)
     f_fourier = slab_dct1D(f_fourier, boxsize, ngrid, axis=0, type=type)
     return f_fourier
 
@@ -531,7 +531,7 @@ def mpi_idct2D(f_fourier, boxsize, ngrid, MPI, type=2):
         Real space data.
     """
     _f_fourier = slab_idct1D(f_fourier, boxsize, ngrid, axis=0, type=type)
-    _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI, iscomplex=True)
+    _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI, iscomplex=False)
     f = slab_idct1D(_f_fourier, boxsize, ngrid, axis=1, type=type)
     return f
 
@@ -558,7 +558,7 @@ def mpi_dst2D(f_real, boxsize, ngrid, MPI, type=2):
         Fourier modes.
     """
     f_fourier = slab_dst1D(f_real, boxsize, ngrid, axis=1, type=type)
-    f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI, iscomplex=True)
+    f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI, iscomplex=False)
     f_fourier = slab_dst1D(f_fourier, boxsize, ngrid, axis=0, type=type)
     return f_fourier
 
@@ -585,7 +585,7 @@ def mpi_idst2D(f_fourier, boxsize, ngrid, MPI, type=2):
         Real space data.
     """
     _f_fourier = slab_idst1D(f_fourier, boxsize, ngrid, axis=0, type=type)
-    _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI, iscomplex=True)
+    _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI, iscomplex=False)
     f = slab_idst1D(_f_fourier, boxsize, ngrid, axis=1, type=type)
     return f
 
@@ -665,7 +665,7 @@ def mpi_dct3D(f_real, boxsize, ngrid, MPI, type=2):
     """
     f_fourier = slab_dct1D(f_real, boxsize, ngrid, axis=1, type=type)
     f_fourier = slab_dct1D(f_fourier, boxsize, ngrid, axis=2, type=type)
-    f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI, iscomplex=True)
+    f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI, iscomplex=False)
     f_fourier = slab_dct1D(f_fourier, boxsize, ngrid, axis=0, type=type)
     return f_fourier
 
@@ -692,7 +692,7 @@ def mpi_idct3D(f_fourier, boxsize, ngrid, MPI, type=2):
         Real space data.
     """
     _f_fourier = slab_idct1D(f_fourier, boxsize, ngrid, axis=0, type=type)
-    _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI, iscomplex=True)
+    _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI, iscomplex=False)
     _f_fourier = slab_idct1D(_f_fourier, boxsize, ngrid, axis=1, type=type)
     f = slab_idct1D(_f_fourier, boxsize, ngrid, axis=2, type=type)
     return f
@@ -721,7 +721,7 @@ def mpi_dst3D(f_real, boxsize, ngrid, MPI, type=2):
     """
     f_fourier = slab_dst1D(f_real, boxsize, ngrid, axis=1, type=type)
     f_fourier = slab_dst1D(f_fourier, boxsize, ngrid, axis=2, type=type)
-    f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI, iscomplex=True)
+    f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI, iscomplex=False)
     f_fourier = slab_dst1D(f_fourier, boxsize, ngrid, axis=0, type=type)
     return f_fourier
 
@@ -748,7 +748,7 @@ def mpi_idst3D(f_fourier, boxsize, ngrid, MPI, type=2):
         Real space data.
     """
     _f_fourier = slab_idst1D(f_fourier, boxsize, ngrid, axis=0, type=type)
-    _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI, iscomplex=True)
+    _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI, iscomplex=False)
     _f_fourier = slab_idst1D(_f_fourier, boxsize, ngrid, axis=1, type=type)
     f = slab_idst1D(_f_fourier, boxsize, ngrid, axis=2, type=type)
     return f
