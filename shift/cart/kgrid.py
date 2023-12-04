@@ -116,7 +116,7 @@ def kgrid2D_dct(boxsize, ngrid):
     ky2D : array
         Fourier y-mode.
     """
-    k = kgrid1D_DCT(boxsize, ngrid)
+    k = kgrid1D_dct(boxsize, ngrid)
     # Create Fourier grid
     kx2D, ky2D = np.meshgrid(k, k, indexing='ij')
     return kx2D, ky2D
@@ -141,7 +141,7 @@ def kgrid3D_dct(boxsize, ngrid):
     kz3D : array
         Fourier z-mode.
     """
-    k = kgrid1D_DCT(boxsize, ngrid)
+    k = kgrid1D_dct(boxsize, ngrid)
     # Create Fourier grid
     kx3D, ky3D, kz3D = np.meshgrid(k, k, k, indexing='ij')
     return kx3D, ky3D, kz3D
@@ -187,7 +187,7 @@ def kgrid2D_dst(boxsize, ngrid):
     ky2D : array
         Fourier y-mode.
     """
-    k = kgrid1D_DST(boxsize, ngrid)
+    k = kgrid1D_dst(boxsize, ngrid)
     # Create Fourier grid
     kx2D, ky2D = np.meshgrid(k, k, indexing='ij')
     return kx2D, ky2D
@@ -212,7 +212,7 @@ def kgrid3D_dst(boxsize, ngrid):
     kz3D : array
         Fourier z-mode.
     """
-    k = kgrid1D_DST(boxsize, ngrid)
+    k = kgrid1D_dst(boxsize, ngrid)
     # Create Fourier grid
     kx3D, ky3D, kz3D = np.meshgrid(k, k, k, indexing='ij')
     return kx3D, ky3D, kz3D
