@@ -1,5 +1,8 @@
 build/*
+build/
 dist/*
+dist/
 shift.egg-info/*
+shift.egg-info/
 .DS_Store
 *.DS_Store
