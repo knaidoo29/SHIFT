@@ -1,7 +1,15 @@
-=================================
-SpHerIcal fast Fourier Transforms
-=================================
 
+.. image:: _static/SHIFT_logo_large_white.jpg
+   :align: center
+   :class: only-light
+
+.. image:: _static/SHIFT_logo_large_black.jpg
+   :align: center
+   :class: only-dark
+  
+================================================
+Scalable Helper Interface for Fourier transforms
+================================================
 
 +---------------+-----------------------------------------+
 | Author        | Krishna Naidoo                          |
@@ -19,15 +27,18 @@ SpHerIcal fast Fourier Transforms
 Introduction
 ============
 
-SHIFT performs Fast Fourier transforms on data in polar, spherical and cartesian
-coordinates. SHIFT is written mostly in python but uses Fortran subroutines for
-heavy computation and speed.
+SHIFT is a scalable interface library for computing FFTs in numpy. The library wraps numpy 
+FFT routines and makes it easy to keep track of corresponding Fourier modes in Fourier 
+space. The package can be scaled using MPI (using the mpi4py library), using a slab 
+decomposition to perform distributed FFTs.
 
-MPI functionality can be enabled through the installation of the python library
-mpi4py but will require the additional installation of MPIutils which handles
-all of the MPI enabled functions. The class MPI is passed as an additional argument
-for parallelisation.
+.. note ::
 
+  SHIFT was originally designed to be a Spherical/Polar Fourier Transform library. This is 
+  the origin of the original acronym for SHIFT (SpHerIcal Fourier Transforms). However, the 
+  package has developed into being predominanty a helper and MPI interface for FFTs in 2D/3D 
+  cartesian grids. The development of the Polar and Spherical Bessel transforms is still 
+  ongoing but it no longer the focus.
 
 Contents
 ========
@@ -45,24 +56,11 @@ Contents
 Dependencies
 ============
 
-SHIFT is being developed in Python 3.8 but should work on all versions >3.4. SHIFT
-is written mostly in python but the heavy computation is carried out in Fortran.
-Compiling the Fortran source code will require the availability of a fortran compiler
-usually gfortran (which comes with gcc).
-
-The following Python modules are required.
-
 * `numpy <http://www.numpy.org/>`_
 * `scipy <https://scipy.org/>`_
 * `healpy <https://healpy.readthedocs.io/>`_
 
-If you want to run with MPI you will need the following:
-
-* `mpi4py <https://mpi4py.readthedocs.io/en/stable/>`_
-* `MPIutils <https://github.com/knaidoo29/MPIutils>`_
-
-For testing you will require `nose <https://nose.readthedocs.io/en/latest/>`_ or
-`pytest <http://pytest.org/en/latest/>`_ .
+* `mpi4py <https://mpi4py.readthedocs.io/en/stable/>`_ [Optional: enables MPI parallelism]
 
 
 Installation

@@ -1,4 +1,6 @@
-# SHIFT : SpHerIcal fast Fourier Transforms
+![biglogo](docs/source/_static/SHIFT_logo_large_github.jpg)
+
+# SHIFT : Scalable Helper Interface for Fourier Transforms
 
 [![Documentation Status](https://readthedocs.org/projects/shift-doc/badge/?version=latest)](https://shift-doc.readthedocs.io/en/latest/?badge=latest)
 
@@ -13,26 +15,16 @@
 
 ## Introduction
 
-SHIFT performs Fast Fourier transforms on data in polar, spherical and cartesian coordinates. SHIFT is written mostly in python but uses Fortran subroutines for heavy computation and speed.
+SHIFT is a scalable interface library for computing FFTs in numpy. The library wraps numpy FFT routines and makes it easy to keep track of corresponding Fourier modes in Fourier space. The package can be scaled using MPI (using the mpi4py library), using a slab decomposition to perform distributed FFTs.
 
-MPI functionality can be enabled through the installation of the python library mpi4py but will require the additional installation of MPIutils which handles all of the MPI enabled functions. The class MPI is passed as an additional argument for parallelisation.
+> **NOTE**: SHIFT was originally designed to be a Spherical/Polar Fourier Transform library. This is the origin of the original acronym for SHIFT (SpHerIcal Fourier Transforms). However, the package has developed into being predominanty a helper and MPI interface for FFTs in 2D/3D cartesian grids. The development of the Polar and Spherical Bessel transforms is still ongoing but it no longer the focus.
 
 ## Dependencies
-
-SHIFT is being developed in Python 3.8 but should work on all versions >3.4. SHIFT is written mostly in python but the heavy computation is carried out in Fortran. Compiling the Fortran source code will require the availability of a fortran compiler usually gfortran (which comes with gcc).
-
-The following Python modules are required.
 
 * `numpy`
 * `scipy`
 * `healpy`
-
-If you want to run with MPI you will need the following:
-
-* `mpi4py`
-* `MPIutils`
-
-For testing you will require `nose` or `pytest`.
+* `mpi4py` [Optional: enables MPI parallelism]
 
 ## Installation
 
