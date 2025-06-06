@@ -14,11 +14,11 @@ Scalable Helper Interface for Fourier transforms
 +---------------+-----------------------------------------+
 | Author        | Krishna Naidoo                          |
 +---------------+-----------------------------------------+
-| Version       | 0.0.1                                   |
+| Version       | 0.0.2                                   |
 +---------------+-----------------------------------------+
 | Repository    | https://github.com/knaidoo29/SHIFT      |
 +---------------+-----------------------------------------+
-| Documentation | https://shift-docs.readthedocs.io/      |
+| Documentation | https://shift.readthedocs.io            |
 +---------------+-----------------------------------------+
 
 .. warning ::
@@ -56,12 +56,11 @@ Contents
 Dependencies
 ============
 
+* `numba <https://numba.pydata.org/>`_
 * `numpy <http://www.numpy.org/>`_
 * `scipy <https://scipy.org/>`_
 * `healpy <https://healpy.readthedocs.io/>`_
-
 * `mpi4py <https://mpi4py.readthedocs.io/en/stable/>`_ [Optional: enables MPI parallelism]
-
 
 Installation
 ============

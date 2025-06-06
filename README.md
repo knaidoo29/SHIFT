@@ -2,13 +2,13 @@
 
 # SHIFT : Scalable Helper Interface for Fourier Transforms
 
-[![Documentation Status](https://readthedocs.org/projects/shift-doc/badge/?version=latest)](https://shift-doc.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/shift/badge/?version=latest)](https://shift.readthedocs.io/en/latest/?badge=latest)
 
 |              |                                    |
 |--------------|------------------------------------|
 |Author        | Krishna Naidoo                     |
 |Version       | 0.0.2                              |
-|Documentation | https://shift-doc.readthedocs.io/  |
+|Documentation | https://shift.readthedocs.io       |
 |Repository    | https://github.com/knaidoo29/SHIFT |
 
 > **WARNING**: SHIFT is currently in development. Functions and classes may change. Use with caution.
@@ -21,6 +21,7 @@ SHIFT is a scalable interface library for computing FFTs in numpy. The library w
 
 ## Dependencies
 
+* `numba`
 * `numpy`
 * `scipy`
 * `healpy`
