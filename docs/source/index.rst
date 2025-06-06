@@ -8,7 +8,7 @@
    :class: only-dark
   
 ================================================
-Scalable Helper Interface for Fourier transforms
+Scalable Helper Interface for Fourier Transforms
 ================================================
 
 +---------------+-----------------------------------------+
