@@ -1,8 +1,9 @@
 import numpy as np
 import scipy.fft as scfft
 
+from typing import Optional, Union
 
-def slab_fft1D(f_real, boxsize, ngrid, axis=-1):
+def slab_fft1D(f_real: np.ndarray, boxsize: float, ngrid: int, axis: int=-1) -> np.ndarray:
     """Performs forward FFT on real space data.
 
     Parameters
@@ -25,7 +26,7 @@ def slab_fft1D(f_real, boxsize, ngrid, axis=-1):
     return f_fourier
 
 
-def slab_ifft1D(f_fourier, boxsize, ngrid, axis=-1):
+def slab_ifft1D(f_fourier: np.ndarray, boxsize: float, ngrid: int, axis: int=-1) -> np.ndarray:
     """Performs backward FFT on Fourier modes.
 
     Parameters
@@ -48,7 +49,7 @@ def slab_ifft1D(f_fourier, boxsize, ngrid, axis=-1):
     return f_real
 
 
-def slab_dct1D(f_real, boxsize, ngrid, axis=-1, type=2):
+def slab_dct1D(f_real: np.ndarray, boxsize: float, ngrid: int, axis: int=-1, type: int=2) -> np.ndarray:
     """Performs forward DCT on real space data.
 
     Parameters
@@ -73,7 +74,7 @@ def slab_dct1D(f_real, boxsize, ngrid, axis=-1, type=2):
     return f_fourier
 
 
-def slab_idct1D(f_fourier, boxsize, ngrid, axis=-1, type=2):
+def slab_idct1D(f_fourier: np.ndarray, boxsize: float, ngrid: int, axis: int=-1, type: int=2) -> np.ndarray:
     """Performs backward DCT on Fourier modes.
 
     Parameters
@@ -98,7 +99,7 @@ def slab_idct1D(f_fourier, boxsize, ngrid, axis=-1, type=2):
     return f_real
 
 
-def slab_dst1D(f_real, boxsize, ngrid, axis=-1, type=2):
+def slab_dst1D(f_real: np.ndarray, boxsize: float, ngrid: int, axis: int=-1, type: int=2) -> np.ndarray:
     """Performs forward DST on real space data.
 
     Parameters
@@ -123,7 +124,7 @@ def slab_dst1D(f_real, boxsize, ngrid, axis=-1, type=2):
     return f_fourier
 
 
-def slab_idst1D(f_fourier, boxsize, ngrid, axis=-1, type=2):
+def slab_idst1D(f_fourier: np.ndarray, boxsize: float, ngrid: int, axis: int=-1, type: int=2) -> np.ndarray:
     """Performs backward DST on Fourier modes.
 
     Parameters
@@ -148,8 +149,8 @@ def slab_idst1D(f_fourier, boxsize, ngrid, axis=-1, type=2):
     return f_real
 
 
-def _get_splits_subset_2D(rank1, rank2, xsplits1, xsplits2, ysplits1, ysplits2,
-    reverse=False):
+def _get_splits_subset_2D(rank1: int, rank2: int, xsplits1: np.ndarray, xsplits2: np.ndarray, 
+                          ysplits1: np.ndarray, ysplits2: np.ndarray, reverse: bool=False) -> Union[int, int, int, int]:
     """Internal function for finding index splits across two axes based on input
     node ranks.
 
@@ -166,7 +167,7 @@ def _get_splits_subset_2D(rank1, rank2, xsplits1, xsplits2, ysplits1, ysplits2,
         return xsplits1[rank2], xsplits2[rank2], ysplits1[rank1], ysplits2[rank1]
 
 
-def _get_splits_2D(MPI, xngrid, yngrid):
+def _get_splits_2D(MPI: type, xngrid: int, yngrid: int) -> Union[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Finds the beginning and end index for splitting arrays in 2 dimensions.
 
     Parameters
@@ -186,7 +187,7 @@ def _get_splits_2D(MPI, xngrid, yngrid):
     return xsplits1, xsplits2, ysplits1, ysplits2
 
 
-def _get_splits_3D(MPI, xngrid, yngrid, zngrid):
+def _get_splits_3D(MPI: type, xngrid: int, yngrid: int, zngrid: int) -> Union[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Finds the beginning and end index for splitting arrays in 3 dimensions.
 
     Parameters
@@ -207,8 +208,8 @@ def _get_splits_3D(MPI, xngrid, yngrid, zngrid):
     return xsplits1, xsplits2, ysplits1, ysplits2, zsplits1, zsplits2
 
 
-def _get_empty_split_array_2D(xsplits1, xsplits2, ysplits1, ysplits2, rank,
-    axis=0, iscomplex=False):
+def _get_empty_split_array_2D(xsplits1: np.ndarray, xsplits2: np.ndarray, ysplits1: np.ndarray, ysplits2: np.ndarray, 
+                              rank: int, axis: int=0, iscomplex: bool=False) -> np.ndarray:
     """Returns a normal or complex array with zeros.
 
     Parameters
@@ -224,10 +225,10 @@ def _get_empty_split_array_2D(xsplits1, xsplits2, ysplits1, ysplits2, rank,
     """
     assert axis == 0 or axis == 1, "axis %i is unsupported for 2D grid" % axis
     if axis == 0:
-        xsplit1, xsplit2 = xsplits1[rank], ysplits2[rank]
+        xsplit1, xsplit2 = xsplits1[rank], xsplits2[rank]
         ysplit1, ysplit2 = ysplits1[0], ysplits2[-1]
     else:
-        xsplit1, xsplit2 = xsplits1[0], ysplits2[-1]
+        xsplit1, xsplit2 = xsplits1[0], xsplits2[-1]
         ysplit1, ysplit2 = ysplits1[rank], ysplits2[rank]
     if iscomplex:
         return np.zeros((xsplit2-xsplit1, ysplit2-ysplit1)) + \
@@ -236,8 +237,8 @@ def _get_empty_split_array_2D(xsplits1, xsplits2, ysplits1, ysplits2, rank,
         return np.zeros((xsplit2-xsplit1, ysplit2-ysplit1))
 
 
-def _get_empty_split_array_3D(xsplits1, xsplits2, ysplits1, ysplits2, zsplits1,
-    zsplits2, rank, axis=0, iscomplex=False):
+def _get_empty_split_array_3D(xsplits1: np.ndarray, xsplits2: np.ndarray, ysplits1: np.ndarray, ysplits2: np.ndarray, 
+                              zsplits1: np.ndarray, zsplits2: np.ndarray, rank: int, axis: int=0, iscomplex: bool=False) -> np.ndarray:
     """Returns a normal or complex array with zeros.
 
     Parameters
@@ -253,11 +254,11 @@ def _get_empty_split_array_3D(xsplits1, xsplits2, ysplits1, ysplits2, zsplits1,
     """
     assert axis == 0 or axis == 1, "axis %i is unsupported for 3D grid" % axis
     if axis == 0:
-        xsplit1, xsplit2 = xsplits1[rank], ysplits2[rank]
+        xsplit1, xsplit2 = xsplits1[rank], xsplits2[rank]
         ysplit1, ysplit2 = ysplits1[0], ysplits2[-1]
         zsplit1, zsplit2 = zsplits1[0], zsplits2[-1]
     else:
-        xsplit1, xsplit2 = xsplits1[0], ysplits2[-1]
+        xsplit1, xsplit2 = xsplits1[0], xsplits2[-1]
         ysplit1, ysplit2 = ysplits1[rank], ysplits2[rank]
         zsplit1, zsplit2 = zsplits1[0], zsplits2[-1]
     if iscomplex:
@@ -267,7 +268,7 @@ def _get_empty_split_array_3D(xsplits1, xsplits2, ysplits1, ysplits2, zsplits1,
         return np.zeros((xsplit2-xsplit1, ysplit2-ysplit1, zsplit2-zsplit1))
 
 
-def redistribute_forward_2D(f, ngrid, MPI, iscomplex=False):
+def redistribute_forward_2D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: bool=False) -> np.ndarray:
     """Redistributes a 2D array from the conventional axis split across x to a
     split across y.
 
@@ -308,7 +309,7 @@ def redistribute_forward_2D(f, ngrid, MPI, iscomplex=False):
     return fnew
 
 
-def redistribute_forward_3D(f, ngrid, MPI, iscomplex=False):
+def redistribute_forward_3D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: bool=False) -> np.ndarray:
     """Redistributes a 3D array from the conventional axis split across x to a
     split across y.
 
@@ -351,7 +352,7 @@ def redistribute_forward_3D(f, ngrid, MPI, iscomplex=False):
     return fnew
 
 
-def redistribute_backward_2D(f, ngrid, MPI, iscomplex=False):
+def redistribute_backward_2D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: int=False) -> np.ndarray:
     """Redistributes a 2D array backwards a split across y to a split across x.
 
     Parameters
@@ -391,7 +392,7 @@ def redistribute_backward_2D(f, ngrid, MPI, iscomplex=False):
     return fnew
 
 
-def redistribute_backward_3D(f, ngrid, MPI, iscomplex=False):
+def redistribute_backward_3D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: bool=False) -> np.ndarray:
     """Redistributes a 3D array backwards a split across y to a split across x.
 
     Parameters
@@ -432,7 +433,7 @@ def redistribute_backward_3D(f, ngrid, MPI, iscomplex=False):
     return fnew
 
 
-def mpi_fft2D(f_real, boxsize, ngrid, MPI):
+def mpi_fft2D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
     """Performs MPI forward FFT on real space data.
 
     Parameters
@@ -457,7 +458,7 @@ def mpi_fft2D(f_real, boxsize, ngrid, MPI):
     return f_fourier
 
 
-def mpi_ifft2D(f_fourier, boxsize, ngrid, MPI):
+def mpi_ifft2D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
     """Performs MPI backward FFT on Fourier modes.
 
     Parameters
@@ -482,7 +483,7 @@ def mpi_ifft2D(f_fourier, boxsize, ngrid, MPI):
     return f.real
 
 
-def mpi_dct2D(f_real, boxsize, ngrid, MPI, type=2):
+def mpi_dct2D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
     """Performs MPI forward DCT on real space data.
 
     Parameters
@@ -509,7 +510,7 @@ def mpi_dct2D(f_real, boxsize, ngrid, MPI, type=2):
     return f_fourier
 
 
-def mpi_idct2D(f_fourier, boxsize, ngrid, MPI, type=2):
+def mpi_idct2D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
     """Performs MPI backward DCT on Fourier modes.
 
     Parameters
@@ -536,7 +537,7 @@ def mpi_idct2D(f_fourier, boxsize, ngrid, MPI, type=2):
     return f
 
 
-def mpi_dst2D(f_real, boxsize, ngrid, MPI, type=2):
+def mpi_dst2D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
     """Performs MPI forward DST on real space data.
 
     Parameters
@@ -563,7 +564,7 @@ def mpi_dst2D(f_real, boxsize, ngrid, MPI, type=2):
     return f_fourier
 
 
-def mpi_idst2D(f_fourier, boxsize, ngrid, MPI, type=2):
+def mpi_idst2D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
     """Performs MPI backward DST on Fourier modes.
 
     Parameters
@@ -590,7 +591,7 @@ def mpi_idst2D(f_fourier, boxsize, ngrid, MPI, type=2):
     return f
 
 
-def mpi_fft3D(f_real, boxsize, ngrid, MPI):
+def mpi_fft3D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
     """Performs MPI forward FFT on real space data.
 
     Parameters
@@ -616,7 +617,7 @@ def mpi_fft3D(f_real, boxsize, ngrid, MPI):
     return f_fourier
 
 
-def mpi_ifft3D(f_fourier, boxsize, ngrid, MPI):
+def mpi_ifft3D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
     """Performs MPI backward FFT on Fourier modes.
 
     Parameters
@@ -642,7 +643,7 @@ def mpi_ifft3D(f_fourier, boxsize, ngrid, MPI):
     return f.real
 
 
-def mpi_dct3D(f_real, boxsize, ngrid, MPI, type=2):
+def mpi_dct3D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
     """Performs MPI forward DCT on real space data.
 
     Parameters
@@ -670,7 +671,7 @@ def mpi_dct3D(f_real, boxsize, ngrid, MPI, type=2):
     return f_fourier
 
 
-def mpi_idct3D(f_fourier, boxsize, ngrid, MPI, type=2):
+def mpi_idct3D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
     """Performs MPI backward DCT on Fourier modes.
 
     Parameters
@@ -698,7 +699,7 @@ def mpi_idct3D(f_fourier, boxsize, ngrid, MPI, type=2):
     return f
 
 
-def mpi_dst3D(f_real, boxsize, ngrid, MPI, type=2):
+def mpi_dst3D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
     """Performs MPI forward DST on real space data.
 
     Parameters
@@ -726,7 +727,7 @@ def mpi_dst3D(f_real, boxsize, ngrid, MPI, type=2):
     return f_fourier
 
 
-def mpi_idst3D(f_fourier, boxsize, ngrid, MPI, type=2):
+def mpi_idst3D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
     """Performs MPI backward DST on Fourier modes.
 
     Parameters

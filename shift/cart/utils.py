@@ -2,7 +2,7 @@ import numpy as np
 from scipy import fft
 
 
-def get_kf(boxsize):
+def get_kf(boxsize: float) -> float:
     """Returns the Fundamental Fourier mode.
 
     Parameters
@@ -19,7 +19,7 @@ def get_kf(boxsize):
     return kf
 
 
-def get_kn(boxsize, ngrid):
+def get_kn(boxsize: float, ngrid: int) -> float:
     """Returns the Nyquist Fourier mode.
 
     Parameters
@@ -38,7 +38,7 @@ def get_kn(boxsize, ngrid):
     return kn
 
 
-def fftshift(freq):
+def fftshift(freq: np.ndarray) -> np.ndarray:
     """Centers FFT frequencies so that 0 is in the center.
 
     Parameters
@@ -49,7 +49,7 @@ def fftshift(freq):
     return fft.fftshift(freq)
 
 
-def ifftshift(freq):
+def ifftshift(freq: np.ndarray) -> np.ndarray:
     """Uncenters FFT frequencies so that 0 is no longer in the center.
 
     Parameters
@@ -61,7 +61,7 @@ def ifftshift(freq):
     return fft.ifftshift(freq)
 
 
-def normalise_freq(freq, boxsize):
+def normalise_freq(freq: np.ndarray, boxsize: float) -> np.ndarray:
     """Normalises fourier frequencies, i.e. removing the dependency on boxsize.
 
     Parameters
@@ -78,7 +78,7 @@ def normalise_freq(freq, boxsize):
     freq /= dx**dim
     return freq
 
-def unnormalise_freq(freq, boxsize):
+def unnormalise_freq(freq: np.ndarray, boxsize: float) -> np.ndarray:
     """Unnormalises fourier frequencies, i.e. adds the dependency on boxsize.
 
     Parameters

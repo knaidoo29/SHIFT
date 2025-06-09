@@ -1,9 +1,11 @@
 import numpy as np
 
+from typing import Union
+
 from . import utils
 
 
-def kgrid1D(boxsize, ngrid):
+def kgrid1D(boxsize: float, ngrid: int) -> np.ndarray:
     """Returns the fourier modes for the Fourier transform of a cartesian grid.
 
     Parameters
@@ -28,7 +30,7 @@ def kgrid1D(boxsize, ngrid):
     return k
 
 
-def kgrid2D(boxsize, ngrid):
+def kgrid2D(boxsize: float, ngrid: int) -> Union[np.ndarray, np.ndarray]:
     """Returns the fourier modes for the Fourier transform of a cartesian grid.
 
     Parameters
@@ -51,7 +53,7 @@ def kgrid2D(boxsize, ngrid):
     return kx2D, ky2D
 
 
-def kgrid3D(boxsize, ngrid):
+def kgrid3D(boxsize: float, ngrid: int) -> Union[np.ndarray, np.ndarray, np.ndarray]:
     """Returns the fourier modes for the Fourier transform of a cartesian grid.
 
     Parameters
@@ -76,7 +78,7 @@ def kgrid3D(boxsize, ngrid):
     return kx3D, ky3D, kz3D
 
 
-def kgrid1D_dct(boxsize, ngrid):
+def kgrid1D_dct(boxsize: float, ngrid: int) -> np.ndarray:
     """Returns the fourier modes for the Discrete Cosine transform on a cartesian grid.
 
     Parameters
@@ -99,7 +101,7 @@ def kgrid1D_dct(boxsize, ngrid):
     return k
 
 
-def kgrid2D_dct(boxsize, ngrid):
+def kgrid2D_dct(boxsize: float, ngrid: int) -> Union[np.ndarray, np.ndarray]:
     """Returns the fourier modes for the Discrete Cosine transform on a 2D cartesian grid.
 
     Parameters
@@ -122,7 +124,7 @@ def kgrid2D_dct(boxsize, ngrid):
     return kx2D, ky2D
 
 
-def kgrid3D_dct(boxsize, ngrid):
+def kgrid3D_dct(boxsize: float, ngrid: int) -> Union[np.ndarray, np.ndarray, np.ndarray]:
     """Returns the fourier modes for the Discrete Cosine transform on a 3D cartesian grid.
 
     Parameters
@@ -147,7 +149,7 @@ def kgrid3D_dct(boxsize, ngrid):
     return kx3D, ky3D, kz3D
 
 
-def kgrid1D_dst(boxsize, ngrid):
+def kgrid1D_dst(boxsize: float, ngrid: int) -> np.ndarray:
     """Returns the fourier modes for the Discrete Sine Transform of a cartesian grid.
 
     Parameters
@@ -170,7 +172,7 @@ def kgrid1D_dst(boxsize, ngrid):
     return k
 
 
-def kgrid2D_dst(boxsize, ngrid):
+def kgrid2D_dst(boxsize: float, ngrid: int) -> Union[np.ndarray, np.ndarray]:
     """Returns the fourier modes for the Discrete Sine transform on a 2D cartesian grid.
 
     Parameters
@@ -193,7 +195,7 @@ def kgrid2D_dst(boxsize, ngrid):
     return kx2D, ky2D
 
 
-def kgrid3D_dst(boxsize, ngrid):
+def kgrid3D_dst(boxsize: float, ngrid: int) -> Union[np.ndarray, np.ndarray, np.ndarray]:
     """Returns the fourier modes for the Discrete Sine transform on a 3D cartesian grid.
 
     Parameters

@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def convolve_gaussian(k, sigma):
+def convolve_gaussian(k: np.ndarray, sigma: float) -> np.ndarray:
     """Convolution weights in Fourier space.
 
     Parameters

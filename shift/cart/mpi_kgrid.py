@@ -1,10 +1,12 @@
 import numpy as np
 
+from typing import Union
+
 from . import kgrid
 from . import utils
 
 
-def mpi_kgrid1D(boxsize, ngrid, MPI):
+def mpi_kgrid1D(boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
     """Returns the Fourier modes for the Fast Fourier Transform on a 1D
     cartesian grid.
 
@@ -26,7 +28,7 @@ def mpi_kgrid1D(boxsize, ngrid, MPI):
     return k
 
 
-def mpi_kgrid2D(boxsize, ngrid, MPI):
+def mpi_kgrid2D(boxsize: float, ngrid: int, MPI: type) -> Union[np.ndarray, np.ndarray]:
     """Returns the Fourier modes for the Fast Fourier Transform on a 2D
     cartesian grid.
 
@@ -51,7 +53,7 @@ def mpi_kgrid2D(boxsize, ngrid, MPI):
     return kx2D, ky2D
 
 
-def mpi_kgrid3D(boxsize, ngrid, MPI):
+def mpi_kgrid3D(boxsize: float, ngrid: int, MPI: type) -> Union[np.ndarray, np.ndarray, np.ndarray]:
     """Returns the Fourier modes for the Fast Fourier Transform on a 3D
     cartesian grid.
 
@@ -78,7 +80,7 @@ def mpi_kgrid3D(boxsize, ngrid, MPI):
     return kx3D, ky3D, kz3D
 
 
-def mpi_kgrid1D_dct(boxsize, ngrid, MPI):
+def mpi_kgrid1D_dct(boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
     """Returns the Fourier modes for the Discrete Cosine Transform on a 1D
     cartesian grid.
 
@@ -100,7 +102,7 @@ def mpi_kgrid1D_dct(boxsize, ngrid, MPI):
     return k
 
 
-def mpi_kgrid2D_dct(boxsize, ngrid, MPI):
+def mpi_kgrid2D_dct(boxsize: float, ngrid: int, MPI: type) -> Union[np.ndarray, np.ndarray]:
     """Returns the Fourier modes for the Discrete Cosine Transform on a 2D
     cartesian grid.
 
@@ -125,7 +127,7 @@ def mpi_kgrid2D_dct(boxsize, ngrid, MPI):
     return kx2D, ky2D
 
 
-def mpi_kgrid3D_dct(boxsize, ngrid, MPI):
+def mpi_kgrid3D_dct(boxsize: float, ngrid: int, MPI: type) -> Union[np.ndarray, np.ndarray, np.ndarray]:
     """Returns the Fourier modes for the Discrete Cosine Transform on a 3D
     cartesian grid.
 
@@ -152,7 +154,7 @@ def mpi_kgrid3D_dct(boxsize, ngrid, MPI):
     return kx3D, ky3D, kz3D
 
 
-def mpi_kgrid1D_dst(boxsize, ngrid, MPI):
+def mpi_kgrid1D_dst(boxsize: float, ngrid: int, MPI: type):
     """Returns the Fourier modes for the Discrete Sine Transform on a 1D
     cartesian grid.
 
@@ -174,7 +176,7 @@ def mpi_kgrid1D_dst(boxsize, ngrid, MPI):
     return k
 
 
-def mpi_kgrid2D_dst(boxsize, ngrid, MPI):
+def mpi_kgrid2D_dst(boxsize: float, ngrid: int, MPI: type) -> Union[np.ndarray, np.ndarray]:
     """Returns the Fourier modes for the Discrete Sine Transform on a 2D
     cartesian grid.
 
@@ -199,7 +201,7 @@ def mpi_kgrid2D_dst(boxsize, ngrid, MPI):
     return kx2D, ky2D
 
 
-def mpi_kgrid3D_dst(boxsize, ngrid, MPI):
+def mpi_kgrid3D_dst(boxsize: float, ngrid: int, MPI: type) -> Union[np.ndarray, np.ndarray, np.ndarray]:
     """Returns the Fourier modes for the Discrete Sine Transform on a 3D
     cartesian grid.
 
