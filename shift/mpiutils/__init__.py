@@ -1,0 +1,2 @@
+
+from .mpiclass import MPI
