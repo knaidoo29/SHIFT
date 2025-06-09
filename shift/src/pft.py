@@ -5,13 +5,13 @@ from scipy.special import jv
 
 @njit
 def get_rnm_single(r, m, knm, nnm):
-    return (1.0 / np.sqrt(nnm)) * jv(m, knm * r)
+    return (1.0 / np.sqrt(nnm)) * jv(float(m), knm * r)
 
 
 @njit
 def get_rnm(r, m, knm, nnm):
-    rnm = np.empty_like(r)
-    for i in range(r.size):
+    rnm = np.zeros(len(r), dtype=np.float64)
+    for i in range(len(r)):
         rnm[i] = get_rnm_single(r[i], m, knm, nnm)
     return rnm
 

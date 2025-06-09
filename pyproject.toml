@@ -28,6 +28,7 @@ classifiers = [
 dependencies = [
     "healpy",
     "numba",
+    "numba-scipy",
     "numpy",
     "scipy",
 ]
