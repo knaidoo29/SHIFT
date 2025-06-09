@@ -1,9 +1,11 @@
 import numpy as np
 
+from typing import Union
+
 from . import grid
 
 
-def mpi_grid1D(boxsize, ngrid, MPI, origin=0.):
+def mpi_grid1D(boxsize: float, ngrid: int, MPI: type, origin: int=0.) -> Union[np.ndarray, np.ndarray]:
     """Returns the x coordinates of a cartesian grid.
 
     Parameters
@@ -30,7 +32,7 @@ def mpi_grid1D(boxsize, ngrid, MPI, origin=0.):
     return xedges, x
 
 
-def mpi_grid2D(boxsize, ngrid, MPI, origin=0.):
+def mpi_grid2D(boxsize: float, ngrid: int, MPI: type, origin: int=0.) -> Union[np.ndarray, np.ndarray]:
     """Returns the x, y coordinates of a cartesian grid.
 
     Parameters
@@ -70,7 +72,7 @@ def mpi_grid2D(boxsize, ngrid, MPI, origin=0.):
     return x2D, y2D
 
 
-def mpi_grid3D(boxsize, ngrid, MPI, origin=0.):
+def mpi_grid3D(boxsize: float, ngrid: int, MPI: type, origin: int=0.) -> Union[np.ndarray, np.ndarray, np.ndarray]:
     """Returns the x, y, z coordinates of a cartesian grid.
 
     Parameters

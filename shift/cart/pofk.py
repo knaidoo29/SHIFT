@@ -1,5 +1,7 @@
 import numpy as np
 
+from typing import Optional, Union
+
 from . import kgrid
 from . import fft
 from . import utils
@@ -7,7 +9,7 @@ from . import utils
 from .. import src
 
 
-def get_pofk_2D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
+def get_pofk_2D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[float]=None, kmax: Optional[float]=None) -> Union[np.ndarray, np.ndarray, np.ndarray]:
     """Returns the power spectrum of a 2D data set.
 
     Parameters
@@ -22,8 +24,6 @@ def get_pofk_2D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
         Minimum Fourier mode, default = Minimum k mode of the grid.
     kmax : float, optional
         Maximum Fourier mode, default = Maximum k mode of the grid.
-    ncpu : int, optional
-        Number of cores for FFT.
 
     Returns
     -------
@@ -65,7 +65,7 @@ def get_pofk_2D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
     return k, keff, pk
 
 
-def get_pofk_3D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
+def get_pofk_3D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[float]=None, kmax: Optional[float]=None) -> Union[np.ndarray, np.ndarray, np.ndarray]:
     """Returns the power spectrum of a 3D data set.
 
     Parameters
@@ -80,8 +80,6 @@ def get_pofk_3D(dgrid, boxsize, ngrid, kmin=None, kmax=None, ncpu=None):
         Minimum Fourier mode, default = Minimum k mode of the grid.
     kmax : float, optional
         Maximum Fourier mode, default = Maximum k mode of the grid.
-    ncpu : int, optional
-        Number of cores for FFT.
 
     Returns
     -------
