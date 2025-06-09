@@ -4,10 +4,11 @@ from .. import polar
 from .. import src
 
 
-class SBT:
+# class SBT:
 
-    """The forward Spherical Bessel Transform is computed in two stages: F(r, phi, theta)
+#     """The forward Spherical Bessel Transform is computed in two stages: F(r, phi, theta)
 
-    """
+#     """
 
-    def __init__(self):
+#     def __init__(self):
+#         pass

@@ -1,9 +1,11 @@
 import sys
 
+from typing import Optional
 
-def progress_bar(index, length, explanation=None, indexing=False, num_refresh=50,
-                 marker_done="#", marker_undone="_", bar_edges="|",
-                 bar_edge_left=None, bar_edge_right=None, bar_length=50):
+def progress_bar(index: int, length: int, explanation: Optional[str]=None, 
+                 indexing: bool=False, num_refresh: int=50, marker_done: str="#", marker_undone: str="_", 
+                 bar_edges: str="|", bar_edge_left: Optional[str]=None, bar_edge_right: Optional[str]=None, 
+                 bar_length: int=50):
     """Progress bar for a for-loop.
 
     Parameter

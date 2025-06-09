@@ -1,11 +1,11 @@
 import numpy as np
 
-from typing import Union
+from typing import Tuple
 
 from . import grid
 
 
-def mpi_grid1D(boxsize: float, ngrid: int, MPI: type, origin: int=0.) -> Union[np.ndarray, np.ndarray]:
+def mpi_grid1D(boxsize: float, ngrid: int, MPI: type, origin: int=0.) -> Tuple[np.ndarray, np.ndarray]:
     """Returns the x coordinates of a cartesian grid.
 
     Parameters
@@ -32,7 +32,7 @@ def mpi_grid1D(boxsize: float, ngrid: int, MPI: type, origin: int=0.) -> Union[n
     return xedges, x
 
 
-def mpi_grid2D(boxsize: float, ngrid: int, MPI: type, origin: int=0.) -> Union[np.ndarray, np.ndarray]:
+def mpi_grid2D(boxsize: float, ngrid: int, MPI: type, origin: int=0.) -> Tuple[np.ndarray, np.ndarray]:
     """Returns the x, y coordinates of a cartesian grid.
 
     Parameters
@@ -72,7 +72,7 @@ def mpi_grid2D(boxsize: float, ngrid: int, MPI: type, origin: int=0.) -> Union[n
     return x2D, y2D
 
 
-def mpi_grid3D(boxsize: float, ngrid: int, MPI: type, origin: int=0.) -> Union[np.ndarray, np.ndarray, np.ndarray]:
+def mpi_grid3D(boxsize: float, ngrid: int, MPI: type, origin: int=0.) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Returns the x, y, z coordinates of a cartesian grid.
 
     Parameters

@@ -1,9 +1,11 @@
 import numpy as np
 
+from typing import Tuple, Optional
+
 from .. import cart
 
 
-def uspheregrid(Nphi, Ntheta=None):
+def uspheregrid(Nphi: int, Ntheta: Optional[int]=None) -> Tuple[np.ndarray, np.ndarray]:
     """Returns a 2D longitude lattitude grid on a unit sphere using the convention,
     phi = [0, 2pi], theta=[0, phi] with theta=0 pointint to the north pole.
 

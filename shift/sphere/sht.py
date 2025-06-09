@@ -1,6 +1,8 @@
 import numpy as np
 import healpy as hp
 
+from typing import Optional, Tuple
+
 from . import grid
 
 
@@ -8,7 +10,7 @@ class SHT:
 
     """Class for computing Spherical Harmonics using Healpy."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.nside = None
         self.pixelisation = None
         self.Nside = None
@@ -21,7 +23,7 @@ class SHT:
         self.t = None
 
 
-    def use_healpix(self, Nside):
+    def use_healpix(self, Nside: int) -> None:
         """Define maps in Healpix format.
 
         Parameters
@@ -34,7 +36,7 @@ class SHT:
         self.t, self.p = hp.pix2ang(self.Nside, np.arange(hp.nside2npix(self.Nside)))
 
 
-    def use_grid(self, Nphi, Ntheta=None):
+    def use_grid(self, Nphi: int, Ntheta: Optional[int]=None) -> None:
         """Define maps in Longitude Latitude format.
 
         Parameters
@@ -54,7 +56,7 @@ class SHT:
             self.Ntheta = Ntheta
 
 
-    def _forward_healpy(self, f, lmax):
+    def _forward_healpy(self, f: np.ndarray, lmax: int) -> np.ndarray:
         """Forward Spherical Harmonic Transform by healpix.
 
         Parameters
@@ -70,7 +72,7 @@ class SHT:
         return alm
 
 
-    def forward(self, f, lmax=None):
+    def forward(self, f: np.ndarray, lmax: Optional[int]=None) -> np.ndarray:
         """Forward Spherical Harmonic Transform.
 
         Parameters
@@ -88,7 +90,8 @@ class SHT:
         return alm
 
 
-    def _backward_healpy(self, alm, nside=None, lmax=None, mmax=None, derivatives=False):
+    def _backward_healpy(self, alm: np.ndarray, nside: Optional[int]=None, lmax: Optional[int]=None, 
+                         mmax: Optional[int]=None, derivatives: bool=False) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Backward Spherical Harmonic Transform with healpix.
 
         Parameters
@@ -123,7 +126,8 @@ class SHT:
             return f, fdtheta, fdphi
 
 
-    def backward(self, alm, nside=None, lmax=None, mmax=None, derivatives=False):
+    def backward(self, alm: np.ndarray, nside: Optional[int]=None, lmax: Optional[int]=None, mma: Optional[int]=None, 
+                 derivatives: bool=False) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Backward Spherical Harmonic Transform.
 
         Parameters
@@ -154,6 +158,6 @@ class SHT:
             assert False, "Only healpix pixelisation is supported at the moment."
 
 
-    def clean(self):
+    def clean(self) -> None:
         """Reinitialises the class."""
         self.__init__()
