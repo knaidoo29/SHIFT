@@ -4,8 +4,6 @@
 
 [![Documentation Status](https://readthedocs.org/projects/shift/badge/?version=latest)](https://shift.readthedocs.io/en/latest/?badge=latest)
 
-> **WARNING**: SHIFT is currently in development. Functions and classes may change. Use with caution.
-
 ## Introduction
 
 SHIFT is a scalable interface library for computing FFTs in numpy. The library wraps numpy FFT routines and makes it easy to keep track of corresponding Fourier modes in Fourier space. The package can be scaled using MPI (using the mpi4py library), using a slab decomposition to perform distributed FFTs.
