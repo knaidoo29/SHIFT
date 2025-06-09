@@ -1,13 +1,19 @@
 import numpy as np
 
+from typing import Any, List, Tuple, Optional, Union
+
 from . import loops
 
 
 class MPI:
 
     def __init__(self):
-        """Initialises MPI."""
+        """
+        Initialises MPI.
+        """
+        
         from mpi4py import MPI as mpi
+        
         self.mpi = mpi
         self.comm = mpi.COMM_WORLD
         self.rank = self.comm.Get_rank()
@@ -15,30 +21,71 @@ class MPI:
         self.loop_size = None
         self.mpi_info = 'Proc ' + str(self.rank+1)+' of ' + str(self.size)
 
-    
+
     def wait(self):
-        """Makes all jobs wait so they are synchronised."""
+        """
+        Tells all jobs to wait -- to ensure jobs are synchronised.
+        """
         self.comm.Barrier()
 
 
-    def set_loop(self, loop_size):
-        """Sets the size of a distributed loop."""
+    def set_loop(self, loop_size: int) -> int:
+        """
+        Sets the size of a distributed loop.
+
+        Parameters
+        ----------
+        loop_size : int
+
+        Yields
+        ------
+        Size of the MPI_loop.
+        """
         self.loop_size = loop_size
         return loops.get_MPI_loop_size(loop_size, self.size)
 
 
-    def mpi_ind2ind(self, mpi_ind):
-        """Converts the MPI_ind of a distributed loop to the index of a full loop."""
+    def mpi_ind2ind(self, mpi_ind: int) -> int:
+        """
+        Converts the MPI_ind of a distributed loop to the index of a full loop.
+
+        Parameters
+        ----------
+        mpi_ind : int
+
+        Yields
+        ------
+        Index of a full loop.
+        """
         return loops.MPI_ind2ind(mpi_ind, self.rank, self.size, self.loop_size)
 
 
     def clean_loop(self):
-        """Gets ride of loop_size definition."""
+        """
+        Gets ride of loop_size definition.
+        """
         self.loop_size = None
 
 
-    def split(self, length, size=None):
-        """For splitting an array across nodes."""
+    def split(self, length: int, size: Optional[int]=None) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        For splitting an array across nodes.
+
+        Parameters
+        ----------
+        Length: int
+            Length of the array to be split.
+        size: int
+            Size of the MPI.size (i.e. MPI task), if set then this will be used to be split
+            for other reasons.
+        
+        Returns
+        -------
+        split1 : array_like
+            The indices of the first element of the split array.
+        split2 : array_like
+            The indices of the last element of the split array.
+        """
         if size is None:
             split_equal = length/self.size
         else:
@@ -62,23 +109,61 @@ class MPI:
         return split1, split2
 
 
-    def split_array(self, array):
-        """Returns the values of the split array."""
+    def split_array(self, array: np.ndarray) -> np.ndarray:
+        """
+        Returns the values of the split array.
+
+        Parameters
+        ----------
+        array : array_like
+            Array to be split.
+
+        Yields
+        ------
+        Split array.
+        """
         split1, split2 = self.split(len(array))
         return array[split1[self.rank]:split2[self.rank]]
 
 
-    def check_partition(self, NDshape, NDshape_split):
-        """Returns bool array showing which axes the array is being split."""
+    def check_partition(self, NDshape: List[int], NDshape_split: List[int]) -> np.ndarray:
+        """
+        Returns a boolean array showing the axes that an array will be split along.
+
+        Parameters
+        ----------
+        NDshape : list
+            The shape of the N-dimensional array.
+        NDshape_split : list
+            The shape of the N-dimensional split array.
+
+        Yields
+        ------
+        Boolean array showing whether array will not be split along a said axes.
+        """
         return np.array([NDshape[i] == NDshape_split[i] for i in range(len(NDshape))])
 
 
-    def create_split_ndarray(self, arrays_nd, whichaxis):
-        """Split a list of arrays based on the data partitioning scheme."""
+    def create_split_ndarray(self, arrays_nd: np.ndarray, whichaxis: List[bool]) -> np.ndarray:
+        """
+        Splits a list of arrays based on the data partitioning scheme.
+
+        Parameters
+        ----------
+        arrays_nd : array_like
+            List of arrays to be split.
+        whichaxis : array_like
+            Boolean array showing whether array will not be split along a said axes.
+        
+        Returns
+        -------
+        split_arrays : array_like
+            Split list of array.
+        """
         split_arrays = []
         for i in range(0, len(arrays_nd)):
             _array = arrays_nd[i]
-            if not whichaxis[i]:
+            if whichaxis[i] == False:
                 _array = self.split_array(_array)
                 split_arrays.append(_array)
             else:
@@ -86,27 +171,46 @@ class MPI:
         return split_arrays
 
 
-    def create_split_ndgrid(self, arrays_nd, whichaxis):
-        """Create a partitioned gridded data set."""
+    def create_split_ndgrid(self, arrays_nd: np.ndarray, whichaxis: List[bool]) -> np.ndarray:
+        """
+        Creates a partitioned gridded data set.
+
+        Parameters
+        ----------
+        arrays_nd : array_like
+            List of arrays to be split.
+        whichaxis : array_like
+            Boolean array showing whether array will not be split along a said axes.
+        
+        Returns
+        -------
+        split_grid : array_like
+            N-dimensional split array.
+        """
         split_arrays = self.create_split_ndarray(arrays_nd, whichaxis)
         split_grid = np.meshgrid(*split_arrays, indexing='ij')
         return split_grid
 
 
-    def mpi_print(self, *value):
-        """Prints out using flush so it prints out immediately in an MPI
-        setting."""
+    def mpi_print(self, *value: Any) -> None:
+        """
+        Python print function using flush=True so print statements are outputed
+        immediately in an MPI setting.
+        """
         print(*value, flush=True)
 
 
-    def mpi_print_zero(self, *value):
-        """Prints only at node rank = 0."""
+    def mpi_print_zero(self, *value: Any) -> None:
+        """
+        Prints only at node rank = 0.
+        """
         if self.rank == 0:
             self.mpi_print(*value)
 
 
-    def send(self, data, to_rank=None, tag=11):
-        """Sends data from current core to other specified or all cores.
+    def send(self, data: np.ndarray, to_rank: Optional[int]=None, tag: int=11) -> None:
+        """
+        Sends data from current core to other specified or all cores.
 
         Parameters
         ----------
@@ -125,8 +229,9 @@ class MPI:
                     self.comm.send(data, dest=i, tag=tag)
 
 
-    def recv(self, from_rank, tag=11):
-        """Receive data from another node.
+    def recv(self, from_rank: int, tag: int=11) -> np.darray:
+        """
+        Receive data from another node.
 
         Parameters
         ----------
@@ -144,8 +249,10 @@ class MPI:
         return data
 
 
-    def broadcast(self, data):
-        """Broadcast data from rank=0 to all nodes."""
+    def broadcast(self, data: Any) -> Any:
+        """
+        Broadcast data from rank=0 to all nodes.
+        """
         if self.rank == 0:
             self.send(data, tag=11)
         else:
@@ -154,9 +261,11 @@ class MPI:
         return data
 
 
-    def send_up(self, data):
+    def send_up(self, data: Any) -> Any:
+        """
+        Send data from each node to the node above.
+        """
         datain = np.copy(data)
-        """Send data from each node to the node above."""
         if self.rank < self.size-1:
             self.send(datain, to_rank=self.rank+1, tag=10+self.rank)
         if self.rank > 0:
@@ -170,9 +279,11 @@ class MPI:
         return dataout
 
 
-    def send_down(self, data):
+    def send_down(self, data: Any) -> Any:
+        """
+        Send data from each node to the node below.
+        """
         datain = np.copy(data)
-        """Send data from each node to the node below."""
         if self.rank > 0:
             self.send(datain, to_rank=self.rank-1, tag=10+self.rank)
         if self.rank < self.size-1:
@@ -186,13 +297,17 @@ class MPI:
         return dataout
 
 
-    def collect(self, data, outlist=False):
-        """Collects a distributed data to the processor with rank=0.
+    def collect(self, data: np.ndarray, outlist: bool=False) -> np.ndarray:
+        """
+        Collects a distributed data to the processor with rank=0.
 
         Parameters
         ----------
         data : array
             Distributed data set.
+        outlist : bool, optional
+            If outlist is False, we collect and concatenate, if True then 
+            we do not concatenate the list.
         """
         if np.isscalar(data):
             data = np.array([data])
@@ -212,7 +327,14 @@ class MPI:
         return data
 
 
-    def collect_noNone(self, data):
+    def collect_noNone(self, data: np.ndarray) -> np.ndarray:
+        """
+        Same as collect function, but removes data=None to the combined data set.
+        Parameters
+        ----------
+        data : array
+            Distributed data set.
+        """
         _datas = self.collect(data, outlist=True)
         if self.rank == 0:
             datas = []
@@ -225,8 +347,9 @@ class MPI:
         return datas
 
 
-    def distribute(self, data):
-        """Distribute and split data from rank 0.
+    def distribute(self, data: np.ndarray) -> np.ndarray:
+        """
+        Distribute and split data from rank 0.
 
         Parameters
         ----------
@@ -244,8 +367,9 @@ class MPI:
         return data
 
 
-    def sum(self, data):
-        """Sums a distributed data set to the processor with rank=0.
+    def sum(self, data: Union[np.ndarray, int, float]) -> Union[np.ndarray, int, float, None]:
+        """
+        Sums a distributed data set to the processor with rank=0.
 
         Parameters
         ----------
@@ -263,7 +387,15 @@ class MPI:
         return data
 
 
-    def mean(self, data):
+    def mean(self, data: np.ndarray) -> Union[float, int]:
+        """
+        Finds the mean of a distributed data set, which is broadcasted to all nodes.
+
+        Parameters
+        ----------
+        data : array
+            distributed data set.
+        """
         total_data = self.sum(np.sum(data))
         self.wait()
         total_elem = self.sum(len(data.flatten()))
@@ -277,7 +409,15 @@ class MPI:
         return mean
 
 
-    def min(self, data):
+    def min(self, data: np.ndarray) -> Union[float, int]:
+        """
+        Finds the minimum of a distributed data set, which is broadcasted to all nodes.
+
+        Parameters
+        ----------
+        data : array
+            distributed data set.
+        """
         mins = self.collect(np.min(data))
         if self.rank == 0:
             minval = np.min(mins)
@@ -288,7 +428,15 @@ class MPI:
         return minval
 
 
-    def max(self, data):
+    def max(self, data: np.ndarray) -> Union[float, int]:
+        """
+        Finds the maximum of a distributed data set, which is broadcasted to all nodes.
+
+        Parameters
+        ----------
+        data : array
+            distributed data set.
+        """
         maxs = self.collect(np.max(data))
         if self.rank == 0:
             maxval = np.max(maxs)
@@ -300,5 +448,7 @@ class MPI:
 
 
     def end(self):
-        """Ends MPI environment."""
+        """
+        Ends MPI environment.
+        """
         self.mpi.Finalize()
