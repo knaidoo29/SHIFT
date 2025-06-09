@@ -11,7 +11,6 @@ class MPI:
         """
         Initialises MPI.
         """
-        
         from mpi4py import MPI as mpi
         
         self.mpi = mpi

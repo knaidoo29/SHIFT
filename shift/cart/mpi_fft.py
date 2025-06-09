@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.fft as scfft
 
-from typing import Optional, Union
+from typing import Tuple
 
 def slab_fft1D(f_real: np.ndarray, boxsize: float, ngrid: int, axis: int=-1) -> np.ndarray:
     """Performs forward FFT on real space data.
@@ -150,7 +150,7 @@ def slab_idst1D(f_fourier: np.ndarray, boxsize: float, ngrid: int, axis: int=-1,
 
 
 def _get_splits_subset_2D(rank1: int, rank2: int, xsplits1: np.ndarray, xsplits2: np.ndarray, 
-                          ysplits1: np.ndarray, ysplits2: np.ndarray, reverse: bool=False) -> Union[int, int, int, int]:
+                          ysplits1: np.ndarray, ysplits2: np.ndarray, reverse: bool=False) -> Tuple[int, int, int, int]:
     """Internal function for finding index splits across two axes based on input
     node ranks.
 
@@ -167,7 +167,7 @@ def _get_splits_subset_2D(rank1: int, rank2: int, xsplits1: np.ndarray, xsplits2
         return xsplits1[rank2], xsplits2[rank2], ysplits1[rank1], ysplits2[rank1]
 
 
-def _get_splits_2D(MPI: type, xngrid: int, yngrid: int) -> Union[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def _get_splits_2D(MPI: type, xngrid: int, yngrid: int) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Finds the beginning and end index for splitting arrays in 2 dimensions.
 
     Parameters
@@ -187,7 +187,7 @@ def _get_splits_2D(MPI: type, xngrid: int, yngrid: int) -> Union[np.ndarray, np.
     return xsplits1, xsplits2, ysplits1, ysplits2
 
 
-def _get_splits_3D(MPI: type, xngrid: int, yngrid: int, zngrid: int) -> Union[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def _get_splits_3D(MPI: type, xngrid: int, yngrid: int, zngrid: int) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Finds the beginning and end index for splitting arrays in 3 dimensions.
 
     Parameters

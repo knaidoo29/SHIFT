@@ -4,13 +4,6 @@
 
 [![Documentation Status](https://readthedocs.org/projects/shift/badge/?version=latest)](https://shift.readthedocs.io/en/latest/?badge=latest)
 
-|              |                                    |
-|--------------|------------------------------------|
-|Author        | Krishna Naidoo                     |
-|Version       | 0.0.2                              |
-|Documentation | https://shift.readthedocs.io       |
-|Repository    | https://github.com/knaidoo29/SHIFT |
-
 > **WARNING**: SHIFT is currently in development. Functions and classes may change. Use with caution.
 
 ## Introduction
@@ -22,6 +15,7 @@ SHIFT is a scalable interface library for computing FFTs in numpy. The library w
 ## Dependencies
 
 * `numba`
+* `numba-scipy`
 * `numpy`
 * `scipy`
 * `healpy`

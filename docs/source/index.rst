@@ -11,19 +11,6 @@
 Scalable Helper Interface for Fourier Transforms
 ================================================
 
-+---------------+-----------------------------------------+
-| Author        | Krishna Naidoo                          |
-+---------------+-----------------------------------------+
-| Version       | 0.0.2                                   |
-+---------------+-----------------------------------------+
-| Repository    | https://github.com/knaidoo29/SHIFT      |
-+---------------+-----------------------------------------+
-| Documentation | https://shift.readthedocs.io            |
-+---------------+-----------------------------------------+
-
-.. warning ::
-  SHIFT is currently in development. Functions and classes may change. Use with caution.
-
 Introduction
 ============
 
@@ -46,10 +33,9 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   pft_index
-   sht_index
-   sbt_index
    cart_index
+   mpi_index
+   spherical_index
    api
 
 
@@ -57,6 +43,7 @@ Dependencies
 ============
 
 * `numba <https://numba.pydata.org/>`_
+* `numba-scipy <https://numba-scipy.readthedocs.io/>`_
 * `numpy <http://www.numpy.org/>`_
 * `scipy <https://scipy.org/>`_
 * `healpy <https://healpy.readthedocs.io/>`_

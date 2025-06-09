@@ -12,7 +12,7 @@ from .. import utils
 class PFT:
 
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialises PFT class."""
         self.Nr = None
         self.Np = None
@@ -35,7 +35,7 @@ class PFT:
         self.Nnm_flat = None
 
 
-    def prep(self, Nr, Np, Rmax, boundary='zero', nswitch=2, mswitch=20):
+    def prep(self, Nr: int, Np: int, Rmax: float, boundary: str='zero', nswitch: int=2, mswitch: int=20) -> None:
         """Prepare PFT for Polar Fourier Transform
 
         Parameters
@@ -103,7 +103,7 @@ class PFT:
         self.Nnm_flat = np.copy(self.Nnm).flatten()
 
 
-    def _benchmark_forward(self, f):
+    def _benchmark_forward(self, f: np.ndarray) -> np.ndarray:
         """Computes the polar Fourier coefficients using the benchmark function,
         meaning this computes the coefficients with the double integral and no
         extra optimisations.
@@ -128,7 +128,7 @@ class PFT:
         return Pnm
 
 
-    def _half_fft_forward(self, f):
+    def _half_fft_forward(self, f: np.ndarray) -> np.ndarray:
         """Computes the polar Fourier coefficients using FFT for the angular components
         which means each coefficient is calculated from a single integral rather than a
         double integral.
@@ -159,7 +159,7 @@ class PFT:
         return Pnm
 
 
-    def _half_fft_half_numba_forward(self, f):
+    def _half_fft_half_numba_forward(self, f: np.ndarray) -> np.ndarray:
         """Computes the polar Fourier coefficients using FFT for the angular components
         and numba for the rest.
 
@@ -184,7 +184,7 @@ class PFT:
         return Pnm
 
 
-    def _benchmark_backward(self, Pnm):
+    def _benchmark_backward(self, Pnm: np.ndarray) -> np.ndarray:
         """Computes the backwards polar Fourier transform. meaning this computes
         the transform with the double integral and no extra optimisations.
 
@@ -210,7 +210,7 @@ class PFT:
         return f
 
 
-    def _half_fft_backward(self, Pnm):
+    def _half_fft_backward(self, Pnm: np.ndarray) -> np.ndarray:
         """Computes the polar Fourier coefficients using FFT for the angular components
         which means each coefficient is calculated from a single integral rather than a
         double integral.
@@ -241,7 +241,7 @@ class PFT:
         return f
 
 
-    def _half_fft_half_numba_backward(self, Pnm):
+    def _half_fft_half_numba_backward(self, Pnm: np.ndarray) -> np.ndarray:
         """Computes the polar Fourier coefficients using FFT for the angular components
         which means each coefficient is calculated from a single integral rather than a
         double integral.
@@ -267,7 +267,7 @@ class PFT:
         return f
 
 
-    def forward(self, f, method='half_fft_half_numba'):
+    def forward(self, f: np.ndarray, method: str='half_fft_half_numba') -> np.ndarray:
         """Computes the forward PFT. Use method='half_fft_half_numba' for fatest calculation.
 
         Parameters
@@ -294,7 +294,7 @@ class PFT:
         return Pnm
 
 
-    def backward(self, Pnm, method='half_fft_half_numba'):
+    def backward(self, Pnm: np.ndarray, method='half_fft_half_numba') -> np.ndarray:
         """Computes the forward PFT. Use method='half_fft_half_numba' for fatest calculation.
 
         Parameters
@@ -321,6 +321,6 @@ class PFT:
         return f
 
 
-    def clean(self):
+    def clean(self) -> None:
         """Reinitialises the class."""
         self.__init__()
