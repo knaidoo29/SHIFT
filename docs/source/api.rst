@@ -2,17 +2,7 @@
 API
 ===
 
-Cartesian
-=========
+.. toctree::
+  :maxdepth: 2
 
-Polar
-=====
-
-Sphere
-======
-
-SRC
-===
-
-Utils
-=====
+  api_mpiutils

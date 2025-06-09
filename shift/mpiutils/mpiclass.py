@@ -229,7 +229,7 @@ class MPI:
                     self.comm.send(data, dest=i, tag=tag)
 
 
-    def recv(self, from_rank: int, tag: int=11) -> np.darray:
+    def recv(self, from_rank: int, tag: int=11) -> np.ndarray:
         """
         Receive data from another node.
 

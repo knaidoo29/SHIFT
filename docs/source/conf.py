@@ -28,6 +28,7 @@ extensions = [
     'sphinx_simplepdf'
 ]
 
+autodoc_member_order = 'bysource'
 
 source_suffix = ['.rst', '.md']
 
