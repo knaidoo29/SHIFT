@@ -1,5 +1,6 @@
 healpy
 numba
+numba-scipy
 numpy
 scipy
 furo

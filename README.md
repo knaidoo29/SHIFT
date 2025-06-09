@@ -47,7 +47,7 @@ import shift
 
 ## Documentation
 
-In depth documentation and tutorials are provided [here](https://shift-doc.readthedocs.io/).
+In depth documentation and tutorials are provided [here](https://shift.readthedocs.io/).
 
 ## Tutorials
 

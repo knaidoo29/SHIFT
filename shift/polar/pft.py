@@ -159,9 +159,9 @@ class PFT:
         return Pnm
 
 
-    def _half_fft_half_fort_forward(self, f):
+    def _half_fft_half_numba_forward(self, f):
         """Computes the polar Fourier coefficients using FFT for the angular components
-        and fortran for the rest.
+        and numba for the rest.
 
         Parameters
         ----------
@@ -176,8 +176,8 @@ class PFT:
         Pm = cart.fft1D(f, 2*np.pi, axis=0)
         Pm = Pm.flatten()
         r = self.r2d[0]
-        pnm = src.forward_half_pft(r=r, pm_real=Pm.real, pm_imag=Pm.imag, knm_flat=self.knm_flat,
-            nnm_flat=self.Nnm_flat, m2d_flat=self.m2d_flat, lenr=self.Nr, lenp=self.Np)
+        pnm = src.forward_half_pft(r, Pm.real, Pm.imag, self.knm_flat, self.Nnm_flat, 
+                                   self.m2d_flat, self.Nr, self.Np)
         pnm = pnm.reshape((self.Nr*self.Np, 2))
         Pnm = pnm[:, 0] + 1j*pnm[:, 1]
         Pnm = Pnm.reshape(np.shape(self.m2d))
@@ -241,7 +241,7 @@ class PFT:
         return f
 
 
-    def _half_fft_half_fort_backward(self, Pnm):
+    def _half_fft_half_numba_backward(self, Pnm):
         """Computes the polar Fourier coefficients using FFT for the angular components
         which means each coefficient is calculated from a single integral rather than a
         double integral.
@@ -258,9 +258,8 @@ class PFT:
         """
         r = self.r2d[0]
         Pnm = Pnm.flatten()
-        pm = src.backward_half_pft(r=r, pnm_real=Pnm.real, pnm_imag=Pnm.imag, knm_flat=self.knm_flat,
-                                   nnm_flat=self.Nnm_flat, m2d_flat=self.m2d_flat, n2d_flat=self.n2d_flat,
-                                   lenr=self.Nr, lenp=self.Np)
+        pm = src.backward_half_pft(r, Pnm.real, Pnm.imag, self.knm_flat, self.Nnm_flat, 
+                                   self.m2d_flat, self.n2d_flat, self.Nr, self.Np)
         pm = pm.reshape((self.Nr*self.Np, 2))
         Pm = pm[:, 0] + 1j*pm[:, 1]
         Pm = Pm.reshape(np.shape(self.m2d))
@@ -268,8 +267,8 @@ class PFT:
         return f
 
 
-    def forward(self, f, method='half_fft_half_fort'):
-        """Computes the forward PFT. Use method='half_fft_half_fort' for fatest calculation.
+    def forward(self, f, method='half_fft_half_numba'):
+        """Computes the forward PFT. Use method='half_fft_half_numba' for fatest calculation.
 
         Parameters
         ----------
@@ -279,7 +278,7 @@ class PFT:
             Method for computing the PFT:
                 - 'benchmark' : slow calculation with no optimisations for testing and benchmarking.
                 - 'half_fft' : uses FFT for the angular components for faster computation.
-                - 'half_fft_half_fort' : Like the above but uses fortran source code to do the other half.
+                - 'half_fft_half_numba' : Like the above but uses fortran source code to do the other half.
 
         Returns
         -------
@@ -290,13 +289,13 @@ class PFT:
             Pnm = self._benchmark_forward(f)
         elif method == 'half_fft':
             Pnm = self._half_fft_forward(f)
-        elif method == 'half_fft_half_fort':
-            Pnm = self._half_fft_half_fort_forward(f)
+        elif method == 'half_fft_half_numba':
+            Pnm = self._half_fft_half_numba_forward(f)
         return Pnm
 
 
-    def backward(self, Pnm, method='half_fft_half_fort'):
-        """Computes the forward PFT. Use method='half_fft_half_fort' for fatest calculation.
+    def backward(self, Pnm, method='half_fft_half_numba'):
+        """Computes the forward PFT. Use method='half_fft_half_numba' for fatest calculation.
 
         Parameters
         ----------
@@ -306,7 +305,7 @@ class PFT:
             Method for computing the PFT:
                 - 'benchmark' : slow calculation with no optimisations for testing and benchmarking.
                 - 'half_fft' : uses FFT for the angular components for faster computation.
-                - 'half_fft_half_fort' : Like the above but uses fortran source code to do the other half.
+                - 'half_fft_half_numba' : Like the above but uses fortran source code to do the other half.
 
         Returns
         -------
@@ -317,8 +316,8 @@ class PFT:
             f = self._benchmark_backward(Pnm)
         elif method == 'half_fft':
             f = self._half_fft_backward(Pnm)
-        elif method == 'half_fft_half_fort':
-            f = self._half_fft_half_fort_backward(Pnm)
+        elif method == 'half_fft_half_numba':
+            f = self._half_fft_half_numba_backward(Pnm)
         return f
 
 
