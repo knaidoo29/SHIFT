@@ -152,6 +152,32 @@ fashion.
   The default ``type=2``. This can be changed and follows the scipy definitions for DCT/DST. Just 
   ensure you use the same ``type`` for both the forwards and backward transforms.
 
+The corresponding Fourier grid is slightly different for the DCT/DST and can be accessed by running
+
+.. code-block:: python
+
+  # Discrete Cosine Transform
+
+  # in 1D
+  kx1D = shift.cart.kgrid1D_dct(boxsize, ngrid)
+
+  # in 2D
+  kx2D, ky2D = shift.cart.kgrid2D_dct(boxsize, ngrid)
+
+  # in 3D
+  kx3D, ky3D, kz3D = shift.cart.kgrid3D_dct(boxsize, ngrid)
+
+  # Discrete Sine Transform
+
+  # in 1D
+  kx1D = shift.cart.kgrid1D_dst(boxsize, ngrid)
+
+  # in 2D
+  kx2D, ky2D = shift.cart.kgrid2D_dst(boxsize, ngrid)
+
+  # in 3D
+  kx3D, ky3D, kz3D = shift.cart.kgrid3D_dst(boxsize, ngrid)
+
 
 Parallelising with MPI
 ----------------------
