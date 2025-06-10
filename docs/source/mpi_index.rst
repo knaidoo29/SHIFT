@@ -2,9 +2,6 @@
 MPIutils
 ========
 
-Installation and Basic Usage
-----------------------------
-
 ``mpiutils`` is a submodule of ``SHIFT`` that enables ``MPI`` parallelisation in python.
 To use this functionality you will need to install ``mpi4py`` (`link <https://mpi4py.readthedocs.io/en/stable/>`_).
 Since correct installation requires careful linking of the Message Passing Interface to 
@@ -18,9 +15,9 @@ Once ``mpi4py`` is installed the ``MPI`` utility class can be loading simply by 
 
 .. code-block:: python
 
-    from shift import mpiutils
+    import shift
     
-    MPI = mpiutils.MPI()
+    MPI = shift.mpiutils.MPI()
 
 To ensure python and ``numpy`` specifically do not carry out hidden parallelised processed in the background
 we should first set the threads to ``1`` by including this at the top of every script:
@@ -54,9 +51,9 @@ several processes we can use the ``shift.cart.mpi_grid3D`` function which we wil
     environ['VECLIB_MAXIMUM_THREADS'] = N_THREADS
     environ['NUMEXPR_NUM_THREADS'] = N_THREADS
 
-    from shift import mpiutils
+    import shift
     
-    MPI = mpiutils.MPI()
+    MPI = shift.mpiutils.MPI()
 
     boxsize = 100.
     ngrid = 512
@@ -73,7 +70,4 @@ To run, simply do:
 
     ``mpirun`` should be replaced with the correct mpi exectuable, for instance on some
     HPCs this should be ``srun``.
-
-Running with MPI
-----------------
 
