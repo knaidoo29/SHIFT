@@ -15,6 +15,8 @@ def mpi_kgrid1D(boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
         Box size.
     ngrid : int
         Grid division along one axis.
+    MPI : object
+        MPIutils MPI object.
 
     Returns
     -------
@@ -37,6 +39,8 @@ def mpi_kgrid2D(boxsize: float, ngrid: int, MPI: type) -> Tuple[np.ndarray, np.n
         Box size.
     ngrid : int
         Grid division along one axis.
+    MPI : object
+        MPIutils MPI object.
 
     Returns
     -------
@@ -62,6 +66,8 @@ def mpi_kgrid3D(boxsize: float, ngrid: int, MPI: type) -> Tuple[np.ndarray, np.n
         Box size.
     ngrid : int
         Grid division along one axis.
+    MPI : object
+        MPIutils MPI object.
 
     Returns
     -------
@@ -89,6 +95,8 @@ def mpi_kgrid1D_dct(boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
         Box size.
     ngrid : int
         Grid division along one axis.
+    MPI : object
+        MPIutils MPI object.
 
     Returns
     -------
@@ -111,6 +119,8 @@ def mpi_kgrid2D_dct(boxsize: float, ngrid: int, MPI: type) -> Tuple[np.ndarray, 
         Box size.
     ngrid : int
         Grid division along one axis.
+    MPI : object
+        MPIutils MPI object.
 
     Returns
     -------
@@ -136,6 +146,8 @@ def mpi_kgrid3D_dct(boxsize: float, ngrid: int, MPI: type) -> Tuple[np.ndarray, 
         Box size.
     ngrid : int
         Grid division along one axis.
+    MPI : object
+        MPIutils MPI object.
 
     Returns
     -------
@@ -163,6 +175,8 @@ def mpi_kgrid1D_dst(boxsize: float, ngrid: int, MPI: type):
         Box size.
     ngrid : int
         Grid division along one axis.
+    MPI : object
+        MPIutils MPI object.
 
     Returns
     -------
@@ -185,6 +199,8 @@ def mpi_kgrid2D_dst(boxsize: float, ngrid: int, MPI: type) -> Tuple[np.ndarray, 
         Box size.
     ngrid : int
         Grid division along one axis.
+    MPI : object
+        MPIutils MPI object.
 
     Returns
     -------
@@ -210,6 +226,8 @@ def mpi_kgrid3D_dst(boxsize: float, ngrid: int, MPI: type) -> Tuple[np.ndarray, 
         Box size.
     ngrid : int
         Grid division along one axis.
+    MPI : object
+        MPIutils MPI object.
 
     Returns
     -------
