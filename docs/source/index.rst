@@ -21,11 +21,11 @@ decomposition to perform distributed FFTs.
 
 .. note ::
 
-  SHIFT was originally designed to be a Spherical/Polar Fourier Transform library. This is 
-  the origin of the original acronym for SHIFT (SpHerIcal Fourier Transforms). However, the 
-  package has developed into being predominanty a helper and MPI interface for FFTs in 2D/3D 
-  cartesian grids. The development of the Polar and Spherical Bessel transforms is still 
-  ongoing but it no longer the focus.
+  SHIFT was originally designed to be a Spherical/Polar Fourier Transform library -- this is 
+  the origin of the original acronym SpHerIcal Fourier Transforms. However, the package has 
+  developed into being predominanty a helper and MPI interface for FFTs in 2D/3D cartesian 
+  grids. The development of the Polar and Spherical Bessel transforms is still ongoing but is 
+  no longer the focus.
 
 Contents
 ========
