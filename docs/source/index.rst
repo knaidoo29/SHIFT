@@ -14,7 +14,7 @@ Scalable Helper Interface for Fourier Transforms
 Introduction
 ============
 
-SHIFT is a scalable interface library for computing FFTs in numpy. The library wraps numpy 
+SHIFT is a scalable interface library for computing FFTs in scipy. The library wraps scipy 
 FFT routines and makes it easy to keep track of corresponding Fourier modes in Fourier 
 space. The package can be scaled using MPI (using the mpi4py library), using a slab 
 decomposition to perform distributed FFTs.
@@ -71,15 +71,3 @@ Support
 If you have any issues with the code or want to suggest ways to improve it please
 open a new issue (`here <https://github.com/knaidoo29/SHIFT/issues>`_)
 or (if you don't have a github account) email krishna.naidoo.11@ucl.ac.uk.
-
-
-Version History
-===============
-
-**Version 0.0**:
-
-  * Fast fourier transforms in cartesian coordinates up to 3D with additional utility functions.
-
-  * Polar Fourier Transform with FFT used for the angular component while the radial component is calculated using Fortran source code.
-
-  * Spherical Bessel Transform.
