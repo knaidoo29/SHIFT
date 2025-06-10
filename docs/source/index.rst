@@ -29,8 +29,8 @@
 .. raw:: html
 
    <p align="center">
-      <a href="https://img.shields.io/github/v/release/knaidoo29/skysegmentor">  
-      <img src="https://img.shields.io/github/v/release/knaidoo29/skysegmentor" alt="Version">
+      <a href="https://img.shields.io/github/v/release/knaidoo29/SHIFT">  
+      <img src="https://img.shields.io/github/v/release/knaidoo29/SHIFT" alt="Version">
       </a>
       <a href="https://shift.readthedocs.io/en/latest/">
       <img src="https://readthedocs.org/projects/shift/badge/?version=latest" alt="Documentation Status">
