@@ -34,7 +34,7 @@ def mpi_grid1D(boxsize: float, ngrid: int, MPI: type, origin: float=0.) -> Tuple
     return xedges, x
 
 
-def mpi_grid2D(boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float, float]]=0.) -> Tuple[np.ndarray, np.ndarray]:
+def mpi_grid2D(boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float]]=0.) -> Tuple[np.ndarray, np.ndarray]:
     """Returns the x, y coordinates of a cartesian grid.
 
     Parameters
@@ -76,7 +76,7 @@ def mpi_grid2D(boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[
     return x2D, y2D
 
 
-def mpi_grid3D(boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float, float, float]]=0.) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def mpi_grid3D(boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float]]=0.) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Returns the x, y, z coordinates of a cartesian grid.
 
     Parameters
