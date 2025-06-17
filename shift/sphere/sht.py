@@ -91,7 +91,7 @@ class SHT:
 
 
     def _backward_healpy(self, alm: np.ndarray, nside: Optional[int]=None, lmax: Optional[int]=None, 
-                         mmax: Optional[int]=None, derivatives: bool=False) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+                         mmax: Optional[int]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Backward Spherical Harmonic Transform with healpix.
 
         Parameters
@@ -102,32 +102,19 @@ class SHT:
             Nside of an input healpix map.
         lmax : int, optional
             If you want to specify the map making to a given lmax.
-        derivatives : bool, optional
-            Outputs the derivatives of the map with respect to phi and theta.
 
         Returns
         -------
         f : array
             Healpix map.
-        fdtheta : array
-            If derivatives == True this outputs the Healpix map of the derivative
-            of f with respect to theta.
-        fdphi : array
-            If derivatives == True this outputs the Healpix map of the derivative
-            of f with respect to phi.
         """
         if Nside is None:
             Nside = self.Nside
-        if derivatives == False:
-            f = hp.alm2map(alm, Nside, lmax=lmax, mmax=mmax)
-            return f
-        else:
-            f, fdtheta, fdphi = hp.alm2map_der(alm, Nside, lmax=lmax, mmax=mmax)
-            return f, fdtheta, fdphi
+        f = hp.alm2map(alm, Nside, lmax=lmax, mmax=mmax)
+        return f
 
 
-    def backward(self, alm: np.ndarray, nside: Optional[int]=None, lmax: Optional[int]=None, mma: Optional[int]=None, 
-                 derivatives: bool=False) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def backward(self, alm: np.ndarray, nside: Optional[int]=None, lmax: Optional[int]=None, mmax: Optional[int]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Backward Spherical Harmonic Transform.
 
         Parameters
@@ -138,22 +125,14 @@ class SHT:
             Nside of an input healpix map.
         lmax : int, optional
             If you want to specify the map making to a given lmax.
-        derivatives : bool, optional
-            Outputs the derivatives of the map with respect to phi and theta.
-
+        
         Returns
         -------
         f : array
             Healpix map.
-        fdtheta : array
-            If derivatives == True this outputs the Healpix map of the derivative
-            of f with respect to theta.
-        fdphi : array
-            If derivatives == True this outputs the Healpix map of the derivative
-            of f with respect to phi.
         """
         if self.pixelisation == 'healpix':
-            return self._backward_healpy(alm, nside=nside, lmax=lmax, mmax=mmax, derivatives=derivatives)
+            return self._backward_healpy(alm, nside=nside, lmax=lmax, mmax=mmax)
         else:
             assert False, "Only healpix pixelisation is supported at the moment."
 
