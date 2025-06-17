@@ -40,7 +40,8 @@ def get_m(Nm: int) -> np.ndarray:
 
 
 def get_knm(xnm: np.ndarray, Rmax: float) -> np.ndarray:
-    """Returns the k components given zeros provided and the maximum radius.
+    """
+    Returns the k components given zeros provided and the maximum radius.
 
     Parameters
     ----------
@@ -59,7 +60,8 @@ def get_knm(xnm: np.ndarray, Rmax: float) -> np.ndarray:
 
 
 def get_Nnm_zero(m: int, xnm: np.ndarray, Rmax: float) -> np.ndarray:
-    """Returns the normalisation constant for zero-value boundaries.
+    """
+    Returns the normalisation constant for zero-value boundaries.
 
     Parameters
     ----------
@@ -80,7 +82,8 @@ def get_Nnm_zero(m: int, xnm: np.ndarray, Rmax: float) -> np.ndarray:
 
 
 def get_Nnm_deri(m: int, xnm: np.ndarray, Rmax: float) -> np.ndarray:
-    """Returns the normalisation constant for derivative boundaries.
+    """
+    Returns the normalisation constant for derivative boundaries.
 
     Parameters
     ----------
@@ -101,7 +104,8 @@ def get_Nnm_deri(m: int, xnm: np.ndarray, Rmax: float) -> np.ndarray:
 
 
 def get_Rnm(r: np.ndarray, m: int, knm: float, Nnm: float) -> np.ndarray:
-    """Radial component of the polar basis function.
+    """
+    Radial component of the polar basis function.
 
     Parameters
     ----------
@@ -124,7 +128,8 @@ def get_Rnm(r: np.ndarray, m: int, knm: float, Nnm: float) -> np.ndarray:
 
 
 def get_eix(x: np.ndarray) -> np.ndarray:
-    """Euler's equation.
+    """
+    Euler's equation.
 
     Parameters
     ----------
@@ -141,7 +146,8 @@ def get_eix(x: np.ndarray) -> np.ndarray:
 
 
 def get_eix_star(x: np.ndarray) -> np.ndarray:
-    """Euler's equation.
+    """
+    Euler's equation.
 
     Parameters
     ----------
@@ -158,7 +164,8 @@ def get_eix_star(x: np.ndarray) -> np.ndarray:
 
 
 def get_Phi_m(m: int, phi: np.ndarray) -> np.ndarray:
-    """Angular component of the polar basis function.
+    """
+    Angular component of the polar basis function.
 
     Parameters
     ----------
@@ -177,7 +184,8 @@ def get_Phi_m(m: int, phi: np.ndarray) -> np.ndarray:
 
 
 def get_Phi_star_m(m: int, phi: np.ndarray) -> np.ndarray:
-    """Angular component of the polar basis function.
+    """
+    Angular component of the polar basis function.
 
     Parameters
     ----------
@@ -196,7 +204,8 @@ def get_Phi_star_m(m: int, phi: np.ndarray) -> np.ndarray:
 
 
 def get_Psi_nm(n: int, m: int, r: np.ndarray, phi: np.ndarray, knm: float, Nnm: float) -> np.ndarray:
-    """Polar radial basis function
+    """
+    Polar radial basis function
 
     Parameters
     ----------

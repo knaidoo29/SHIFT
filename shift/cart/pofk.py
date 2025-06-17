@@ -10,7 +10,8 @@ from .. import src
 
 
 def get_pofk_2D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[float]=None, kmax: Optional[float]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Returns the power spectrum of a 2D data set.
+    """
+    Returns the power spectrum of a 2D data set.
 
     Parameters
     ----------
@@ -66,7 +67,8 @@ def get_pofk_2D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[fl
 
 
 def get_pofk_3D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[float]=None, kmax: Optional[float]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Returns the power spectrum of a 3D data set.
+    """
+    Returns the power spectrum of a 3D data set.
 
     Parameters
     ----------

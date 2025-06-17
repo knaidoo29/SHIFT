@@ -6,7 +6,8 @@ from . import kgrid
 
 
 def mult_fk_2D(fgrid: np.ndarray, boxsize: float, k: np.ndarray, fk: np.ndarray) -> np.ndarray:
-    """Multiply 2D grid in Fourier space by k dependent function.
+    """
+    Multiply 2D grid in Fourier space by k dependent function.
 
     Parameters
     ----------
@@ -50,7 +51,8 @@ def mult_fk_2D(fgrid: np.ndarray, boxsize: float, k: np.ndarray, fk: np.ndarray)
 
 
 def mult_fk_3D(fgrid: np.ndarray, boxsize: float, k: np.ndarray, fk: np.ndarray) -> np.ndarray:
-    """Multiply 3D grid in Fourier space by k dependent function.
+    """
+    Multiply 3D grid in Fourier space by k dependent function.
 
     Parameters
     ----------
