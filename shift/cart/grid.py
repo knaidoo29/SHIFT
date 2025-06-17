@@ -3,7 +3,8 @@ import numpy as np
 from typing import Tuple
 
 def grid1D(boxsize: float, ngrid: int, origin: float=0.) -> Tuple[np.ndarray, np.ndarray]:
-    """Returns the x coordinates of a cartesian grid.
+    """
+    Returns the x coordinates of a cartesian grid.
 
     Parameters
     ----------
@@ -27,7 +28,8 @@ def grid1D(boxsize: float, ngrid: int, origin: float=0.) -> Tuple[np.ndarray, np
 
 
 def grid2D(boxsize: float, ngrid: int, origin: float=0.) -> Tuple[np.ndarray, np.ndarray]:
-    """Returns the x, y coordinates of a cartesian grid.
+    """
+    Returns the x, y coordinates of a cartesian grid.
 
     Parameters
     ----------
@@ -67,7 +69,8 @@ def grid2D(boxsize: float, ngrid: int, origin: float=0.) -> Tuple[np.ndarray, np
 
 
 def grid3D(boxsize: float, ngrid: int, origin: float=0.) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Returns the x, y, z coordinates of a cartesian grid.
+    """
+    Returns the x, y, z coordinates of a cartesian grid.
 
     Parameters
     ----------

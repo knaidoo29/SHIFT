@@ -3,7 +3,8 @@ import scipy.fft as scfft
 
 
 def fft1D(f_real: np.ndarray, boxsize: float, axis: int=-1) -> np.ndarray:
-    """Performs Forward FFT on real space data.
+    """
+    Performs Forward FFT on real space data.
 
     Parameters
     ----------
@@ -26,7 +27,8 @@ def fft1D(f_real: np.ndarray, boxsize: float, axis: int=-1) -> np.ndarray:
 
 
 def ifft1D(f_fourier: np.ndarray, boxsize: float, axis: int=-1) -> np.ndarray:
-    """Performs backward fft of a Fourier grid.
+    """
+    Performs backward fft of a Fourier grid.
 
     Parameters
     ----------
@@ -49,7 +51,8 @@ def ifft1D(f_fourier: np.ndarray, boxsize: float, axis: int=-1) -> np.ndarray:
 
 
 def fft2D(f_real: np.ndarray, boxsize: float) -> np.ndarray:
-    """Performs Forward FFT on input grid data.
+    """
+    Performs Forward FFT on input grid data.
 
     Parameters
     ----------
@@ -71,7 +74,8 @@ def fft2D(f_real: np.ndarray, boxsize: float) -> np.ndarray:
 
 
 def ifft2D(f_fourier: np.ndarray, boxsize: float) -> np.ndarray:
-    """Performs backward fft of a Fourier grid.
+    """
+    Performs backward fft of a Fourier grid.
 
     Parameters
     ----------
@@ -93,7 +97,8 @@ def ifft2D(f_fourier: np.ndarray, boxsize: float) -> np.ndarray:
 
 
 def fft3D(f_real: np.ndarray, boxsize: float) -> np.ndarray:
-    """Performs Forward FFT on input grid data.
+    """
+    Performs Forward FFT on input grid data.
 
     Parameters
     ----------
@@ -115,7 +120,8 @@ def fft3D(f_real: np.ndarray, boxsize: float) -> np.ndarray:
 
 
 def ifft3D(f_fourier: np.ndarray, boxsize: float) -> np.ndarray:
-    """Performs backward fft of a Fourier grid.
+    """
+    Performs backward fft of a Fourier grid.
 
     Parameters
     ----------
@@ -137,7 +143,8 @@ def ifft3D(f_fourier: np.ndarray, boxsize: float) -> np.ndarray:
 
 
 def dct1D(f_real: np.ndarray, boxsize: float, axis: int=-1, type: int=2) -> np.ndarray:
-    """Performs forward DCT in 1D.
+    """
+    Performs forward DCT in 1D.
 
     Parameters
     ----------
@@ -162,7 +169,8 @@ def dct1D(f_real: np.ndarray, boxsize: float, axis: int=-1, type: int=2) -> np.n
 
 
 def idct1D(f_fourier: np.ndarray, boxsize: float, axis: int=-1, type:int =2) -> np.ndarray:
-    """Performs backward DCT in 1D.
+    """
+    Performs backward DCT in 1D.
 
     Parameters
     ----------
@@ -187,7 +195,8 @@ def idct1D(f_fourier: np.ndarray, boxsize: float, axis: int=-1, type:int =2) -> 
 
 
 def dct2D(f_real: np.ndarray, boxsize: float, type: int=2) -> np.ndarray:
-    """Performs forward DCT in 2D.
+    """
+    Performs forward DCT in 2D.
 
     Parameters
     ----------
@@ -211,7 +220,8 @@ def dct2D(f_real: np.ndarray, boxsize: float, type: int=2) -> np.ndarray:
 
 
 def idct2D(f_fourier: np.ndarray, boxsize: float, type: int=-2) -> np.ndarray:
-    """Performs backward DCT in 2D.
+    """
+    Performs backward DCT in 2D.
 
     Parameters
     ----------
@@ -235,7 +245,8 @@ def idct2D(f_fourier: np.ndarray, boxsize: float, type: int=-2) -> np.ndarray:
 
 
 def dct3D(f_real: np.ndarray, boxsize: float, type: int=2) -> np.ndarray:
-    """Performs forward DCT in 3D.
+    """
+    Performs forward DCT in 3D.
 
     Parameters
     ----------
@@ -259,7 +270,8 @@ def dct3D(f_real: np.ndarray, boxsize: float, type: int=2) -> np.ndarray:
 
 
 def idct3D(f_fourier: np.ndarray, boxsize: float, type: int=2) -> np.ndarray:
-    """Performs backward DCT in 3D.
+    """
+    Performs backward DCT in 3D.
 
     Parameters
     ----------
@@ -283,7 +295,8 @@ def idct3D(f_fourier: np.ndarray, boxsize: float, type: int=2) -> np.ndarray:
 
 
 def dst1D(f_real: np.ndarray, boxsize: float, axis: int=-1, type: int=2) -> np.ndarray:
-    """Performs forward DST in 1D.
+    """
+    Performs forward DST in 1D.
 
     Parameters
     ----------
@@ -308,7 +321,8 @@ def dst1D(f_real: np.ndarray, boxsize: float, axis: int=-1, type: int=2) -> np.n
 
 
 def idst1D(f_fourier: np.ndarray, boxsize: float, axis: int=-1, type: int=2) -> np.ndarray:
-    """Performs backward DST in 1D.
+    """
+    Performs backward DST in 1D.
 
     Parameters
     ----------
@@ -333,7 +347,8 @@ def idst1D(f_fourier: np.ndarray, boxsize: float, axis: int=-1, type: int=2) -> 
 
 
 def dst2D(f_real: np.ndarray, boxsize: float, type: int=2) -> np.ndarray:
-    """Performs forward DST in 2D.
+    """
+    Performs forward DST in 2D.
 
     Parameters
     ----------
@@ -357,7 +372,8 @@ def dst2D(f_real: np.ndarray, boxsize: float, type: int=2) -> np.ndarray:
 
 
 def idst2D(f_fourier: np.ndarray, boxsize: float, type: int=2) -> np.ndarray:
-    """Performs backward DST in 2D.
+    """
+    Performs backward DST in 2D.
 
     Parameters
     ----------
@@ -381,7 +397,8 @@ def idst2D(f_fourier: np.ndarray, boxsize: float, type: int=2) -> np.ndarray:
 
 
 def dst3D(f_real: np.ndarray, boxsize: float, type: int=2) -> np.ndarray:
-    """Performs forward DST in 3D.
+    """
+    Performs forward DST in 3D.
 
     Parameters
     ----------
@@ -405,7 +422,8 @@ def dst3D(f_real: np.ndarray, boxsize: float, type: int=2) -> np.ndarray:
 
 
 def idst3D(f_fourier: np.ndarray, boxsize: float, type: int=2) -> np.ndarray:
-    """Performs backward DST in 3D.
+    """
+    Performs backward DST in 3D.
 
     Parameters
     ----------

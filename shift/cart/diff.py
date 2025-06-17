@@ -3,7 +3,8 @@ import numpy as np
 from typing import Optional
 
 def dfdk(k: np.ndarray, fk: np.ndarray) -> np.ndarray:
-    """Differentiation in Fourier space. This can be used for all functions.
+    """
+    Differentiation in Fourier space. This can be used for all functions.
 
     Parameters
     ----------
@@ -22,7 +23,8 @@ def dfdk(k: np.ndarray, fk: np.ndarray) -> np.ndarray:
 
 
 def dfdk2(k1: np.ndarray, fk: np.ndarray, k2: Optional[np.ndarray]=None) -> np.ndarray:
-    """Second order differentiation in Fourier space. This can be used for all functions.
+    """
+    Second order differentiation in Fourier space. This can be used for all functions.
 
     Parameters
     ----------

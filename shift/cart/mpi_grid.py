@@ -6,7 +6,8 @@ from . import grid
 
 
 def mpi_grid1D(boxsize: float, ngrid: int, MPI: type, origin: float=0.) -> Tuple[np.ndarray, np.ndarray]:
-    """Returns the x coordinates of a cartesian grid.
+    """
+    Returns the x coordinates of a cartesian grid.
 
     Parameters
     ----------
@@ -35,7 +36,8 @@ def mpi_grid1D(boxsize: float, ngrid: int, MPI: type, origin: float=0.) -> Tuple
 
 
 def mpi_grid2D(boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float]]=0.) -> Tuple[np.ndarray, np.ndarray]:
-    """Returns the x, y coordinates of a cartesian grid.
+    """
+    Returns the x, y coordinates of a cartesian grid.
 
     Parameters
     ----------
@@ -77,7 +79,8 @@ def mpi_grid2D(boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[
 
 
 def mpi_grid3D(boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float]]=0.) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Returns the x, y, z coordinates of a cartesian grid.
+    """
+    Returns the x, y, z coordinates of a cartesian grid.
 
     Parameters
     ----------

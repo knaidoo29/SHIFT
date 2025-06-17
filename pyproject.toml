@@ -30,7 +30,7 @@ dependencies = [
     "numba",
     "numba-scipy",
     "numpy",
-    "scipy>=1.12",
+    "scipy",
 ]
 dynamic = ["version"]
 

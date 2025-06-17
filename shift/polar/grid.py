@@ -6,7 +6,8 @@ from .. import cart
 
 
 def polargrid(Rmax: float, Nr: int, Nphi: int) -> Tuple[np.ndarray, np.ndarray]:
-    """Returns a 2D polar grid.
+    """
+    Returns a 2D polar grid.
 
     Parameters
     ----------
@@ -31,7 +32,8 @@ def polargrid(Rmax: float, Nr: int, Nphi: int) -> Tuple[np.ndarray, np.ndarray]:
 
 
 def wrap_polar(f: np.ndarray) -> np.ndarray:
-    """Wraps polar grid, which is useful for plotting purposes.
+    """
+    Wraps polar grid, which is useful for plotting purposes.
 
     Parameters
     ----------
@@ -48,7 +50,8 @@ def wrap_polar(f: np.ndarray) -> np.ndarray:
 
 
 def unwrap_polar(f: np.ndarray) -> np.ndarray:
-    """Unwraps polar grid.
+    """
+    Unwraps polar grid.
 
     Parameters
     ----------
@@ -65,7 +68,8 @@ def unwrap_polar(f: np.ndarray) -> np.ndarray:
 
 
 def wrap_phi(p2d: np.ndarray) -> np.ndarray:
-    """Wraps polar grid, which is useful for plotting purposes.
+    """
+    Wraps polar grid, which is useful for plotting purposes.
 
     Parameters
     ----------
@@ -83,7 +87,8 @@ def wrap_phi(p2d: np.ndarray) -> np.ndarray:
 
 
 def unwrap_phi(f: np.ndarray) -> np.ndarray:
-    """Unwraps polar grid.
+    """
+    Unwraps polar grid.
 
     Parameters
     ----------
