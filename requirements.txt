@@ -1,5 +1,0 @@
-healpy
-numba
-numba-scipy
-numpy
-scipy>=1.12

@@ -1,6 +1,6 @@
 import numpy as np
 
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 from . import kgrid
 from . import fft
@@ -9,7 +9,7 @@ from . import utils
 from .. import src
 
 
-def get_pofk_2D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[float]=None, kmax: Optional[float]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def get_pofk_2D(dgrid: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], kmin: Optional[float]=None, kmax: Optional[float]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the power spectrum of a 2D data set.
 
@@ -17,10 +17,10 @@ def get_pofk_2D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[fl
     ----------
     dgrid : 2darray
         Density contrast.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Grid divisions across one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     kmin : float, optional
         Minimum Fourier mode, default = Minimum k mode of the grid.
     kmax : float, optional
@@ -66,7 +66,7 @@ def get_pofk_2D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[fl
     return k, keff, pk
 
 
-def get_pofk_3D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[float]=None, kmax: Optional[float]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def get_pofk_3D(dgrid: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], kmin: Optional[float]=None, kmax: Optional[float]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the power spectrum of a 3D data set.
 
@@ -74,10 +74,10 @@ def get_pofk_3D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[fl
     ----------
     dgrid : 3darray
         Density contrast.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Grid divisions across one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     kmin : float, optional
         Minimum Fourier mode, default = Minimum k mode of the grid.
     kmax : float, optional

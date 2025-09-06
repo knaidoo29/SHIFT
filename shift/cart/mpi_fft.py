@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.fft as scfft
 
-from typing import Tuple
+from typing import Tuple, Union
 
 def slab_fft1D(f_real: np.ndarray, boxsize: float, ngrid: int, axis: int=-1) -> np.ndarray:
     """
@@ -279,7 +279,7 @@ def _get_empty_split_array_3D(xsplits1: np.ndarray, xsplits2: np.ndarray, ysplit
         return np.zeros((xsplit2-xsplit1, ysplit2-ysplit1, zsplit2-zsplit1))
 
 
-def redistribute_forward_2D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: bool=False) -> np.ndarray:
+def redistribute_forward_2D(f: np.ndarray, ngrid: Union[int, list], MPI: type, iscomplex: bool=False) -> np.ndarray:
     """
     Redistributes a 2D array from the conventional axis split across x to a
     split across y.
@@ -288,14 +288,19 @@ def redistribute_forward_2D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: boo
     ----------
     f : 2darray
         Input data split across the x axis.
-    ngrid : int
-        Grid size along each axis.
+    ngrid : int or list
+        Grid size along each axis or a list of grid sizes along each axes.
     MPI : object
         MPIutils MPI object.
     iscomplex : bool, optional
         Is the input data complex.
     """
-    _xsplits1, _xsplits2, _ysplits1, _ysplits2 = _get_splits_2D(MPI, ngrid, ngrid)
+    if np.isscalar(ngrid):
+        xngrid, yngrid = ngrid, ngrid
+    else:
+        assert len(ngrid) == 2, 'Length of grid dimensions must be 2.'
+        xngrid, yngrid = ngrid[0], ngrid[1]
+    _xsplits1, _xsplits2, _ysplits1, _ysplits2 = _get_splits_2D(MPI, xngrid, yngrid)
     for i in range(0, MPI.size):
         if i == MPI.rank:
             fnew = _get_empty_split_array_2D(_xsplits1, _xsplits2, _ysplits1,
@@ -321,7 +326,7 @@ def redistribute_forward_2D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: boo
     return fnew
 
 
-def redistribute_forward_3D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: bool=False) -> np.ndarray:
+def redistribute_forward_3D(f: np.ndarray, ngrid: Union[int, list], MPI: type, iscomplex: bool=False) -> np.ndarray:
     """
     Redistributes a 3D array from the conventional axis split across x to a
     split across y.
@@ -330,15 +335,20 @@ def redistribute_forward_3D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: boo
     ----------
     f : 3darray
         Input data split across the x axis.
-    ngrid : int
-        Grid size along each axis.
+    ngrid : int or list
+        Grid size along each axis or a list of grid sizes along each axes.
     MPI : object
         MPIutils MPI object.
     iscomplex : bool, optional
         Is the input data complex.
     """
+    if np.isscalar(ngrid):
+        xngrid, yngrid, zngrid = ngrid, ngrid, ngrid
+    else:
+        assert len(ngrid) == 3, 'Length of grid dimensions must be 3.'
+        xngrid, yngrid, zngrid = ngrid[0], ngrid[1], ngrid[2]
     _xsplits1, _xsplits2, _ysplits1, _ysplits2, _zsplits1, _zsplits2 = \
-        _get_splits_3D(MPI, ngrid, ngrid, ngrid)
+        _get_splits_3D(MPI, xngrid, yngrid, zngrid)
     for i in range(0, MPI.size):
         if i == MPI.rank:
             fnew = _get_empty_split_array_3D(_xsplits1, _xsplits2, _ysplits1,
@@ -365,7 +375,7 @@ def redistribute_forward_3D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: boo
     return fnew
 
 
-def redistribute_backward_2D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: int=False) -> np.ndarray:
+def redistribute_backward_2D(f: np.ndarray, ngrid: Union[int, list], MPI: type, iscomplex: int=False) -> np.ndarray:
     """
     Redistributes a 2D array backwards a split across y to a split across x.
 
@@ -373,14 +383,19 @@ def redistribute_backward_2D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: in
     ----------
     f : 2darray
         Input data split across the x axis.
-    ngrid : int
-        Grid size along each axis.
+    ngrid : int or list
+        Grid size along each axis or a list of grid sizes along each axes.
     MPI : object
         MPIutils MPI object.
     iscomplex : bool, optional
         Is the input data complex.
     """
-    _xsplits1, _xsplits2, _ysplits1, _ysplits2 = _get_splits_2D(MPI, ngrid, ngrid)
+    if np.isscalar(ngrid):
+        xngrid, yngrid = ngrid, ngrid
+    else:
+        assert len(ngrid) == 2, 'Length of grid dimensions must be 2.'
+        xngrid, yngrid = ngrid[0], ngrid[1]
+    _xsplits1, _xsplits2, _ysplits1, _ysplits2 = _get_splits_2D(MPI, xngrid, yngrid)
     for i in range(0, MPI.size):
         if i == MPI.rank:
             fnew = _get_empty_split_array_2D(_xsplits1, _xsplits2, _ysplits1,
@@ -406,7 +421,7 @@ def redistribute_backward_2D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: in
     return fnew
 
 
-def redistribute_backward_3D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: bool=False) -> np.ndarray:
+def redistribute_backward_3D(f: np.ndarray, ngrid: Union[int, list], MPI: type, iscomplex: bool=False) -> np.ndarray:
     """
     Redistributes a 3D array backwards a split across y to a split across x.
 
@@ -414,15 +429,20 @@ def redistribute_backward_3D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: bo
     ----------
     f : 3darray
         Input data split across the x axis.
-    ngrid : int
-        Grid size along each axis.
+    ngrid : int or list
+        Grid size along each axis or a list of grid sizes along each axes.
     MPI : object
         MPIutils MPI object.
     iscomplex : bool, optional
         Is the input data complex.
     """
+    if np.isscalar(ngrid):
+        xngrid, yngrid, zngrid = ngrid, ngrid, ngrid
+    else:
+        assert len(ngrid) == 3, 'Length of grid dimensions must be 3.'
+        xngrid, yngrid, zngrid = ngrid[0], ngrid[1], ngrid[2]
     _xsplits1, _xsplits2, _ysplits1, _ysplits2, _zsplits1, _zsplits2 = \
-        _get_splits_3D(MPI, ngrid, ngrid, ngrid)
+        _get_splits_3D(MPI, xngrid, yngrid, zngrid)
     for i in range(0, MPI.size):
         if i == MPI.rank:
             fnew = _get_empty_split_array_3D(_xsplits1, _xsplits2, _ysplits1,
@@ -448,7 +468,7 @@ def redistribute_backward_3D(f: np.ndarray, ngrid: int, MPI: type, iscomplex: bo
     return fnew
 
 
-def mpi_fft2D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
+def mpi_fft2D(f_real: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], MPI: type) -> np.ndarray:
     """
     Performs MPI forward FFT on real space data.
 
@@ -456,10 +476,10 @@ def mpi_fft2D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> np.n
     ----------
     f_real : 1darray or ndarray
         Real space data.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Size of the grid along one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     MPI : obj
         MPIutils MPI object.
 
@@ -468,13 +488,25 @@ def mpi_fft2D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> np.n
     f_fourier : ndarray
         Fourier modes.
     """
-    f_fourier = slab_fft1D(f_real, boxsize, ngrid, axis=1)
+    if np.isscalar(boxsize):
+        xboxsize, yboxsize = boxsize, boxsize
+    else:
+        assert len(boxsize) == 2, 'Box dimensions must be a list of length 2.'
+        xboxsize, yboxsize = boxsize[0], boxsize[1]
+    if np.isscalar(ngrid):
+        xngrid, yngrid= ngrid, ngrid
+    else:
+        assert len(ngrid) == 2, 'grid dimensions must be a list of length 2.'
+        xngrid, yngrid = ngrid[0], ngrid[1]
+    # fft along y
+    f_fourier = slab_fft1D(f_real, yboxsize, yngrid, axis=1)
     f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI, iscomplex=True)
-    f_fourier = slab_fft1D(f_fourier, boxsize, ngrid, axis=0)
+    # fft along x
+    f_fourier = slab_fft1D(f_fourier, xboxsize, xngrid, axis=0)
     return f_fourier
 
 
-def mpi_ifft2D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
+def mpi_ifft2D(f_fourier: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], MPI: type) -> np.ndarray:
     """
     Performs MPI backward FFT on Fourier modes.
 
@@ -482,10 +514,10 @@ def mpi_ifft2D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> 
     ----------
     f_fourier : ndarray
         Fourier modes.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Size of the grid along one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     MPI : obj
         MPIutils MPI object.
 
@@ -494,13 +526,25 @@ def mpi_ifft2D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> 
     f_real : 1darray or ndarray
         Real space data.
     """
-    _f_fourier = slab_ifft1D(f_fourier, boxsize, ngrid, axis=0)
+    if np.isscalar(boxsize):
+        xboxsize, yboxsize = boxsize, boxsize
+    else:
+        assert len(boxsize) == 2, 'Box dimensions must be a list of length 2.'
+        xboxsize, yboxsize = boxsize[0], boxsize[1]
+    if np.isscalar(ngrid):
+        xngrid, yngrid= ngrid, ngrid
+    else:
+        assert len(ngrid) == 2, 'grid dimensions must be a list of length 2.'
+        xngrid, yngrid = ngrid[0], ngrid[1]
+    # fft along x
+    _f_fourier = slab_ifft1D(f_fourier, xboxsize, xngrid, axis=0)
     _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI, iscomplex=True)
-    f = slab_ifft1D(_f_fourier, boxsize, ngrid, axis=1)
+    # fft along y
+    f = slab_ifft1D(_f_fourier, yboxsize, yngrid, axis=1)
     return f.real
 
 
-def mpi_dct2D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
+def mpi_dct2D(f_real: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, type: int=2) -> np.ndarray:
     """
     Performs MPI forward DCT on real space data.
 
@@ -508,10 +552,10 @@ def mpi_dct2D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: i
     ----------
     f_real : 1darray or ndarray
         Real space data.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Size of the grid along one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     MPI : obj
         MPIutils MPI object.
     type : int, optional
@@ -522,13 +566,25 @@ def mpi_dct2D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: i
     f_fourier : ndarray
         Fourier modes.
     """
-    f_fourier = slab_dct1D(f_real, boxsize, ngrid, axis=1, type=type)
+    if np.isscalar(boxsize):
+        xboxsize, yboxsize = boxsize, boxsize
+    else:
+        assert len(boxsize) == 2, 'Box dimensions must be a list of length 2.'
+        xboxsize, yboxsize = boxsize[0], boxsize[1]
+    if np.isscalar(ngrid):
+        xngrid, yngrid= ngrid, ngrid
+    else:
+        assert len(ngrid) == 2, 'grid dimensions must be a list of length 2.'
+        xngrid, yngrid = ngrid[0], ngrid[1]
+    # fft along y
+    f_fourier = slab_dct1D(f_real, yboxsize, yngrid, axis=1, type=type)
     f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI, iscomplex=False)
-    f_fourier = slab_dct1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    # fft along x
+    f_fourier = slab_dct1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
     return f_fourier
 
 
-def mpi_idct2D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
+def mpi_idct2D(f_fourier: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, type: int=2) -> np.ndarray:
     """
     Performs MPI backward DCT on Fourier modes.
 
@@ -536,10 +592,10 @@ def mpi_idct2D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, typ
     ----------
     f_fourier : ndarray
         Fourier modes.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Size of the grid along one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     MPI : obj
         MPIutils MPI object.
     type : int, optional
@@ -550,13 +606,25 @@ def mpi_idct2D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, typ
     f_real : 1darray or ndarray
         Real space data.
     """
-    _f_fourier = slab_idct1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    if np.isscalar(boxsize):
+        xboxsize, yboxsize = boxsize, boxsize
+    else:
+        assert len(boxsize) == 2, 'Box dimensions must be a list of length 2.'
+        xboxsize, yboxsize = boxsize[0], boxsize[1]
+    if np.isscalar(ngrid):
+        xngrid, yngrid= ngrid, ngrid
+    else:
+        assert len(ngrid) == 2, 'grid dimensions must be a list of length 2.'
+        xngrid, yngrid = ngrid[0], ngrid[1]
+    # fft along x
+    _f_fourier = slab_idct1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
     _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI, iscomplex=False)
-    f = slab_idct1D(_f_fourier, boxsize, ngrid, axis=1, type=type)
+    # fft along y
+    f = slab_idct1D(_f_fourier, yboxsize, yngrid, axis=1, type=type)
     return f
 
 
-def mpi_dst2D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
+def mpi_dst2D(f_real: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, type: int=2) -> np.ndarray:
     """
     Performs MPI forward DST on real space data.
 
@@ -564,10 +632,10 @@ def mpi_dst2D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: i
     ----------
     f_real : 1darray or ndarray
         Real space data.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Size of the grid along one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     MPI : obj
         MPIutils MPI object.
     type : int, optional
@@ -578,13 +646,25 @@ def mpi_dst2D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: i
     f_fourier : ndarray
         Fourier modes.
     """
-    f_fourier = slab_dst1D(f_real, boxsize, ngrid, axis=1, type=type)
+    if np.isscalar(boxsize):
+        xboxsize, yboxsize = boxsize, boxsize
+    else:
+        assert len(boxsize) == 2, 'Box dimensions must be a list of length 2.'
+        xboxsize, yboxsize = boxsize[0], boxsize[1]
+    if np.isscalar(ngrid):
+        xngrid, yngrid= ngrid, ngrid
+    else:
+        assert len(ngrid) == 2, 'grid dimensions must be a list of length 2.'
+        xngrid, yngrid = ngrid[0], ngrid[1]
+    # fft along y
+    f_fourier = slab_dst1D(f_real, yboxsize, yngrid, axis=1, type=type)
     f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI, iscomplex=False)
-    f_fourier = slab_dst1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    # fft along x
+    f_fourier = slab_dst1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
     return f_fourier
 
 
-def mpi_idst2D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
+def mpi_idst2D(f_fourier: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, type: int=2) -> np.ndarray:
     """
     Performs MPI backward DST on Fourier modes.
 
@@ -592,10 +672,10 @@ def mpi_idst2D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, typ
     ----------
     f_fourier : ndarray
         Fourier modes.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Size of the grid along one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     MPI : obj
         MPIutils MPI object.
     type : int, optional
@@ -606,13 +686,25 @@ def mpi_idst2D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, typ
     f_real : 1darray or ndarray
         Real space data.
     """
-    _f_fourier = slab_idst1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    if np.isscalar(boxsize):
+        xboxsize, yboxsize = boxsize, boxsize
+    else:
+        assert len(boxsize) == 2, 'Box dimensions must be a list of length 2.'
+        xboxsize, yboxsize = boxsize[0], boxsize[1]
+    if np.isscalar(ngrid):
+        xngrid, yngrid= ngrid, ngrid
+    else:
+        assert len(ngrid) == 2, 'grid dimensions must be a list of length 2.'
+        xngrid, yngrid = ngrid[0], ngrid[1]
+    # fft along x
+    _f_fourier = slab_idst1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
     _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI, iscomplex=False)
-    f = slab_idst1D(_f_fourier, boxsize, ngrid, axis=1, type=type)
+    # fft along y
+    f = slab_idst1D(_f_fourier, yboxsize, yngrid, axis=1, type=type)
     return f
 
 
-def mpi_fft3D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
+def mpi_fft3D(f_real: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], MPI: type) -> np.ndarray:
     """
     Performs MPI forward FFT on real space data.
 
@@ -620,10 +712,10 @@ def mpi_fft3D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> np.n
     ----------
     f_real : ndarray
         Real space data.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Size of the grid along one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     MPI : obj
         MPIutils MPI object.
 
@@ -632,14 +724,27 @@ def mpi_fft3D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> np.n
     f_fourier : ndarray
         Fourier modes.
     """
-    f_fourier = slab_fft1D(f_real, boxsize, ngrid, axis=1)
-    f_fourier = slab_fft1D(f_fourier, boxsize, ngrid, axis=2)
+    if np.isscalar(boxsize):
+        xboxsize, yboxsize, zboxsize = boxsize, boxsize, boxsize
+    else:
+        assert len(boxsize) == 3, 'Box dimensions must be a list of length 2.'
+        xboxsize, yboxsize, zboxsize = boxsize[0], boxsize[1], boxsize[2]
+    if np.isscalar(ngrid):
+        xngrid, yngrid, zngrid = ngrid, ngrid, ngrid
+    else:
+        assert len(ngrid) == 3, 'grid dimensions must be a list of length 2.'
+        xngrid, yngrid, zngrid = ngrid[0], ngrid[1], ngrid[2]
+    # fft along y
+    f_fourier = slab_fft1D(f_real, yboxsize, yngrid, axis=1)
+    # fft along z
+    f_fourier = slab_fft1D(f_fourier, zboxsize, zngrid, axis=2)
     f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI, iscomplex=True)
-    f_fourier = slab_fft1D(f_fourier, boxsize, ngrid, axis=0)
+    # fft along x
+    f_fourier = slab_fft1D(f_fourier, xboxsize, xngrid, axis=0)
     return f_fourier
 
 
-def mpi_ifft3D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
+def mpi_ifft3D(f_fourier: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], MPI: type) -> np.ndarray:
     """
     Performs MPI backward FFT on Fourier modes.
 
@@ -647,10 +752,10 @@ def mpi_ifft3D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> 
     ----------
     f_fourier : ndarray
         Fourier modes.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Size of the grid along one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     MPI : obj
         MPIutils MPI object.
 
@@ -659,14 +764,27 @@ def mpi_ifft3D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type) -> 
     f : ndarray
         Real space data.
     """
-    _f_fourier = slab_ifft1D(f_fourier, boxsize, ngrid, axis=0)
+    if np.isscalar(boxsize):
+        xboxsize, yboxsize, zboxsize = boxsize, boxsize, boxsize
+    else:
+        assert len(boxsize) == 3, 'Box dimensions must be a list of length 2.'
+        xboxsize, yboxsize, zboxsize = boxsize[0], boxsize[1], boxsize[2]
+    if np.isscalar(ngrid):
+        xngrid, yngrid, zngrid = ngrid, ngrid, ngrid
+    else:
+        assert len(ngrid) == 3, 'grid dimensions must be a list of length 2.'
+        xngrid, yngrid, zngrid = ngrid[0], ngrid[1], ngrid[2]
+    # fft along x
+    _f_fourier = slab_ifft1D(f_fourier, xboxsize, xngrid, axis=0)
     _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI, iscomplex=True)
-    _f_fourier = slab_ifft1D(_f_fourier, boxsize, ngrid, axis=1)
-    f = slab_ifft1D(_f_fourier, boxsize, ngrid, axis=2)
+    # fft along y
+    _f_fourier = slab_ifft1D(_f_fourier, yboxsize, yngrid, axis=1)
+    # fft along z
+    f = slab_ifft1D(_f_fourier, zboxsize, zngrid, axis=2)
     return f.real
 
 
-def mpi_dct3D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
+def mpi_dct3D(f_real: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, type: int=2) -> np.ndarray:
     """
     Performs MPI forward DCT on real space data.
 
@@ -674,10 +792,10 @@ def mpi_dct3D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: i
     ----------
     f_real : ndarray
         Real space data.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Size of the grid along one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     MPI : obj
         MPIutils MPI object.
     type : int, optional
@@ -688,14 +806,27 @@ def mpi_dct3D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: i
     f_fourier : ndarray
         Fourier modes.
     """
-    f_fourier = slab_dct1D(f_real, boxsize, ngrid, axis=1, type=type)
-    f_fourier = slab_dct1D(f_fourier, boxsize, ngrid, axis=2, type=type)
+    if np.isscalar(boxsize):
+        xboxsize, yboxsize, zboxsize = boxsize, boxsize, boxsize
+    else:
+        assert len(boxsize) == 3, 'Box dimensions must be a list of length 3.'
+        xboxsize, yboxsize, zboxsize = boxsize[0], boxsize[1], boxsize[2]
+    if np.isscalar(ngrid):
+        xngrid, yngrid, zngrid = ngrid, ngrid, ngrid
+    else:
+        assert len(ngrid) == 3, 'grid dimensions must be a list of length 3.'
+        xngrid, yngrid, zngrid = ngrid[0], ngrid[1], ngrid[2]
+    # fft along y
+    f_fourier = slab_dct1D(f_real, yboxsize, yngrid, axis=1, type=type)
+    # fft along z
+    f_fourier = slab_dct1D(f_fourier, zboxsize, zngrid, axis=2, type=type)
     f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI, iscomplex=False)
-    f_fourier = slab_dct1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    # fft along x
+    f_fourier = slab_dct1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
     return f_fourier
 
 
-def mpi_idct3D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
+def mpi_idct3D(f_fourier: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, type: int=2) -> np.ndarray:
     """
     Performs MPI backward DCT on Fourier modes.
 
@@ -703,10 +834,10 @@ def mpi_idct3D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, typ
     ----------
     f_fourier : ndarray
         Fourier modes.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Size of the grid along one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     MPI : obj
         MPIutils MPI object.
     type : int, optional
@@ -717,14 +848,27 @@ def mpi_idct3D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, typ
     f : ndarray
         Real space data.
     """
-    _f_fourier = slab_idct1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    if np.isscalar(boxsize):
+        xboxsize, yboxsize, zboxsize = boxsize, boxsize, boxsize
+    else:
+        assert len(boxsize) == 3, 'Box dimensions must be a list of length 3.'
+        xboxsize, yboxsize, zboxsize = boxsize[0], boxsize[1], boxsize[2]
+    if np.isscalar(ngrid):
+        xngrid, yngrid, zngrid = ngrid, ngrid, ngrid
+    else:
+        assert len(ngrid) == 3, 'grid dimensions must be a list of length 3.'
+        xngrid, yngrid, zngrid = ngrid[0], ngrid[1], ngrid[2]
+    # fft along x
+    _f_fourier = slab_idct1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
     _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI, iscomplex=False)
-    _f_fourier = slab_idct1D(_f_fourier, boxsize, ngrid, axis=1, type=type)
-    f = slab_idct1D(_f_fourier, boxsize, ngrid, axis=2, type=type)
+    # fft along y
+    _f_fourier = slab_idct1D(_f_fourier, yboxsize, yngrid, axis=1, type=type)
+    # fft along z
+    f = slab_idct1D(_f_fourier, zboxsize, zngrid, axis=2, type=type)
     return f
 
 
-def mpi_dst3D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
+def mpi_dst3D(f_real: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, type: int=2) -> np.ndarray:
     """
     Performs MPI forward DST on real space data.
 
@@ -732,10 +876,10 @@ def mpi_dst3D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: i
     ----------
     f_real : ndarray
         Real space data.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Size of the grid along one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     MPI : obj
         MPIutils MPI object.
     type : int, optional
@@ -746,14 +890,27 @@ def mpi_dst3D(f_real: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: i
     f_fourier : ndarray
         Fourier modes.
     """
-    f_fourier = slab_dst1D(f_real, boxsize, ngrid, axis=1, type=type)
-    f_fourier = slab_dst1D(f_fourier, boxsize, ngrid, axis=2, type=type)
+    if np.isscalar(boxsize):
+        xboxsize, yboxsize, zboxsize = boxsize, boxsize, boxsize
+    else:
+        assert len(boxsize) == 3, 'Box dimensions must be a list of length 3.'
+        xboxsize, yboxsize, zboxsize = boxsize[0], boxsize[1], boxsize[2]
+    if np.isscalar(ngrid):
+        xngrid, yngrid, zngrid = ngrid, ngrid, ngrid
+    else:
+        assert len(ngrid) == 3, 'grid dimensions must be a list of length 3.'
+        xngrid, yngrid, zngrid = ngrid[0], ngrid[1], ngrid[2]
+    # fft along y
+    f_fourier = slab_dst1D(f_real, yboxsize, yngrid, axis=1, type=type)
+    # fft along z
+    f_fourier = slab_dst1D(f_fourier, zboxsize, zngrid, axis=2, type=type)
     f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI, iscomplex=False)
-    f_fourier = slab_dst1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    # fft along x
+    f_fourier = slab_dst1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
     return f_fourier
 
 
-def mpi_idst3D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, type: int=2) -> np.ndarray:
+def mpi_idst3D(f_fourier: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, type: int=2) -> np.ndarray:
     """
     Performs MPI backward DST on Fourier modes.
 
@@ -761,10 +918,10 @@ def mpi_idst3D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, typ
     ----------
     f_fourier : ndarray
         Fourier modes.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Size of the grid along one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     MPI : obj
         MPIutils MPI object.
     type : int, optional
@@ -775,8 +932,21 @@ def mpi_idst3D(f_fourier: np.ndarray, boxsize: float, ngrid: int, MPI: type, typ
     f : ndarray
         Real space data.
     """
-    _f_fourier = slab_idst1D(f_fourier, boxsize, ngrid, axis=0, type=type)
+    if np.isscalar(boxsize):
+        xboxsize, yboxsize, zboxsize = boxsize, boxsize, boxsize
+    else:
+        assert len(boxsize) == 3, 'Box dimensions must be a list of length 3.'
+        xboxsize, yboxsize, zboxsize = boxsize[0], boxsize[1], boxsize[2]
+    if np.isscalar(ngrid):
+        xngrid, yngrid, zngrid = ngrid, ngrid, ngrid
+    else:
+        assert len(ngrid) == 3, 'grid dimensions must be a list of length 3.'
+        xngrid, yngrid, zngrid = ngrid[0], ngrid[1], ngrid[2]
+    # fft along x
+    _f_fourier = slab_idst1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
     _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI, iscomplex=False)
-    _f_fourier = slab_idst1D(_f_fourier, boxsize, ngrid, axis=1, type=type)
-    f = slab_idst1D(_f_fourier, boxsize, ngrid, axis=2, type=type)
+    # fft along y
+    _f_fourier = slab_idst1D(_f_fourier, yboxsize, yngrid, axis=1, type=type)
+    # fft along z
+    f = slab_idst1D(_f_fourier, zboxsize, zngrid, axis=2, type=type)
     return f
