@@ -26,8 +26,8 @@ def polargrid(Rmax: float, Nr: int, Nphi: int) -> Tuple[np.ndarray, np.ndarray]:
         Phi grid.
     """
     _, r = cart.grid1D(Rmax, Nr)
-    _, p = cart.grid1D(2.*np.pi, Nphi)
-    p2d, r2d = np.meshgrid(p, r, indexing='ij')
+    p, _ = cart.grid1D(2.*np.pi, Nphi)
+    p2d, r2d = np.meshgrid(p[:-1], r, indexing='ij')
     return p2d, r2d
 
 

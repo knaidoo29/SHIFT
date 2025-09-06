@@ -21,7 +21,7 @@
 
 SHIFT is a scalable interface library for computing FFTs in scipy. The library wraps scipy FFT routines and makes it easy to keep track of corresponding Fourier modes in Fourier space. The package can be scaled using MPI (using the mpi4py library), using a slab decomposition to perform distributed FFTs.
 
-> **NOTE**: SHIFT was originally designed to be a Spherical/Polar Fourier Transform library -- this is the origin of the original acronym SpHerIcal Fourier Transforms. However, the package has developed into being predominanty a helper and MPI interface for FFTs in 2D/3D cartesian grids. The development of the Polar and Spherical Bessel transforms is still ongoing but is no longer the focus.
+> **NOTE**: SHIFT was originally designed to be a Spherical/Polar Fourier Transform library -- this is the origin of the original acronym SpHerIcal Fourier Transforms. However, the package has developed into being predominanty a helper and MPI interface for FFTs in 1D/2D/3D cartesian grids. The development of the Polar and Spherical Bessel transforms is still ongoing but is no longer the focus -- functions in `shift.polar` and `shift.sphere` should be considered as experimental.
 
 ## Dependencies
 

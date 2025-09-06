@@ -62,8 +62,8 @@ def grid2D(boxsize: float, ngrid: int, origin: float=0.) -> Tuple[np.ndarray, np
         origins = [origin, origin]
     else:
         origins = origin
-    xedges, x = grid1D(boxsizes[0], ngrids[0], origin=origins[0])
-    yedges, y = grid1D(boxsizes[1], ngrids[1], origin=origins[1])
+    _, x = grid1D(boxsizes[0], ngrids[0], origin=origins[0])
+    _, y = grid1D(boxsizes[1], ngrids[1], origin=origins[1])
     x2D, y2D = np.meshgrid(x, y, indexing='ij')
     return x2D, y2D
 
@@ -105,8 +105,8 @@ def grid3D(boxsize: float, ngrid: int, origin: float=0.) -> Tuple[np.ndarray, np
         origins = [origin, origin, origin]
     else:
         origins = origin
-    xedges, x = grid1D(boxsizes[0], ngrids[0], origin=origins[0])
-    yedges, y = grid1D(boxsizes[1], ngrids[1], origin=origins[1])
-    zedges, z = grid1D(boxsizes[2], ngrids[2], origin=origins[2])
+    _, x = grid1D(boxsizes[0], ngrids[0], origin=origins[0])
+    _, y = grid1D(boxsizes[1], ngrids[1], origin=origins[1])
+    _, z = grid1D(boxsizes[2], ngrids[2], origin=origins[2])
     x3D, y3D, z3D = np.meshgrid(x, y, z, indexing='ij')
     return x3D, y3D, z3D
