@@ -144,48 +144,48 @@ def test_sum_and_mean():
     assert pytest.approx(mean_val) == expected_mean
 
 
-# def test_min_and_max():
-#     mpi = MPI()
-#     size = mpi.size
-#     rank = mpi.rank
+def test_min_and_max():
+    mpi = MPI()
+    size = mpi.size
+    rank = mpi.rank
 
-#     # Give different arrays per rank so global min and max are known
-#     # e.g., rank r will have array [r, r+10]
-#     local = np.array([rank - size, rank + size])  # ensures variety
-#     min_val = mpi.min(local)
-#     max_val = mpi.max(local)
+    # Give different arrays per rank so global min and max are known
+    # e.g., rank r will have array [r, r+10]
+    local = np.array([rank - size, rank + size])  # ensures variety
+    min_val = mpi.min(local)
+    max_val = mpi.max(local)
 
-#     # These functions broadcast result to all ranks; so check on every rank
-#     # Compute expected global min and max
-#     all_mins = mpi.collect(np.min(local))
-#     # After collect, only rank 0 has full data; but min() method will ensure broadcast.
-#     if rank == 0:
-#         # compute expected values using gathered list
-#         expected_min = np.min(all_mins)
-#     else:
-#         # other ranks have already received the broadcasted value from implementation
-#         expected_min = min_val
-#     # All ranks should have min_val equal to expected_min
-#     assert min_val == mpi.min(local)  # idempotent call
-#     assert max_val == mpi.max(local)
+    # These functions broadcast result to all ranks; so check on every rank
+    # Compute expected global min and max
+    all_mins = mpi.collect(np.min(local))
+    # After collect, only rank 0 has full data; but min() method will ensure broadcast.
+    if rank == 0:
+        # compute expected values using gathered list
+        expected_min = np.min(all_mins)
+    else:
+        # other ranks have already received the broadcasted value from implementation
+        expected_min = min_val
+    # All ranks should have min_val equal to expected_min
+    assert min_val == mpi.min(local)  # idempotent call
+    assert max_val == mpi.max(local)
 
-#     all_mins = mpi.collect(np.min(local))
-#     if rank == 0:
-#         assert type(all_mins) == np.ndarray, "Type does not match expectation"
+    all_mins = mpi.collect(np.min(local))
+    if rank == 0:
+        assert type(all_mins) == np.ndarray, "Type does not match expectation"
 
-#     all_mins = mpi.collect(np.min(local), outlist=True)
-#     if rank == 0:
-#         assert type(all_mins) == list, "Type does not match expectation"
+    all_mins = mpi.collect(np.min(local), outlist=True)
+    if rank == 0:
+        assert type(all_mins) == list, "Type does not match expectation"
     
-#     data = np.ones(10)
-#     if rank == 1:
-#         data = None
+    data = np.ones(10)
+    if rank == 1:
+        data = None
     
-#     datas = mpi.collect_noNone(data)
-#     if rank == 0:
-#         assert np.array([data is not None for data in datas]).all(), "All elements should not be None"
-#     else:
-#         assert datas == None, "This core should get None"
+    datas = mpi.collect_noNone(data)
+    if rank == 0:
+        assert np.array([data is not None for data in datas]).all(), "All elements should not be None"
+    else:
+        assert datas == None, "This core should get None"
 
 
 # def test_send_recv_and_broadcast_roundtrip():
