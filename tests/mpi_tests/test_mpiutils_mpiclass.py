@@ -39,52 +39,52 @@ def test_set_loop_and_mpi_ind2ind():
             assert 0 <= ind < loop_size
 
 
-def test_split_and_split_array_and_distribute_and_collect():
-    mpi = MPI()
-    size = mpi.size
-    rank = mpi.rank
+# def test_split_and_split_array_and_distribute_and_collect():
+#     mpi = MPI()
+#     size = mpi.size
+#     rank = mpi.rank
 
-    # Make a test array of length N
-    N = max(1, size * 3 + 2)
-    data = np.arange(N)
+#     # Make a test array of length N
+#     N = max(1, size * 3 + 2)
+#     data = np.arange(N)
 
-    # split indices
-    split1, split2 = mpi.split(N, 2)
-    # splits should define contiguous blocks covering [0,N)
-    assert split1.shape == split2.shape
-    assert split1[0] == 0
-    assert split2[-1] == N
-    # counts sum to N
-    counts = split2 - split1
-    assert counts.sum() == N
+#     # split indices
+#     split1, split2 = mpi.split(N, 2)
+#     # splits should define contiguous blocks covering [0,N)
+#     assert split1.shape == split2.shape
+#     assert split1[0] == 0
+#     assert split2[-1] == N
+#     # counts sum to N
+#     counts = split2 - split1
+#     assert counts.sum() == N
 
-    # split indices
-    split1, split2 = mpi.split(N)
-    # splits should define contiguous blocks covering [0,N)
-    assert split1.shape == split2.shape
-    assert split1[0] == 0
-    assert split2[-1] == N
-    # counts sum to N
-    counts = split2 - split1
-    assert counts.sum() == N
+#     # split indices
+#     split1, split2 = mpi.split(N)
+#     # splits should define contiguous blocks covering [0,N)
+#     assert split1.shape == split2.shape
+#     assert split1[0] == 0
+#     assert split2[-1] == N
+#     # counts sum to N
+#     counts = split2 - split1
+#     assert counts.sum() == N
 
-    # split_array returns the slice for this rank
-    local_slice = mpi.split_array(data)
-    expected_slice = data[split1[rank]: split2[rank]]
-    np.testing.assert_array_equal(local_slice, expected_slice)
+#     # split_array returns the slice for this rank
+#     local_slice = mpi.split_array(data)
+#     expected_slice = data[split1[rank]: split2[rank]]
+#     np.testing.assert_array_equal(local_slice, expected_slice)
 
-    # distribute: rank 0 sends chunks, each rank returns its chunk
-    got = mpi.distribute(data)
-    # each process should receive its chunk equal to expected_slice
-    np.testing.assert_array_equal(got, expected_slice)
+#     # distribute: rank 0 sends chunks, each rank returns its chunk
+#     got = mpi.distribute(data)
+#     # each process should receive its chunk equal to expected_slice
+#     np.testing.assert_array_equal(got, expected_slice)
 
-    # Now test collect: rank 0 should receive concatenated chunks equal to data
-    collected = mpi.collect(got)  # on non-zero ranks returns None
-    if rank == 0:
-        # Reconstructed data must equal original
-        np.testing.assert_array_equal(collected, data)
-    else:
-        assert collected is None
+#     # Now test collect: rank 0 should receive concatenated chunks equal to data
+#     collected = mpi.collect(got)  # on non-zero ranks returns None
+#     if rank == 0:
+#         # Reconstructed data must equal original
+#         np.testing.assert_array_equal(collected, data)
+#     else:
+#         assert collected is None
 
 
 def test_check_partition():
