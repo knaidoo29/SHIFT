@@ -103,18 +103,18 @@ def test_check_partition():
     assert (check == [True, True, False]).all(), "Check partition does not give expected result."
 
 
-# def test_mpi_print_simple(capsys):
-#     mpi = MPI()
-#     rank = mpi.rank
-#     mpi.mpi_print("hello", "world")
-#     captured = capsys.readouterr()
-#     assert captured.out == "hello world\n"
-#     mpi.mpi_print_zero("hello", "world")
-#     captured = capsys.readouterr()
-#     if rank == 0:
-#         assert captured.out == "hello world\n"
-#     else:
-#         assert captured.out == ""
+def test_mpi_print_simple(capsys):
+    mpi = MPI()
+    rank = mpi.rank
+    mpi.mpi_print("hello", "world")
+    captured = capsys.readouterr()
+    assert captured.out == "hello world\n"
+    mpi.mpi_print_zero("hello", "world")
+    captured = capsys.readouterr()
+    if rank == 0:
+        assert captured.out == "hello world\n"
+    else:
+        assert captured.out == ""
 
 
 def test_sum_and_mean():
