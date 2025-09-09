@@ -33,8 +33,8 @@ jobs:
       - name: Run tests with coverage
         run: |
           coverage erase
-          coverage run -m pytest tests/normal_tests
-          mpirun -n 2 coverage run -m pytest tests/mpi_tests
+          coverage run -parallel-mode -m pytest tests/normal_tests
+          mpirun -n 2 coverage run -parallel-mode -m pytest tests/mpi_tests
           coverage combine
           coverage report -m
 
