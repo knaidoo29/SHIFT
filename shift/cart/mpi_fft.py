@@ -3,6 +3,7 @@ import scipy.fft as scfft
 
 from typing import Tuple, Union
 
+
 def slab_fft1D(f_real: np.ndarray, boxsize: float, ngrid: int, axis: int=-1) -> np.ndarray:
     """
     Performs forward FFT on real space data.

@@ -61,7 +61,10 @@ def get_pofk_2D(dgrid: np.ndarray, boxsize: Union[float, list], ngrid: Union[int
     counts = src.binbyindex(k_index, np.ones(len(k_index)), numk)
     pk = src.binbyindex(k_index, delta2, numk)
     keff = src.binbyindex(k_index, delta2*kvals, numk)
-    keff /= pk
+    cond = np.where(pk != 0.)[0]
+    keff[cond] /= pk[cond]
+    cond = np.where(pk == 0.)[0]
+    keff[cond] = np.nan
     pk *= ((2*np.pi/boxsize)**2.)/counts
     return k, keff, pk
 
@@ -118,6 +121,9 @@ def get_pofk_3D(dgrid: np.ndarray, boxsize: Union[float, list], ngrid: Union[int
     counts = src.binbyindex(k_index, np.ones(len(k_index)), numk)
     pk = src.binbyindex(k_index, delta2, numk)
     keff = src.binbyindex(k_index, delta2*kvals, numk)
-    keff /= pk
+    cond = np.where(pk != 0.)[0]
+    keff[cond] /= pk[cond]
+    cond = np.where(pk == 0.)[0]
+    keff[cond] = np.nan
     pk *= ((2*np.pi/boxsize)**3.)/counts
     return k, keff, pk

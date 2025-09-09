@@ -56,11 +56,11 @@ def kgrid2D(boxsize: Union[float, list], ngrid: Union[int, list]) -> Tuple[np.nd
         assert len(boxsize) == 2, "Length of list of box dimensions must be equal to the dimenions 2."
         xboxsize = boxsize[0]
         yboxsize = boxsize[1]
-    if np.isscalar(boxsize):
+    if np.isscalar(ngrid):
         xngrid = ngrid
         yngrid = ngrid
     else:
-        assert len(boxsize) == 2, "Length of list of grid dimensions must be equal to the dimenions 2."
+        assert len(ngrid) == 2, "Length of list of grid dimensions must be equal to the dimenions 2."
         xngrid = ngrid[0]
         yngrid = ngrid[1]
     kx = kgrid1D(xboxsize, xngrid)
@@ -99,12 +99,12 @@ def kgrid3D(boxsize: Union[float, list], ngrid: Union[int, list]) -> Tuple[np.nd
         xboxsize = boxsize[0]
         yboxsize = boxsize[1]
         zboxsize = boxsize[2]
-    if np.isscalar(boxsize):
+    if np.isscalar(ngrid):
         xngrid = ngrid
         yngrid = ngrid
         zngrid = ngrid
     else:
-        assert len(boxsize) == 3, "Length of list of grid dimensions must be equal to the dimenions 3."
+        assert len(ngrid) == 3, "Length of list of grid dimensions must be equal to the dimenions 3."
         xngrid = ngrid[0]
         yngrid = ngrid[1]
         zngrid = ngrid[2]
@@ -165,11 +165,11 @@ def kgrid2D_dct(boxsize: Union[float, list], ngrid: Union[int, list]) -> Tuple[n
         assert len(boxsize) == 2, "Length of list of box dimensions must be equal to the dimenions 2."
         xboxsize = boxsize[0]
         yboxsize = boxsize[1]
-    if np.isscalar(boxsize):
+    if np.isscalar(ngrid):
         xngrid = ngrid
         yngrid = ngrid
     else:
-        assert len(boxsize) == 2, "Length of list of grid dimensions must be equal to the dimenions 2."
+        assert len(ngrid) == 2, "Length of list of grid dimensions must be equal to the dimenions 2."
         xngrid = ngrid[0]
         yngrid = ngrid[1]
     kx = kgrid1D_dct(xboxsize, xngrid)
@@ -208,12 +208,12 @@ def kgrid3D_dct(boxsize: Union[float, list], ngrid: Union[int, list]) -> Tuple[n
         xboxsize = boxsize[0]
         yboxsize = boxsize[1]
         zboxsize = boxsize[2]
-    if np.isscalar(boxsize):
+    if np.isscalar(ngrid):
         xngrid = ngrid
         yngrid = ngrid
         zngrid = ngrid
     else:
-        assert len(boxsize) == 3, "Length of list of grid dimensions must be equal to the dimenions 3."
+        assert len(ngrid) == 3, "Length of list of grid dimensions must be equal to the dimenions 3."
         xngrid = ngrid[0]
         yngrid = ngrid[1]
         zngrid = ngrid[2]
@@ -274,11 +274,11 @@ def kgrid2D_dst(boxsize: Union[float, list], ngrid: Union[int, list]) -> Tuple[n
         assert len(boxsize) == 2, "Length of list of box dimensions must be equal to the dimenions 2."
         xboxsize = boxsize[0]
         yboxsize = boxsize[1]
-    if np.isscalar(boxsize):
+    if np.isscalar(ngrid):
         xngrid = ngrid
         yngrid = ngrid
     else:
-        assert len(boxsize) == 2, "Length of list of grid dimensions must be equal to the dimenions 2."
+        assert len(ngrid) == 2, "Length of list of grid dimensions must be equal to the dimenions 2."
         xngrid = ngrid[0]
         yngrid = ngrid[1]
     kx = kgrid1D_dst(xboxsize, xngrid)
@@ -317,12 +317,12 @@ def kgrid3D_dst(boxsize: Union[float, list], ngrid: Union[int, list]) -> Tuple[n
         xboxsize = boxsize[0]
         yboxsize = boxsize[1]
         zboxsize = boxsize[2]
-    if np.isscalar(boxsize):
+    if np.isscalar(ngrid):
         xngrid = ngrid
         yngrid = ngrid
         zngrid = ngrid
     else:
-        assert len(boxsize) == 3, "Length of list of grid dimensions must be equal to the dimenions 3."
+        assert len(ngrid) == 3, "Length of list of grid dimensions must be equal to the dimenions 3."
         xngrid = ngrid[0]
         yngrid = ngrid[1]
         zngrid = ngrid[2]

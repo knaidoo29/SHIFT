@@ -2,7 +2,6 @@ import numpy as np
 
 from typing import Optional
 
-
 def dfdk(k: np.ndarray, fk: np.ndarray) -> np.ndarray:
     """
     Differentiation in Fourier space. This can be used for all functions.

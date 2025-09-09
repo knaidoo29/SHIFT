@@ -1,0 +1,10 @@
+[run]
+source = shift
+parallel = true
+
+[report]
+omit =
+    */polar/*
+    */sphere/*
+    */src/pft*
+    */src/bin*

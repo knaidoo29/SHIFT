@@ -71,7 +71,7 @@ Contents
 
    cart_index
    mpi_index
-   spherical_index
+   .. spherical_index
    api
 
 

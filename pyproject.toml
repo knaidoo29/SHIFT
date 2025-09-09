@@ -26,7 +26,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Fourier Transforms",
 ]
 dependencies = [
-    "healpy",
+    # "healpy",
     "numba",
     "numba-scipy",
     "numpy",
