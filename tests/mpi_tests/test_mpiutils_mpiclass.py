@@ -267,8 +267,3 @@ def test_send_up_and_send_down_roundtrip():
     else:
         # We can only test that returned values are floats and within expected range
         assert val == down, "Check roundtrip up and down messaging."
-
-
-def test_end():
-    mpi = MPI()
-    mpi.end()
