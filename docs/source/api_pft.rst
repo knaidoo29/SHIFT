@@ -1,14 +1,14 @@
-polar
-=====
+.. polar
+.. =====
 
-Polar grids
------------
+.. Polar grids
+.. -----------
 
-.. autofunction:: shift.polar.polargrid
+.. .. autofunction:: shift.polar.polargrid
 
-Polar Fourier Transform
------------------------
+.. Polar Fourier Transform
+.. -----------------------
 
-.. autoclass:: shift.polar.PFT
-    :members:
-    :undoc-members: 
+.. .. autoclass:: shift.polar.PFT
+..     :members:
+..     :undoc-members: 

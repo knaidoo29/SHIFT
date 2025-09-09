@@ -99,12 +99,12 @@ def ifft2D(f_fourier: np.ndarray, boxsize: Union[float, list]) -> np.ndarray:
     """
     assert f_fourier.ndim == 2, "Data must be 2 dimensional"
     if np.isscalar(boxsize):
-        dx = boxsize / float(len(f_real))
+        dx = boxsize / float(len(f_fourier))
         dy = dx
     else:
         assert len(boxsize) == 2, "Length of list of box dimensions must be equal to the dimenions 2."
-        dx = boxsize[0] / float(len(f_real))
-        dy = boxsize[1] / float(len(f_real[0]))
+        dx = boxsize[0] / float(len(f_fourier))
+        dy = boxsize[1] / float(len(f_fourier[0]))
     f_real = scfft.ifftn(f_fourier)
     f_real *= ((np.sqrt(2.*np.pi))**2.)/(dx*dy)
     return f_real.real
@@ -159,14 +159,14 @@ def ifft3D(f_fourier: np.ndarray, boxsize: Union[float, list]) -> np.ndarray:
     """
     assert f_fourier.ndim == 3, "Data must be 3 dimensional"
     if np.isscalar(boxsize):
-        dx = boxsize / float(len(f_real))
+        dx = boxsize / float(len(f_fourier))
         dy = dx
         dz = dx
     else:
         assert len(boxsize) == 3, "Length of list of box dimensions must be equal to the dimenions 3."
-        dx = boxsize[0] / float(len(f_real))
-        dy = boxsize[1] / float(len(f_real[0]))
-        dz = boxsize[2] / float(len(f_real[1]))
+        dx = boxsize[0] / float(len(f_fourier))
+        dy = boxsize[1] / float(len(f_fourier[0]))
+        dz = boxsize[2] / float(len(f_fourier[1]))
     f_real = scfft.ifftn(f_fourier)
     f_real *= ((np.sqrt(2.*np.pi))**3.)/(dx*dy*dz)
     return f_real.real
@@ -198,7 +198,7 @@ def dct1D(f_real: np.ndarray, boxsize: float, axis: int=-1, type: int=2) -> np.n
     return f_fourier
 
 
-def idct1D(f_fourier: np.ndarray, boxsize: float, axis: int=-1, type:int =2) -> np.ndarray:
+def idct1D(f_fourier: np.ndarray, boxsize: float, axis: int=-1, type:int=2) -> np.ndarray:
     """
     Performs backward DCT in 1D.
 
@@ -255,7 +255,7 @@ def dct2D(f_real: np.ndarray, boxsize: Union[float, list], type: int=2) -> np.nd
     return f_fourier
 
 
-def idct2D(f_fourier: np.ndarray, boxsize: Union[float, list], type: int=-2) -> np.ndarray:
+def idct2D(f_fourier: np.ndarray, boxsize: Union[float, list], type: int=2) -> np.ndarray:
     """
     Performs backward DCT in 2D.
 
@@ -275,12 +275,12 @@ def idct2D(f_fourier: np.ndarray, boxsize: Union[float, list], type: int=-2) -> 
     """
     assert f_fourier.ndim == 2, "Data must be 2 dimensional"
     if np.isscalar(boxsize):
-        dx = boxsize / float(len(f_real))
+        dx = boxsize / float(len(f_fourier))
         dy = dx
     else:
         assert len(boxsize) == 2, "Length of list of box dimensions must be equal to the dimenions 2."
-        dx = boxsize[0] / float(len(f_real))
-        dy = boxsize[1] / float(len(f_real[0]))
+        dx = boxsize[0] / float(len(f_fourier))
+        dy = boxsize[1] / float(len(f_fourier[0]))
     f_real = scfft.idctn(f_fourier, type=type)
     f_real *= ((np.sqrt(2.*np.pi))**2.)/(dx*dy)
     return f_real
@@ -339,14 +339,14 @@ def idct3D(f_fourier: np.ndarray, boxsize: Union[float, list], type: int=2) -> n
     """
     assert f_fourier.ndim == 3, "Data must be 3 dimensional"
     if np.isscalar(boxsize):
-        dx = boxsize / float(len(f_real))
+        dx = boxsize / float(len(f_fourier))
         dy = dx
         dz = dx
     else:
         assert len(boxsize) == 3, "Length of list of box dimensions must be equal to the dimenions 3."
-        dx = boxsize[0] / float(len(f_real))
-        dy = boxsize[1] / float(len(f_real[0]))
-        dz = boxsize[2] / float(len(f_real[1]))
+        dx = boxsize[0] / float(len(f_fourier))
+        dy = boxsize[1] / float(len(f_fourier[0]))
+        dz = boxsize[2] / float(len(f_fourier[1]))
     f_real = scfft.idctn(f_fourier, type=type)
     f_real *= ((np.sqrt(2.*np.pi))**3.)/(dx*dy*dz)
     return f_real
@@ -455,12 +455,12 @@ def idst2D(f_fourier: np.ndarray, boxsize: Union[float, list], type: int=2) -> n
     """
     assert f_fourier.ndim == 2, "Data must be 2 dimensional"
     if np.isscalar(boxsize):
-        dx = boxsize / float(len(f_real))
+        dx = boxsize / float(len(f_fourier))
         dy = dx
     else:
         assert len(boxsize) == 2, "Length of list of box dimensions must be equal to the dimenions 2."
-        dx = boxsize[0] / float(len(f_real))
-        dy = boxsize[1] / float(len(f_real[0]))
+        dx = boxsize[0] / float(len(f_fourier))
+        dy = boxsize[1] / float(len(f_fourier[0]))
     f_real = scfft.idstn(f_fourier, type=type)
     f_real *= ((np.sqrt(2.*np.pi))**2.)/(dx*dy)
     return f_real
@@ -495,7 +495,7 @@ def dst3D(f_real: np.ndarray, boxsize: Union[float, list], type: int=2) -> np.nd
         dy = boxsize[1] / float(len(f_real[0]))
         dz = boxsize[2] / float(len(f_real[1]))
     f_fourier = scfft.dstn(f_real, type=type)
-    f_fourier *= dx*dy*(1/np.sqrt(2.*np.pi))**3.
+    f_fourier *= dx*dy*dz*(1/np.sqrt(2.*np.pi))**3.
     return f_fourier
 
 
@@ -519,14 +519,14 @@ def idst3D(f_fourier: np.ndarray, boxsize: Union[float, list], type: int=2) -> n
     """
     assert f_fourier.ndim == 3, "Data must be 3 dimensional"
     if np.isscalar(boxsize):
-        dx = boxsize / float(len(f_real))
+        dx = boxsize / float(len(f_fourier))
         dy = dx
         dz = dx
     else:
         assert len(boxsize) == 3, "Length of list of box dimensions must be equal to the dimenions 3."
-        dx = boxsize[0] / float(len(f_real))
-        dy = boxsize[1] / float(len(f_real[0]))
-        dz = boxsize[2] / float(len(f_real[1]))
+        dx = boxsize[0] / float(len(f_fourier))
+        dy = boxsize[1] / float(len(f_fourier[0]))
+        dz = boxsize[2] / float(len(f_fourier[1]))
     f_real = scfft.idstn(f_fourier, type=type)
     f_real *= ((np.sqrt(2.*np.pi))**3.)/(dx*dy*dz)
     return f_real

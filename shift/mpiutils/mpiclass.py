@@ -143,52 +143,55 @@ class MPI:
         return np.array([NDshape[i] == NDshape_split[i] for i in range(len(NDshape))])
 
 
-    def create_split_ndarray(self, arrays_nd: np.ndarray, whichaxis: List[bool]) -> np.ndarray:
-        """
-        Splits a list of arrays based on the data partitioning scheme.
+    # TODO: Remove these two functions -- pretty certain these are defunct and no longer used elsewhere.
+    
+    # def create_split_ndarray(self, arrays_nd: np.ndarray, whichaxis: List[bool]) -> np.ndarray:
+    #     """
+    #     Splits a list of 1D arrays based on the data partitioning scheme. To be used with
+    #     create_split_ngrid.
 
-        Parameters
-        ----------
-        arrays_nd : array_like
-            List of arrays to be split.
-        whichaxis : array_like
-            Boolean array showing whether array will not be split along a said axes.
+    #     Parameters
+    #     ----------
+    #     arrays_nd : array_like
+    #         List of 1D arrays to be split.
+    #     whichaxis : array_like
+    #         Boolean array showing whether array will not be split along a said axes.
         
-        Returns
-        -------
-        split_arrays : array_like
-            Split list of array.
-        """
-        split_arrays = []
-        for i in range(0, len(arrays_nd)):
-            _array = arrays_nd[i]
-            if whichaxis[i] == False:
-                _array = self.split_array(_array)
-                split_arrays.append(_array)
-            else:
-                split_arrays.append(_array)
-        return split_arrays
+    #     Returns
+    #     -------
+    #     split_arrays : array_like
+    #         Split list of 1D array.
+    #     """
+    #     split_arrays = []
+    #     for i in range(0, len(arrays_nd)):
+    #         _array = arrays_nd[i]
+    #         if whichaxis[i] == False:
+    #             _array = self.split_array(_array)
+    #             split_arrays.append(_array)
+    #         else:
+    #             split_arrays.append(_array)
+    #     return split_arrays
 
 
-    def create_split_ndgrid(self, arrays_nd: np.ndarray, whichaxis: List[bool]) -> np.ndarray:
-        """
-        Creates a partitioned gridded data set.
+    # def create_split_ndgrid(self, arrays_nd: np.ndarray, whichaxis: List[bool]) -> np.ndarray:
+    #     """
+    #     Creates a partitioned gridded data set.
 
-        Parameters
-        ----------
-        arrays_nd : array_like
-            List of arrays to be split.
-        whichaxis : array_like
-            Boolean array showing whether array will not be split along a said axes.
+    #     Parameters
+    #     ----------
+    #     arrays_nd : array_like
+    #         List of arrays to be split.
+    #     whichaxis : array_like
+    #         Boolean array showing whether array will not be split along a said axes.
         
-        Returns
-        -------
-        split_grid : array_like
-            N-dimensional split array.
-        """
-        split_arrays = self.create_split_ndarray(arrays_nd, whichaxis)
-        split_grid = np.meshgrid(*split_arrays, indexing='ij')
-        return split_grid
+    #     Returns
+    #     -------
+    #     split_grid : array_like
+    #         N-dimensional split array.
+    #     """
+    #     split_arrays = self.create_split_ndarray(arrays_nd, whichaxis)
+    #     split_grid = np.meshgrid(*split_arrays, indexing='ij')
+    #     return split_grid
 
 
     def mpi_print(self, *value: Any) -> None:
