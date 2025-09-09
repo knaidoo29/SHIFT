@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'   # or match your project
+
+      - name: Install MPI and system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mpich libmpich-dev
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov coverage mpi4py
+
+      - name: Run tests with coverage
+        run: |
+          coverage erase
+          coverage run -m pytest tests/normal_tests
+          mpirun -n 2 coverage run -m pytest tests/mpi_tests
+          coverage combine
+          coverage report -m
+
+      # Optional: Upload coverage report to GitHub summary
+      - name: Save coverage to summary
+        run: |
+          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+          coverage report -m >> $GITHUB_STEP_SUMMARY
+
+      # Optional: Upload to Codecov (if you use it)
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}  # only needed if repo is private
+          files: ./coverage.xml
+          fail_ci_if_error: true
