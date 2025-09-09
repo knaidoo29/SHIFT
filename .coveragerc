@@ -1,6 +1,7 @@
 [run]
 source = shift
 parallel = true
+concurrency = multiprocessing
 
 [report]
 omit =
