@@ -82,7 +82,7 @@ Dependencies
 * `numba-scipy <https://numba-scipy.readthedocs.io/>`_
 * `numpy <http://www.numpy.org/>`_
 * `scipy <https://scipy.org/>`_
-* `healpy <https://healpy.readthedocs.io/>`_
+.. * `healpy <https://healpy.readthedocs.io/>`_
 * `mpi4py <https://mpi4py.readthedocs.io/en/stable/>`_ [Optional: enables MPI parallelism]
 
 Installation

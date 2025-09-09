@@ -29,7 +29,7 @@ SHIFT is a scalable interface library for computing FFTs in scipy. The library w
 * `numba-scipy`
 * `numpy`
 * `scipy`
-* `healpy`
+<!-- * `healpy` -->
 * `mpi4py` [Optional: enables MPI parallelism]
 
 ## Installation
