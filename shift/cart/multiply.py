@@ -1,12 +1,15 @@
 import numpy as np
 from scipy.interpolate import interp1d
 
+from typing import Union
+
 from . import fft
 from . import kgrid
 
 
-def mult_fk_2D(fgrid: np.ndarray, boxsize: float, k: np.ndarray, fk: np.ndarray) -> np.ndarray:
-    """Multiply 2D grid in Fourier space by k dependent function.
+def mult_fk_2D(fgrid: np.ndarray, boxsize: Union[float, list], k: np.ndarray, fk: np.ndarray) -> np.ndarray:
+    """
+    Multiply 2D grid in Fourier space by k dependent function.
 
     Parameters
     ----------
@@ -20,7 +23,9 @@ def mult_fk_2D(fgrid: np.ndarray, boxsize: float, k: np.ndarray, fk: np.ndarray)
         Function values at k.
     """
     # Creating f(k) interpolator
-    ngrid = len(fgrid)
+    xngrid = len(fgrid)
+    yngrid = len(fgrid[0])
+    ngrid = [xngrid, yngrid]
     fk_interpolator = interp1d(k, fk, kind='cubic')
     # Build K-grid
     kx2d, ky2d = kgrid.kgrid2D(boxsize, ngrid)
@@ -45,12 +50,13 @@ def mult_fk_2D(fgrid: np.ndarray, boxsize: float, k: np.ndarray, fk: np.ndarray)
     else:
         fkgrid *= fk_interpolator(kmag)
     # Backward FFT
-    fgrid = fft.ifft2D(fkgrid.reshape(ngrid, ngrid), boxsize).real
+    fgrid = fft.ifft2D(fkgrid.reshape(xngrid, yngrid), boxsize).real
     return fgrid
 
 
-def mult_fk_3D(fgrid: np.ndarray, boxsize: float, k: np.ndarray, fk: np.ndarray) -> np.ndarray:
-    """Multiply 3D grid in Fourier space by k dependent function.
+def mult_fk_3D(fgrid: np.ndarray, boxsize: Union[float, list], k: np.ndarray, fk: np.ndarray) -> np.ndarray:
+    """
+    Multiply 3D grid in Fourier space by k dependent function.
 
     Parameters
     ----------
@@ -64,7 +70,10 @@ def mult_fk_3D(fgrid: np.ndarray, boxsize: float, k: np.ndarray, fk: np.ndarray)
         Function values at k.
     """
     # Creating f(k) interpolator
-    ngrid = len(fgrid)
+    xngrid = len(fgrid)
+    yngrid = len(fgrid[0])
+    zngrid = len(fgrid[0][0])
+    ngrid = [xngrid, yngrid, zngrid]
     fk_interpolator = interp1d(k, fk, kind='cubic')
     # Build K-grid
     kx3d, ky3d, kz3d = kgrid.kgrid3D(boxsize, ngrid)
@@ -89,5 +98,5 @@ def mult_fk_3D(fgrid: np.ndarray, boxsize: float, k: np.ndarray, fk: np.ndarray)
     else:
         fkgrid *= fk_interpolator(kmag)
     # Backward FFT
-    fgrid = fft.ifft3D(fkgrid.reshape(ngrid, ngrid, ngrid), boxsize).real
+    fgrid = fft.ifft3D(fkgrid.reshape(xngrid, yngrid, zngrid), boxsize).real
     return fgrid

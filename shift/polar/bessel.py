@@ -9,7 +9,8 @@ from typing import Union, Optional
 
 
 def get_Jm(m: int, x: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
-    """Returns the value of Bessel functions of the first kind of order m at x.
+    """
+    Returns the value of Bessel functions of the first kind of order m at x.
 
     Paramters
     ---------
@@ -27,7 +28,8 @@ def get_Jm(m: int, x: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
 
 
 def get_dJm(m: int, x: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
-    """Returns the value of the derivative of Bessel functions of the first kind of order m at x.
+    """
+    Returns the value of the derivative of Bessel functions of the first kind of order m at x.
 
     Paramters
     ---------
@@ -45,7 +47,8 @@ def get_dJm(m: int, x: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
 
 
 def get_Jm_zeros(n: int, m: int) -> np.ndarray:
-    """Returms the first n zeros of the Bessel function of the first kind of order m.
+    """
+    Returms the first n zeros of the Bessel function of the first kind of order m.
 
     Parameters
     ----------
@@ -64,7 +67,8 @@ def get_Jm_zeros(n: int, m: int) -> np.ndarray:
 
 
 def get_dJm_zeros(n: int, m: int) -> np.ndarray:
-    """Returms the first n zeros of the derivative of the Bessel function of the first kind of order m.
+    """
+    Returms the first n zeros of the derivative of the Bessel function of the first kind of order m.
 
     Parameters
     ----------
@@ -83,19 +87,24 @@ def get_dJm_zeros(n: int, m: int) -> np.ndarray:
 
 
 def get_Jm_alt(x: Union[float, np.ndarray], m: int) -> Union[float, np.ndarray]:
-    """Wraps get_Jm in the opposite order for minimization."""
+    """
+    Wraps get_Jm in the opposite order for minimization.
+    """
     return get_Jm(m, x)
 
 
 def get_dJm_alt(x: Union[float, np.ndarray], m: int) -> Union[float, np.ndarray]:
-    """Wraps get_dJm in the opposite order for minimization."""
+    """
+    Wraps get_dJm in the opposite order for minimization.
+    """
     return get_dJm(m, x)
 
 
 def get_Jm_large_zeros(m: int, nmax: int, nstop: int=10, 
                        xnm2: Optional[np.ndarray]=None, 
                        xnm1: Optional[np.ndarray]=None) -> np.ndarray:
-    """Returns the zeros of the Bessel function. Begins by assuming
+    """
+    Returns the zeros of the Bessel function. Begins by assuming
     that the zeros of the spherical Bessel function for m lie exactly between
     the zeros of the Bessel function between m and m+1. This allows us to use
     scipy's jn_zeros function. However, this function fails to return for high n.
@@ -152,7 +161,8 @@ def get_Jm_large_zeros(m: int, nmax: int, nstop: int=10,
 
 def get_dJm_large_zeros(m: int, nmax: int, nstop: int=10, 
                         xnm2: Optional[np.ndarray]=None, xnm1: Optional[np.ndarray]=None) -> np.ndarray:
-    """Returns the zeros of the Bessel function. Begins by assuming
+    """
+    Returns the zeros of the Bessel function. Begins by assuming
     that the zeros of the spherical Bessel function for l lie exactly between
     the zeros of the Bessel function between m and m+1. This allows us to use
     scipy's jn_zeros function. However, this function fails to return for high n.

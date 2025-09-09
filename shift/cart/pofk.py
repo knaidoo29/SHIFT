@@ -1,6 +1,6 @@
 import numpy as np
 
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 from . import kgrid
 from . import fft
@@ -9,17 +9,18 @@ from . import utils
 from .. import src
 
 
-def get_pofk_2D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[float]=None, kmax: Optional[float]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Returns the power spectrum of a 2D data set.
+def get_pofk_2D(dgrid: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], kmin: Optional[float]=None, kmax: Optional[float]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Returns the power spectrum of a 2D data set.
 
     Parameters
     ----------
     dgrid : 2darray
         Density contrast.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Grid divisions across one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     kmin : float, optional
         Minimum Fourier mode, default = Minimum k mode of the grid.
     kmax : float, optional
@@ -60,22 +61,26 @@ def get_pofk_2D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[fl
     counts = src.binbyindex(k_index, np.ones(len(k_index)), numk)
     pk = src.binbyindex(k_index, delta2, numk)
     keff = src.binbyindex(k_index, delta2*kvals, numk)
-    keff /= pk
+    cond = np.where(pk != 0.)[0]
+    keff[cond] /= pk[cond]
+    cond = np.where(pk == 0.)[0]
+    keff[cond] = np.nan
     pk *= ((2*np.pi/boxsize)**2.)/counts
     return k, keff, pk
 
 
-def get_pofk_3D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[float]=None, kmax: Optional[float]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Returns the power spectrum of a 3D data set.
+def get_pofk_3D(dgrid: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], kmin: Optional[float]=None, kmax: Optional[float]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Returns the power spectrum of a 3D data set.
 
     Parameters
     ----------
     dgrid : 3darray
         Density contrast.
-    boxsize : float
-        Box size.
-    ngrid : int
-        Grid divisions across one axis.
+    boxsize : float or list
+        Box size or a list of the dimensions of each axis.
+    ngrid : int or list
+        Grid division along one axis or a list for each axis.
     kmin : float, optional
         Minimum Fourier mode, default = Minimum k mode of the grid.
     kmax : float, optional
@@ -116,6 +121,9 @@ def get_pofk_3D(dgrid: np.ndarray, boxsize: float, ngrid: int, kmin: Optional[fl
     counts = src.binbyindex(k_index, np.ones(len(k_index)), numk)
     pk = src.binbyindex(k_index, delta2, numk)
     keff = src.binbyindex(k_index, delta2*kvals, numk)
-    keff /= pk
+    cond = np.where(pk != 0.)[0]
+    keff[cond] /= pk[cond]
+    cond = np.where(pk == 0.)[0]
+    keff[cond] = np.nan
     pk *= ((2*np.pi/boxsize)**3.)/counts
     return k, keff, pk

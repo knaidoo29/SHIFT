@@ -2,7 +2,8 @@ import numpy as np
 
 
 def convolve_gaussian(k: np.ndarray, sigma: float) -> np.ndarray:
-    """Convolution weights in Fourier space.
+    """
+    Convolution weights in Fourier space.
 
     Parameters
     ----------
@@ -10,5 +11,11 @@ def convolve_gaussian(k: np.ndarray, sigma: float) -> np.ndarray:
         Fourier modes.
     sigma : float
         Gaussian scale.
+    
+    Returns
+    -------
+    kernel : array
+        Convolution kernel
     """
-    return np.exp(-0.5*(k*sigma)**2.)
+    kernel = np.exp(-0.5*(k*sigma)**2.)
+    return kernel

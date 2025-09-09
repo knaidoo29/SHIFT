@@ -7,4 +7,4 @@ API
 
   api_cart
   api_mpiutils
-  api_pft
+  .. api_pft
