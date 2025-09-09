@@ -1,9 +1,18 @@
 ![biglogo](docs/source/_static/SHIFT_logo_large_github.jpg)
 
 <p align="center">
+    <a href="https://github.com/knaidoo29/SHIFT/actions/workflows/tests.yml">
+    <img src="https://github.com/knaidoo29/SHIFT/actions/workflows/tests.yml/badge.svg" alt="Python Tests">
+    </a>
+    <a href="https://codecov.io/gh/knaidoo29/SHIFT" > 
+    <img src="https://codecov.io/gh/knaidoo29/SHIFT/graph/badge.svg?token=HX4OB31MS3"/> 
+    </a>
+    <a href="https://img.shields.io/badge/Python-3.9%20|%203.10%20|%203.11%20|%203.12-blue">
+    <img src="https://img.shields.io/badge/Python-3.9%20|%203.10%20|%203.11%20|%203.12-blue" alt="Python Version Support">
+    </a>
     <a href="https://img.shields.io/github/v/release/knaidoo29/SHIFT">  
-      <img src="https://img.shields.io/github/v/release/knaidoo29/SHIFT" alt="Version">
-      </a>
+    <img src="https://img.shields.io/github/v/release/knaidoo29/SHIFT" alt="Version">
+    </a>
     <a href="https://shift.readthedocs.io/en/latest/">
     <img src="https://readthedocs.org/projects/shift/badge/?version=latest" alt="Documentation Status">
     </a>

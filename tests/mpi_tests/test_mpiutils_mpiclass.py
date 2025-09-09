@@ -87,20 +87,20 @@ def test_split_and_split_array_and_distribute_and_collect():
         assert collected is None
 
 
-# def test_check_partition():
-#     mpi = MPI()
-#     NDshape = [4, 4, 4]
-#     NDshape_split = [2, 4, 4]
-#     check = mpi.check_partition(NDshape, NDshape_split)
-#     assert (check == [False, True, True]).all(), "Check partition does not give expected result."
-#     NDshape = [4, 4, 4]
-#     NDshape_split = [4, 2, 4]
-#     check = mpi.check_partition(NDshape, NDshape_split)
-#     assert (check == [True, False, True]).all(), "Check partition does not give expected result."
-#     NDshape = [4, 4, 4]
-#     NDshape_split = [4, 4, 2]
-#     check = mpi.check_partition(NDshape, NDshape_split)
-#     assert (check == [True, True, False]).all(), "Check partition does not give expected result."
+def test_check_partition():
+    mpi = MPI()
+    NDshape = [4, 4, 4]
+    NDshape_split = [2, 4, 4]
+    check = mpi.check_partition(NDshape, NDshape_split)
+    assert (check == [False, True, True]).all(), "Check partition does not give expected result."
+    NDshape = [4, 4, 4]
+    NDshape_split = [4, 2, 4]
+    check = mpi.check_partition(NDshape, NDshape_split)
+    assert (check == [True, False, True]).all(), "Check partition does not give expected result."
+    NDshape = [4, 4, 4]
+    NDshape_split = [4, 4, 2]
+    check = mpi.check_partition(NDshape, NDshape_split)
+    assert (check == [True, True, False]).all(), "Check partition does not give expected result."
 
 
 # def test_mpi_print_simple(capsys):
