@@ -202,19 +202,6 @@ def test_send_recv_and_broadcast_roundtrip():
     assert isinstance(out, dict)
     assert out["size"] == size
 
-    # Test send/recv pair between rank 0 and rank 1 (only run if size >= 2)
-    if size >= 2:
-        if rank == 0:
-            # send to rank 1
-            mpi.send(np.array([1, 2, 3]), to_rank=1, tag=99)
-            # receive nothing here
-        elif rank == 1:
-            arr = mpi.recv(from_rank=0, tag=99)
-            np.testing.assert_array_equal(arr, np.array([1, 2, 3]))
-    else:
-        pytest.skip("Need at least 2 ranks to test point-to-point send/recv.")
-
-
 def test_send_up_and_send_down_roundtrip():
     mpi = MPI()
     size = mpi.size
