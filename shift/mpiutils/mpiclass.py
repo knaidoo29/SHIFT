@@ -449,7 +449,7 @@ class MPI:
         return maxval
 
 
-    def end(self):
+    def end(self):  # pragma: no cover
         """
         Ends MPI environment.
         """
