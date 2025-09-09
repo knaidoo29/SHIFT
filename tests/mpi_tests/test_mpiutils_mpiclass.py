@@ -117,31 +117,31 @@ def test_check_partition():
 #         assert captured.out == ""
 
 
-# def test_sum_and_mean():
-#     mpi = MPI()
-#     size = mpi.size
-#     rank = mpi.rank
+def test_sum_and_mean():
+    mpi = MPI()
+    size = mpi.size
+    rank = mpi.rank
 
-#     # Give every rank a scalar equal to rank+1
-#     local_scalar = rank + 1
-#     summed = mpi.sum(local_scalar)
-#     # Only rank 0 receives the sum (others return None)
-#     expected_sum = sum(range(1, size + 1))
-#     if rank == 0:
-#         assert summed == expected_sum
-#     else:
-#         assert summed is None
+    # Give every rank a scalar equal to rank+1
+    local_scalar = rank + 1
+    summed = mpi.sum(local_scalar)
+    # Only rank 0 receives the sum (others return None)
+    expected_sum = sum(range(1, size + 1))
+    if rank == 0:
+        assert summed == expected_sum
+    else:
+        assert summed is None
 
-#     # Test mean: give each rank an array of ones of length (rank+1)
-#     # mean should be overall_total / overall_count.
-#     local_arr = np.ones(rank + 1, dtype=float)
-#     mean_val = mpi.mean(local_arr)
-#     # mean is computed across all elements across ranks and broadcast to all ranks
-#     total = sum(np.sum(np.ones(r + 1)) for r in range(size))
-#     total_elems = sum((r + 1) for r in range(size))
-#     expected_mean = total / total_elems
-#     # every rank should receive the same mean (float)
-#     assert pytest.approx(mean_val) == expected_mean
+    # Test mean: give each rank an array of ones of length (rank+1)
+    # mean should be overall_total / overall_count.
+    local_arr = np.ones(rank + 1, dtype=float)
+    mean_val = mpi.mean(local_arr)
+    # mean is computed across all elements across ranks and broadcast to all ranks
+    total = sum(np.sum(np.ones(r + 1)) for r in range(size))
+    total_elems = sum((r + 1) for r in range(size))
+    expected_mean = total / total_elems
+    # every rank should receive the same mean (float)
+    assert pytest.approx(mean_val) == expected_mean
 
 
 # def test_min_and_max():
