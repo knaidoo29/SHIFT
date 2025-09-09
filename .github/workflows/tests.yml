@@ -1,4 +1,4 @@
-name: CI
+name: Python Tests
 
 on:
   push:
@@ -53,4 +53,4 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}  # only needed if repo is private
           files: ./coverage.xml
-          fail_ci_if_error: true
+          fail_ci_if_error: false
