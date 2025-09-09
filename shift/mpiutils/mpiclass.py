@@ -272,7 +272,7 @@ class MPI:
             self.send(datain, to_rank=self.rank+1, tag=10+self.rank)
         if self.rank > 0:
             dataout = self.recv(self.rank-1, tag=10+self.rank-1)
-        self.wait
+        self.wait()
         if self.rank == self.size-1:
             self.send(datain, to_rank=0, tag=10+self.size)
         if self.rank == 0:
