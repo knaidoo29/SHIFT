@@ -4,16 +4,6 @@ import pytest
 from shift.mpiutils import MPI
 
 
-@pytest.fixture(scope="module")
-def mpi_obj():
-    """Create one MPI object per pytest module (one per process)."""
-    try:
-        mpi = MPI.MPI()
-    except Exception as e:
-        pytest.skip(f"mpi4py / MPI not available: {e}")
-    return mpi
-
-
 def test_set_loop_to_None():
     mpi = MPI()
     size = mpi.size
@@ -24,7 +14,6 @@ def test_set_loop_to_None():
     _ = mpi.set_loop(loop_size)  # sets mpi.loop_size and returns MPI_loop_size
     mpi.clean_loop()
     assert mpi.loop_size is None, "clean_loop should set this to None."
-
 
 
 def test_set_loop_and_mpi_ind2ind():
