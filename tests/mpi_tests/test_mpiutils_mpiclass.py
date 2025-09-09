@@ -215,23 +215,23 @@ def test_send_recv_and_broadcast_roundtrip():
         pytest.skip("Need at least 2 ranks to test point-to-point send/recv.")
 
 
-# def test_send_up_and_send_down_roundtrip():
-#     mpi = MPI()
-#     size = mpi.size
-#     rank = mpi.rank
+def test_send_up_and_send_down_roundtrip():
+    mpi = MPI()
+    size = mpi.size
+    rank = mpi.rank
 
-#     # Provide a scalar equal to rank for testing
-#     val = float(rank)
-#     # send_up returns data from neighbor above (wrapping), send_down from below (wrapping)
-#     up = mpi.send_up(val)
-#     down = mpi.send_down(up)
+    # Provide a scalar equal to rank for testing
+    val = float(rank)
+    # send_up returns data from neighbor above (wrapping), send_down from below (wrapping)
+    up = mpi.send_up(val)
+    down = mpi.send_down(up)
 
-#     print(rank, val, down)
+    print(rank, val, down)
 
-#     # For size==1, both up and down should be same as original
-#     if size == 1:
-#         assert up == val
-#         assert down == val
-#     else:
-#         # We can only test that returned values are floats and within expected range
-#         assert val == down, "Check roundtrip up and down messaging."
+    # For size==1, both up and down should be same as original
+    if size == 1:
+        assert up == val
+        assert down == val
+    else:
+        # We can only test that returned values are floats and within expected range
+        assert val == down, "Check roundtrip up and down messaging."
