@@ -267,16 +267,23 @@ class MPI:
         """
         Send data from each node to the node above.
         """
+        
         datain = np.copy(data)
+
         if self.rank < self.size-1:
             self.send(datain, to_rank=self.rank+1, tag=10+self.rank)
-        elif self.rank == self.size-1:
-            self.send(datain, to_rank=0, tag=10+self.size)
         if self.rank > 0:
             dataout = self.recv(self.rank-1, tag=10+self.rank-1)
-        elif self.rank == 0:
-            dataout = self.recv(self.size-1, tag=10+self.size)
+        
         self.wait()
+
+        if self.rank == self.size-1:
+            self.send(datain, to_rank=0, tag=10+self.size)
+        if self.rank == 0:
+            dataout = self.recv(self.size-1, tag=10+self.size)
+
+        self.wait()
+
         return dataout
 
 
@@ -285,15 +292,21 @@ class MPI:
         Send data from each node to the node below.
         """
         datain = np.copy(data)
+
         if self.rank > 0:
-            self.send(datain, to_rank=self.rank-1, tag=10+self.rank)
-        elif self.rank == 0:
-            self.send(datain, to_rank=self.size-1, tag=10+self.size)
+            self.send(datain, to_rank=self.rank-1, tag=20+self.rank)
         if self.rank < self.size-1:
-            dataout = self.recv(self.rank+1, tag=10+self.rank+1)
-        elif self.rank == self.size-1:
-            dataout = self.recv(0, tag=10+self.size)
+            dataout = self.recv(self.rank+1, tag=20+self.rank+1)
+        
         self.wait()
+
+        if self.rank == self.size-1:
+            dataout = self.recv(0, tag=20+self.size)
+        if self.rank == 0:
+            self.send(datain, to_rank=self.size-1, tag=20+self.size)
+        
+        self.wait()
+
         return dataout
 
 
