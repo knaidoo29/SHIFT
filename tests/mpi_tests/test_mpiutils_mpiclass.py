@@ -222,9 +222,9 @@ def test_send_up_and_send_down_roundtrip():
 
     # Provide a scalar equal to rank for testing
     val = float(rank)
-    
+
     # send_up returns data from neighbor above (wrapping), send_down from below (wrapping)
-    up = mpi.send_up(val)
-    down = mpi.send_down(up)
+    up = mpi.isend_up(val)
+    down = mpi.isend_down(up)
 
     assert val == down, "Check roundtrip up and down messaging."

@@ -263,7 +263,7 @@ class MPI:
         return data
 
 
-    def send_up(self, data: Any) -> Any:
+    def send_up(self, data: Any) -> Any:  # pragma: no cover
         """
         Send data from each node to the node above.
         """
@@ -281,13 +281,37 @@ class MPI:
             self.send(datain, to_rank=0, tag=10+self.size)
         if self.rank == 0:
             dataout = self.recv(self.size-1, tag=10+self.size)
-
+        
         self.wait()
 
         return dataout
 
 
-    def send_down(self, data: Any) -> Any:
+    def isend_up(self, data: Any) -> Any:
+        """
+        Send data from each node to the node above (rank+1, wrapping around).
+        """
+        datain = np.copy(data)
+
+        # Non-blocking receive from below
+        if self.rank > 0:
+            req_recv = self.comm.irecv(source=self.rank-1, tag=10+self.rank-1)
+        else:
+            req_recv = self.comm.irecv(source=self.size-1, tag=10+self.size)
+
+        # Non-blocking send upward
+        if self.rank < self.size-1:
+            req_send = self.comm.isend(obj=datain, dest=self.rank+1, tag=10+self.rank)
+        else:
+            req_send = self.comm.isend(obj=datain, dest=0, tag=10+self.size)
+
+        # Wait for receive and send to complete
+        dataout = req_recv.wait()
+        req_send.wait()
+        return dataout
+    
+
+    def send_down(self, data: Any) -> Any:  # pragma: no cover
         """
         Send data from each node to the node below.
         """
@@ -307,6 +331,30 @@ class MPI:
         
         self.wait()
 
+        return dataout
+
+
+    def isend_down(self, data: Any) -> Any:
+        """
+        Send data from each node to the node below (rank-1, wrapping around).
+        """
+        datain = np.copy(data)
+
+        # Non-blocking receive from above
+        if self.rank < self.size-1:
+            req_recv = self.comm.irecv(source=self.rank+1, tag=20+self.rank+1)
+        else:
+            req_recv = self.comm.irecv(source=0, tag=20+self.size)
+
+        # Non-blocking send downward
+        if self.rank > 0:
+            req_send = self.comm.isend(obj=datain, dest=self.rank-1, tag=20+self.rank)
+        else:
+            req_send = self.comm.isend(obj=datain, dest=self.size-1, tag=20+self.size)
+
+        # Wait for receive and send to complete
+        dataout = req_recv.wait()
+        req_send.wait()
         return dataout
 
 
