@@ -115,10 +115,25 @@ To use the MPI functionality please take a look at the documentation which instr
 users how to use the `SHIFT` `MPI` object and how to run these distributed jobs 
 successfully without errors or MPI related hanging.
 
-Citing
-======
+Citation
+========
 
-TBA
+If you use SHIFT in your work, please cite:
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.17093446.svg
+   :target: https://doi.org/10.5281/zenodo.17093446
+
+.. code-block:: bibtex
+
+   @software{naidoo_shift_2025,
+     author       = {Naidoo, Krishna},
+     title        = {SHIFT: a scalable MPI library for computing fast Fourier transforms in python},
+     year         = 2025,
+     publisher    = {Zenodo},
+     doi          = {10.5281/zenodo.17093446},
+     url          = {https://doi.org/10.5281/zenodo.17093446}
+   }
+
 
 Support
 =======

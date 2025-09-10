@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "shift-fft"
-description = "SHIFT performs Fast Fourier transforms on data in polar, spherical and cartesian coordinates."
+description = "SHIFT is a scalable MPI library for computing fast Fourier transforms in python."
 readme = "README.md"
 requires-python = ">=3.9"
 license = {file = "LICENSE"}

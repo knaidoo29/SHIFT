@@ -1,4 +1,4 @@
-![biglogo](docs/source/_static/SHIFT_logo_large_github.jpg)
+![biglogo](https://raw.githubusercontent.com/knaidoo29/SHIFT/main/docs/source/_static/SHIFT_logo_large_github.jpg)
 
 <p align="center">
     <a href="https://github.com/knaidoo29/SHIFT/actions/workflows/tests.yml">
@@ -86,9 +86,21 @@ To use the `MPI` functionality please take a look at the documentation which ins
 
 In depth documentation and tutorials are provided [here](https://shift.readthedocs.io/).
 
-## Citing
+## Citation
 
-TBA
+If you use **SHIFT** in your work, please cite:
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17093446.svg)](https://doi.org/10.5281/zenodo.17093446)
+
+```bibtex
+  @software{naidoo_shift_2025,
+    author       = {Naidoo, Krishna},
+    title        = {SHIFT: a scalable MPI library for computing fast Fourier transforms in python},
+    year         = 2025,
+    publisher    = {Zenodo},
+    doi          = {10.5281/zenodo.17093446},
+    url          = {https://doi.org/10.5281/zenodo.17093446}}
+```
 
 ## Support
 
