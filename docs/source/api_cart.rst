@@ -19,13 +19,6 @@ Cartesian grids
 .. autofunction:: shift.cart.grid2D
 .. autofunction:: shift.cart.grid3D
 
-Cartesian grids with MPI
-------------------------
-
-.. autofunction:: shift.cart.mpi_grid1D
-.. autofunction:: shift.cart.mpi_grid2D
-.. autofunction:: shift.cart.mpi_grid3D
-
 FFT
 ---
 
@@ -45,24 +38,6 @@ Forward/Backward Transforms
 .. autofunction:: shift.cart.ifft2D
 .. autofunction:: shift.cart.fft3D
 .. autofunction:: shift.cart.ifft3D
-
-FFT with MPI
-------------
-
-Fourier grids
-^^^^^^^^^^^^^
-
-.. autofunction:: shift.cart.mpi_kgrid1D
-.. autofunction:: shift.cart.mpi_kgrid2D
-.. autofunction:: shift.cart.mpi_kgrid3D
-
-Forward/Backward Transforms
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. autofunction:: shift.cart.mpi_fft2D
-.. autofunction:: shift.cart.mpi_ifft2D
-.. autofunction:: shift.cart.mpi_fft3D
-.. autofunction:: shift.cart.mpi_ifft3D
 
 DCT
 ---
@@ -84,24 +59,6 @@ Forward/Backward Transforms
 .. autofunction:: shift.cart.dct3D
 .. autofunction:: shift.cart.idct3D
 
-DCT with MPI
-------------
-
-Fourier grids
-^^^^^^^^^^^^^
-
-.. autofunction:: shift.cart.mpi_kgrid1D_dct
-.. autofunction:: shift.cart.mpi_kgrid2D_dct
-.. autofunction:: shift.cart.mpi_kgrid3D_dct
-
-Forward/Backward Transforms
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. autofunction:: shift.cart.mpi_dct2D
-.. autofunction:: shift.cart.mpi_idct2D
-.. autofunction:: shift.cart.mpi_dct3D
-.. autofunction:: shift.cart.mpi_idct3D
-
 DST
 ---
 
@@ -121,24 +78,6 @@ Forward/Backward Transforms
 .. autofunction:: shift.cart.idst2D
 .. autofunction:: shift.cart.dst3D
 .. autofunction:: shift.cart.idst3D
-
-DST with MPI
-------------
-
-Fourier grids
-^^^^^^^^^^^^^
-
-.. autofunction:: shift.cart.mpi_kgrid1D_dst
-.. autofunction:: shift.cart.mpi_kgrid2D_dst
-.. autofunction:: shift.cart.mpi_kgrid3D_dst
-
-Forward/Backward Transforms
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. autofunction:: shift.cart.mpi_dst2D
-.. autofunction:: shift.cart.mpi_idst2D
-.. autofunction:: shift.cart.mpi_dst3D
-.. autofunction:: shift.cart.mpi_idst3D
 
 Multiply
 --------

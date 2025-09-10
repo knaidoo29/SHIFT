@@ -3,7 +3,7 @@ requires = ["setuptools>61.0.0", "wheel", "numpy>=1.22,<1.27"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "shift"
+name = "shift-fft"
 description = "SHIFT performs Fast Fourier transforms on data in polar, spherical and cartesian coordinates."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -26,7 +26,6 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Fourier Transforms",
 ]
 dependencies = [
-    # "healpy",
     "numba",
     "numba-scipy",
     "numpy",
@@ -61,9 +60,4 @@ exclude = ["build", "docs", "tests", "tutorials"]
 include-package-data = true
 
 [tool.setuptools.package-data]
-skysegmentor = ["*.json", "*.md", "*.txt"]
-
-# [tool.pytest.ini_options]
-# addopts = "-ra -q --cov=fiesta --cov-report=term-missing"
-# python_files = "test_*.py"
-# testpaths = ["tests"]
+shift = ["*.json", "*.md", "*.txt"]
