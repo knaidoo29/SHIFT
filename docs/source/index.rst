@@ -65,8 +65,8 @@ decomposition to perform distributed FFTs.
   SHIFT was originally designed to be a Spherical/Polar Fourier Transform library. However, 
   the package has developed into being predominanty a helper and MPI interface for FFTs in 
   1D/2D/3D cartesian grids. The development of the Polar and Spherical Bessel transforms is 
-  still ongoing but is no longer the focus -- functions in `shift.polar` and `shift.sphere`
-  should be used with extreme caution and are only available from the `sphere` branch of the 
+  still ongoing but is no longer the focus -- functions in ``shift.polar`` and ``shift.sphere``
+  should be used with extreme caution and are only available from the ``sphere`` branch of the 
   code.
 
 Contents
@@ -84,7 +84,6 @@ Dependencies
 ============
 
 * `numba <https://numba.pydata.org/>`_
-* `numba-scipy <https://numba-scipy.readthedocs.io/>`_
 * `numpy <http://www.numpy.org/>`_
 * `scipy <https://scipy.org/>`_
 * `mpi4py <https://mpi4py.readthedocs.io/en/stable/>`_ [Optional: enables MPI distributed processes]
