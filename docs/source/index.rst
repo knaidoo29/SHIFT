@@ -57,7 +57,7 @@ Introduction
 
 SHIFT is a scalable interface library for computing FFTs in scipy. The library wraps scipy 
 FFT routines and makes it easy to keep track of corresponding Fourier modes in Fourier 
-space. The package can be scaled using MPI (using the `mpi4py` library), using a slab 
+space. The package can be scaled using MPI (using the ``mpi4py`` library), using a slab 
 decomposition to perform distributed FFTs.
 
 .. note ::
