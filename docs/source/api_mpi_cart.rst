@@ -1,19 +1,6 @@
 cart
 ====
 
-The following functions are MPI enabled.
-
-Convolutions
-------------
-
-.. autofunction:: shift.cart.convolve_gaussian
-
-Differentiation
----------------
-
-.. autofunction:: shift.cart.dfdk
-.. autofunction:: shift.cart.dfdk2
-
 Cartesian grids with MPI
 ------------------------
 

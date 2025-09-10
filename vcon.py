@@ -51,37 +51,21 @@ if __name__ == "__main__":
         file.write('release='+str(release)+'\n')
         file.write('patch='+str(patch)+'\n')
         file.write('vstr="'+vstr_after+'"\n')
-
+    
     print("")
-    print("Update README.md")
+    print("Update CITATION.cff")
 
-    readme_file = open("README.md", "r")
+    readme_file = open("CITATION.cff", "r")
     list_of_lines = readme_file.readlines()
     for i in range(0, len(list_of_lines)):
-        if list_of_lines[i][:17] == '| Version       |':
-            list_of_lines[i] = '| Version       | ' + vstr_after
-            for j in range(0, 44-len(vstr_after)):
-                list_of_lines[i] += ' '
-            list_of_lines[i] += '|\n'
+        if list_of_lines[i][:8] == 'version:':
+            list_of_lines[i] = 'version: ' + vstr_after
+            list_of_lines[i] += '\n'
     readme_file.close()
 
-    readme_file = open("README.md", "w")
+    readme_file = open("CITATION.cff", "w")
     readme_file.writelines(list_of_lines)
     readme_file.close()
-
-    print("")
-    print("Update index.rst")
-    
-    index_rst_file = open("docs/source/index.rst", "r")
-    list_of_lines = index_rst_file.readlines()
-    for i in range(1, len(list_of_lines)):
-        if list_of_lines[i-1][:15] == '    * - Version':
-            list_of_lines[i] = '      - ' + vstr_after + '\n'
-    index_rst_file.close()
-
-    index_rst_file = open("docs/source/index.rst", "w")
-    index_rst_file.writelines(list_of_lines)
-    index_rst_file.close()
 
     print("")
     print("Update VERSION")

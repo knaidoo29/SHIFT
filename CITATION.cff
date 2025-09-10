@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "SHIFT is a scalable MPI library for computing fast Fourier transforms in python."
+authors:
+  - family-names: "Naidoo"
+    given-names: "Krishna"
+doi: 10.5281/zenodo.17093446
+url: "https://github.com/knaidoo29/SHIFT"
+version: 1.0.0
+date-released: 2025-09-10
