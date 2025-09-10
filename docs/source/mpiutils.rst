@@ -11,7 +11,7 @@ extra.
 
 To install ``mpi4py`` please follow the instructions `here <https://mpi4py.readthedocs.io/en/stable/install.html>`_.
 
-Once ``mpi4py`` is installed the ``MPI`` utility class can be loading simply by writing:
+Once ``mpi4py`` is installed the ``MPI`` utility class can be loaded simply by writing:
 
 .. code-block:: python
 
@@ -65,6 +65,8 @@ To run, simply do:
 .. code-block:: bash
 
     mpirun -n 4 python example_grid3D.py
+
+where in this specific example the process is distributed across `4` processors.
 
 .. Note::
 

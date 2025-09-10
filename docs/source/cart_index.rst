@@ -2,14 +2,8 @@
 Cartesian Fast Fourier Transform
 ================================
 
-Theory
-======
-
-Tutorial
-========
-
 Defining a cartesian grid
--------------------------
+=========================
 
 Before we compute the Fourier transforms it is useful to define the grid the Fourier 
 transform will be computed on. The utility of this will become much more apparent 
@@ -20,7 +14,8 @@ First let's define the size of our box (``boxsize``) and the resolution of the g
 
 .. Note:: 
 
-  We assume in all cases that the FFT is performed in a box, i.e. all sides are equal in length.
+  Both the ``boxsize`` and ``ngrid`` can either be single numbers meaning the box is 
+  actually a square/cube or a list for each axes if you would like a rectagle/cuboid shape.
 
 .. code-block:: python
 
@@ -41,10 +36,10 @@ In 2D and 3D this can be defined as
   x2D, y2D = shift.cart.grid2D(boxsize, ngrid)
 
   # in 3D
-  x3D, y3D = shift.cart.grid2D(boxsize, ngrid)
+  x3D, y3D, z3D = shift.cart.grid3D(boxsize, ngrid)
 
 Fourier transforms forward/backwards
-------------------------------------
+====================================
 
 Let's now define some field which we call ``fgrid`` which is defined in the same
 cartesian grid we defined above. Fourier transforming via an FFT is simple:
@@ -149,7 +144,7 @@ fashion.
 
 .. Note:: 
 
-  The default ``type=2``. This can be changed and follows the scipy definitions for DCT/DST. Just 
+  The default is ``type=2``. This can be changed and follows the scipy definitions for DCT/DST. Just 
   ensure you use the same ``type`` for both the forwards and backward transforms.
 
 The corresponding Fourier grid is slightly different for the DCT/DST and can be accessed by running
@@ -177,10 +172,6 @@ The corresponding Fourier grid is slightly different for the DCT/DST and can be 
 
   # in 3D
   kx3D, ky3D, kz3D = shift.cart.kgrid3D_dst(boxsize, ngrid)
-
-
-Parallelising with MPI
-----------------------
 
 Cartesian FFT API
 =================
