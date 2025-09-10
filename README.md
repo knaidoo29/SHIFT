@@ -88,7 +88,7 @@ In depth documentation and tutorials are provided [here](https://shift.readthedo
 
 ## Citation
 
-If you use **SHIFT** in your work, please cite it:
+If you use **SHIFT** in your work, please cite:
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17093446.svg)](https://doi.org/10.5281/zenodo.17093446)
 

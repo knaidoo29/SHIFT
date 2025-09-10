@@ -115,8 +115,8 @@ To use the MPI functionality please take a look at the documentation which instr
 users how to use the `SHIFT` `MPI` object and how to run these distributed jobs 
 successfully without errors or MPI related hanging.
 
-Citing
-======
+Citation
+========
 
 If you use SHIFT in your work, please cite:
 
