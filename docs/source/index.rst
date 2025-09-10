@@ -92,7 +92,7 @@ Dependencies
 Installation
 ============
 
-SHIFT can be installed via `pip`::
+SHIFT can be installed via ``pip``::
 
    pip install shift-fft
 
@@ -112,7 +112,7 @@ Once this is done you should be able to call SHIFT from python:
     import shift
 
 To use the MPI functionality please take a look at the documentation which instructs 
-users how to use the `SHIFT` `MPI` object and how to run these distributed jobs 
+users how to use the ``SHIFT`` ``MPI`` object and how to run these distributed jobs 
 successfully without errors or MPI related hanging.
 
 Citation
