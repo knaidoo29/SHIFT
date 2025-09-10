@@ -14,7 +14,7 @@ in real space and along the y-axis in Fourier space. To run `SHIFT` with `MPI` w
 `MPI` object located in `shift.mpiutils`. This is discussed in :doc:`MPIutils <mpiutils>` guide and should 
 be read before going any further.
 
-The TL;DR, each MPI script should being with the following:
+The TL;DR, each MPI script should begin with the following:
 
 .. code-block:: python
 
