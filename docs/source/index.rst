@@ -78,6 +78,7 @@ Contents
    cart_index
    mpiutils
    mpi_cart_index
+   spherical_index
    api
 
 Dependencies

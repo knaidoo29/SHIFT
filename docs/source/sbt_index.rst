@@ -1,17 +1,17 @@
-.. ==========================
-.. Spherical Bessel Transform
-.. ==========================
+==========================
+Spherical Bessel Transform
+==========================
 
-.. .. warning::
+.. warning::
 
-..     The spherical fourier transforms are under development, are not rigorously tested and 
-..     should therefore be used with caution.
+    The spherical fourier transforms are under development, are not rigorously tested and 
+    should therefore be used with caution.
     
-.. Theory
-.. ======
+Theory
+======
 
-.. Tutorial
-.. ========
+Tutorial
+========
 
-.. SBT API
+SBT API
 =======

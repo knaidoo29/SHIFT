@@ -1,17 +1,17 @@
-.. ============================
-.. Spherical Harmonic Transform
-.. ============================
+============================
+Spherical Harmonic Transform
+============================
 
-.. .. warning::
+.. warning::
 
-..     The spherical fourier transforms are under development, are not rigorously tested and 
-..     should therefore be used with caution.
+    The spherical fourier transforms are under development, are not rigorously tested and 
+    should therefore be used with caution.
     
-.. Theory
-.. ======
+Theory
+======
 
-.. Tutorial
-.. ========
+Tutorial
+========
 
-.. SHT API
-.. =======
+SHT API
+=======
