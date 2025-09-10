@@ -1,5 +1,5 @@
-cart
-====
+Cartesian
+=========
 
 Convolutions
 ------------

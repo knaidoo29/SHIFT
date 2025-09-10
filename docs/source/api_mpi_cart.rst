@@ -1,5 +1,5 @@
-cart
-====
+Cartesian with MPI
+==================
 
 Cartesian grids with MPI
 ------------------------
