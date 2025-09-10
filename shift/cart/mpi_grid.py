@@ -5,7 +5,9 @@ from typing import Tuple, Union, List
 from . import grid
 
 
-def mpi_grid1D(boxsize: float, ngrid: int, MPI: type, origin: float=0.) -> Tuple[np.ndarray, np.ndarray]:
+def mpi_grid1D(
+    boxsize: float, ngrid: int, MPI: type, origin: float = 0.0
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the x coordinates of a cartesian grid.
 
@@ -27,15 +29,17 @@ def mpi_grid1D(boxsize: float, ngrid: int, MPI: type, origin: float=0.) -> Tuple
     x : array
         X coordinates bin centers.
     """
-    xedges = np.linspace(0., boxsize, ngrid + 1) + origin
-    x = 0.5*(xedges[1:] + xedges[:-1])
+    xedges = np.linspace(0.0, boxsize, ngrid + 1) + origin
+    x = 0.5 * (xedges[1:] + xedges[:-1])
     split1, split2 = MPI.split(len(x))
-    x = x[split1[MPI.rank]:split2[MPI.rank]]
-    xedges = xedges[split1[MPI.rank]:split2[MPI.rank]+1]
+    x = x[split1[MPI.rank] : split2[MPI.rank]]
+    xedges = xedges[split1[MPI.rank] : split2[MPI.rank] + 1]
     return xedges, x
 
 
-def mpi_grid2D(boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float]]=0.) -> Tuple[np.ndarray, np.ndarray]:
+def mpi_grid2D(
+    boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float]] = 0.0
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the x, y coordinates of a cartesian grid.
 
@@ -73,11 +77,13 @@ def mpi_grid2D(boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[
         origins = origin
     _, x = mpi_grid1D(boxsizes[0], ngrids[0], MPI, origin=origins[0])
     _, y = grid.grid1D(boxsizes[1], ngrids[1], origin=origins[1])
-    x2D, y2D = np.meshgrid(x, y, indexing='ij')
+    x2D, y2D = np.meshgrid(x, y, indexing="ij")
     return x2D, y2D
 
 
-def mpi_grid3D(boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float]]=0.) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def mpi_grid3D(
+    boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float]] = 0.0
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the x, y, z coordinates of a cartesian grid.
 
@@ -119,5 +125,5 @@ def mpi_grid3D(boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[
     _, x = mpi_grid1D(boxsizes[0], ngrids[0], MPI, origin=origins[0])
     _, y = grid.grid1D(boxsizes[1], ngrids[1], origin=origins[1])
     _, z = grid.grid1D(boxsizes[2], ngrids[2], origin=origins[2])
-    x3D, y3D, z3D = np.meshgrid(x, y, z, indexing='ij')
+    x3D, y3D, z3D = np.meshgrid(x, y, z, indexing="ij")
     return x3D, y3D, z3D

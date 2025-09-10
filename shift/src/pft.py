@@ -44,7 +44,7 @@ def get_Rnm(r: np.ndarray, m: Union[int, float], knm: float, Nnm: float):
         Fourier mode.
     Nnm : float
         Normalisation constant.
-    
+
     Returns
     -------
     Rnm : array
@@ -57,8 +57,16 @@ def get_Rnm(r: np.ndarray, m: Union[int, float], knm: float, Nnm: float):
 
 
 @njit
-def forward_half_pft(r: np.ndarray, Pm_real: np.ndarray, Pm_imag: np.ndarray, knm_flat: np.ndarray, 
-                     Nnm_flat: np.ndarray, m2d_flat: np.ndarray, lenr: int, lenp: int):
+def forward_half_pft(
+    r: np.ndarray,
+    Pm_real: np.ndarray,
+    Pm_imag: np.ndarray,
+    knm_flat: np.ndarray,
+    Nnm_flat: np.ndarray,
+    m2d_flat: np.ndarray,
+    lenr: int,
+    lenp: int,
+):
     """
     Forward half PFT transform.
 
@@ -76,7 +84,7 @@ def forward_half_pft(r: np.ndarray, Pm_real: np.ndarray, Pm_imag: np.ndarray, kn
         Normalisation constant.
     m2d_flat : array
         The polar `m` mode.
-    
+
     Returns
     -------
     Pnm : array
@@ -95,15 +103,24 @@ def forward_half_pft(r: np.ndarray, Pm_real: np.ndarray, Pm_imag: np.ndarray, kn
 
         for j in range(lenr):
             pm_index = m_index * lenr + j
-            Pnm[2 * i]     += r[j] * Rnm[j] * Pm_real[pm_index] * dr
+            Pnm[2 * i] += r[j] * Rnm[j] * Pm_real[pm_index] * dr
             Pnm[2 * i + 1] += r[j] * Rnm[j] * Pm_imag[pm_index] * dr
 
     return Pnm
 
 
 @njit
-def backward_half_pft(r: np.ndarray, Pnm_real: np.ndarray, Pnm_imag: np.ndarray, knm_flat: np.ndarray, 
-                      Nnm_flat: np.ndarray, m2d_flat: np.ndarray, n2d_flat: np.ndarray, lenr: int, lenp: int):
+def backward_half_pft(
+    r: np.ndarray,
+    Pnm_real: np.ndarray,
+    Pnm_imag: np.ndarray,
+    knm_flat: np.ndarray,
+    Nnm_flat: np.ndarray,
+    m2d_flat: np.ndarray,
+    n2d_flat: np.ndarray,
+    lenr: int,
+    lenp: int,
+):
     """
     Forward half PFT transform.
 
@@ -121,7 +138,7 @@ def backward_half_pft(r: np.ndarray, Pnm_real: np.ndarray, Pnm_imag: np.ndarray,
         Normalisation constant.
     m2d_flat : array
         The polar `m` mode.
-    
+
     Returns
     -------
     Pnm : array
@@ -141,7 +158,7 @@ def backward_half_pft(r: np.ndarray, Pnm_real: np.ndarray, Pnm_imag: np.ndarray,
         for j in range(lenr):
             pm_index = m_index * lenr + j
             pnm_index = m_index * lenr + n_index
-            Pm[2 * pm_index]     += Rnm[j] * Pnm_real[pnm_index]
+            Pm[2 * pm_index] += Rnm[j] * Pnm_real[pnm_index]
             Pm[2 * pm_index + 1] += Rnm[j] * Pnm_imag[pnm_index]
 
     return Pm

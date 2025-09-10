@@ -26,8 +26,8 @@ def polargrid(Rmax: float, Nr: int, Nphi: int) -> Tuple[np.ndarray, np.ndarray]:
         Phi grid.
     """
     _, r = cart.grid1D(Rmax, Nr)
-    p, _ = cart.grid1D(2.*np.pi, Nphi)
-    p2d, r2d = np.meshgrid(p[:-1], r, indexing='ij')
+    p, _ = cart.grid1D(2.0 * np.pi, Nphi)
+    p2d, r2d = np.meshgrid(p[:-1], r, indexing="ij")
     return p2d, r2d
 
 
@@ -82,7 +82,7 @@ def wrap_phi(p2d: np.ndarray) -> np.ndarray:
         Wrapped Phi grid.
     """
     p2d = wrap_polar(p2d)
-    p2d[-1] = 2.*np.pi
+    p2d[-1] = 2.0 * np.pi
     return p2d
 
 
