@@ -2,16 +2,16 @@
 MPI Cartesian Fast Fourier Transform
 ====================================
 
-The `MPI` Object and how to run `MPI` processes
-=================================================
+The MPI Object and how to run MPI processes
+===========================================
 
 MPI enables us to run processes across multiply processors. When writing an MPI python script, remember
 that each process will see the same script and run through that same script. To get the benefits of MPI
-you must split the data you are working on or ensure that each process (called a `rank` in MPI) works on
-different pieces of the data. With this in mind `SHIFT` will construct 2D/3D grids across multiple processors.
+you must split the data you are working on or ensure that each process (called a ``rank`` in MPI) works on
+different pieces of the data. With this in mind ``SHIFT`` will construct 2D/3D grids across multiple processors.
 The FFT routines will be computed using a slab decomposition, meaning the grid is divided along the x-axis
-in real space and along the y-axis in Fourier space. To run `SHIFT` with `MPI` we need to make use of the 
-`MPI` object located in `shift.mpiutils`. This is discussed in :doc:`MPIutils <mpiutils>` guide and should 
+in real space and along the y-axis in Fourier space. To run ``SHIFT`` with ``MPI`` we need to make use of the 
+``MPI`` object located in ``shift.mpiutils``. This is discussed in :doc:`MPIutils <mpiutils>` guide and should 
 be read before going any further.
 
 The TL;DR, each MPI script should begin with the following:
