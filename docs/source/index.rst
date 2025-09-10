@@ -84,7 +84,6 @@ Dependencies
 ============
 
 * `numba <https://numba.pydata.org/>`_
-* `numba-scipy <https://numba-scipy.readthedocs.io/>`_
 * `numpy <http://www.numpy.org/>`_
 * `scipy <https://scipy.org/>`_
 * `mpi4py <https://mpi4py.readthedocs.io/en/stable/>`_ [Optional: enables MPI distributed processes]

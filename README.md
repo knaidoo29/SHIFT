@@ -50,7 +50,6 @@
 ## Dependencies
 
 * `numba`
-* `numba-scipy`
 * `numpy`
 * `scipy`
 * `mpi4py` [Optional: enables MPI distributed processes]
