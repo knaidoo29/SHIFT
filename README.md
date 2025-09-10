@@ -7,8 +7,8 @@
     <a href="https://codecov.io/gh/knaidoo29/SHIFT" > 
     <img src="https://codecov.io/gh/knaidoo29/SHIFT/graph/badge.svg?token=HX4OB31MS3"/> 
     </a>
-    <a href="https://img.shields.io/badge/Python-3.8%20|%203.9%20|%203.10%20|%203.11-blue">
-    <img src="https://img.shields.io/badge/Python-3.8%20|%203.9%20|%203.10%20|%203.11-blue" alt="Python Version Support">
+    <a href="https://img.shields.io/badge/Python-3.8%20|%203.9%20|%203.10%20|%203.11%20|%203.12-blue">
+    <img src="https://img.shields.io/badge/Python-3.8%20|%203.9%20|%203.10%20|%203.11%20|%203.12-blue" alt="Python Version Support">
     </a>
     <a href="https://img.shields.io/github/v/release/knaidoo29/SHIFT">  
     <img src="https://img.shields.io/github/v/release/knaidoo29/SHIFT" alt="Version">
