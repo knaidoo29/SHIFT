@@ -70,6 +70,6 @@ where in this specific example the process is distributed across `4` processors.
 
 .. Note::
 
-    ``mpirun`` should be replaced with the correct mpi exectuable, for instance on some
+    ``mpirun`` should be replaced with the correct mpi executable, for instance on some
     HPCs this should be ``srun``.
 
