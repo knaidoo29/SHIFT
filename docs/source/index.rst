@@ -43,9 +43,9 @@
       <a href="https://github.com/psf/black">
       <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
       </a>
-      <a href="https://doi.org/10.5281/zenodo.4294733">
-      <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.4294733.svg" alt="zenodo: DOI">
-      </a>
+      .. <a href="https://doi.org/10.5281/zenodo.4294733">
+      .. <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.4294733.svg" alt="zenodo: DOI">
+      .. </a>
    </p>
 
 ================================================

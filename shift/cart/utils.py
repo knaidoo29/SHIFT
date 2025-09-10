@@ -16,7 +16,7 @@ def get_kf(boxsize: float) -> float:
     kf : float
         Fundamental mode.
     """
-    kf = 2.*np.pi/boxsize
+    kf = 2.0 * np.pi / boxsize
     return kf
 
 
@@ -36,7 +36,7 @@ def get_kn(boxsize: float, ngrid: int) -> float:
     kn : float
         Nyquist frequency.
     """
-    kn = ngrid*np.pi/boxsize
+    kn = ngrid * np.pi / boxsize
     return kn
 
 
@@ -79,9 +79,10 @@ def normalise_freq(freq: np.ndarray, boxsize: float) -> np.ndarray:
     shape = np.shape(freq)
     grid = shape[0]
     dim = len(shape)
-    dx = boxsize/grid
+    dx = boxsize / grid
     freq /= dx**dim
     return freq
+
 
 def unnormalise_freq(freq: np.ndarray, boxsize: float) -> np.ndarray:
     """
@@ -97,6 +98,6 @@ def unnormalise_freq(freq: np.ndarray, boxsize: float) -> np.ndarray:
     shape = np.shape(freq)
     grid = shape[0]
     dim = len(shape)
-    dx = boxsize/grid
+    dx = boxsize / grid
     freq *= dx**dim
     return freq

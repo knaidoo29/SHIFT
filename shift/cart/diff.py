@@ -2,6 +2,7 @@ import numpy as np
 
 from typing import Optional
 
+
 def dfdk(k: np.ndarray, fk: np.ndarray) -> np.ndarray:
     """
     Differentiation in Fourier space. This can be used for all functions.
@@ -18,11 +19,13 @@ def dfdk(k: np.ndarray, fk: np.ndarray) -> np.ndarray:
     dfk : complex array
         Differential of the fourier modes.
     """
-    dfk = 1j*k*fk
+    dfk = 1j * k * fk
     return dfk
 
 
-def dfdk2(k1: np.ndarray, fk: np.ndarray, k2: Optional[np.ndarray]=None) -> np.ndarray:
+def dfdk2(
+    k1: np.ndarray, fk: np.ndarray, k2: Optional[np.ndarray] = None
+) -> np.ndarray:
     """
     Second order differentiation in Fourier space. This can be used for all functions.
 
@@ -41,7 +44,7 @@ def dfdk2(k1: np.ndarray, fk: np.ndarray, k2: Optional[np.ndarray]=None) -> np.n
         Differential of the fourier modes.
     """
     if k2 is None:
-        dfk2 = -(k1**2.)*fk
+        dfk2 = -(k1**2.0) * fk
     else:
-        dfk2 = -k1*k2*fk
+        dfk2 = -k1 * k2 * fk
     return dfk2

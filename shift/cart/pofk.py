@@ -9,7 +9,13 @@ from . import utils
 from .. import src
 
 
-def get_pofk_2D(dgrid: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], kmin: Optional[float]=None, kmax: Optional[float]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def get_pofk_2D(
+    dgrid: np.ndarray,
+    boxsize: Union[float, list],
+    ngrid: Union[int, list],
+    kmin: Optional[float] = None,
+    kmax: Optional[float] = None,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the power spectrum of a 2D data set.
 
@@ -36,13 +42,13 @@ def get_pofk_2D(dgrid: np.ndarray, boxsize: Union[float, list], ngrid: Union[int
         Measure power spectrum.
     """
     kx2d, ky2d = kgrid.kgrid2D(boxsize, ngrid)
-    kmag = np.sqrt(kx2d**2. + ky2d**2.)
+    kmag = np.sqrt(kx2d**2.0 + ky2d**2.0)
     dkgrid = fft.fft2D(dgrid, boxsize)
     if kmin is None:
         kmin = utils.get_kf(boxsize)
     if kmax is None:
-        kmax = np.sqrt(2.)*utils.get_kn(boxsize, ngrid)
-    kedges = np.linspace(kmin, kmax, int((kmax-kmin)/kmin)+1)
+        kmax = np.sqrt(2.0) * utils.get_kn(boxsize, ngrid)
+    kedges = np.linspace(kmin, kmax, int((kmax - kmin) / kmin) + 1)
     k = 0.5 * (kedges[1:] + kedges[:-1])
     dk = kedges[1] - kedges[0]
     pk = np.zeros(len(k))
@@ -50,26 +56,32 @@ def get_pofk_2D(dgrid: np.ndarray, boxsize: Union[float, list], ngrid: Union[int
     kf = utils.get_kf(boxsize)
     kmag = kmag.flatten()
     dkgrid = dkgrid.flatten()
-    k_index = (kmag - kmin)/dk
+    k_index = (kmag - kmin) / dk
     k_index = np.floor(k_index).astype(int)
     # cut data outside of range
     numk = len(k)
     condition = np.where((k_index >= 0) & (k_index < numk))[0]
     k_index = k_index[condition]
     kvals = kmag[condition]
-    delta2 = dkgrid.real[condition]**2. + dkgrid.imag[condition]**2.
+    delta2 = dkgrid.real[condition] ** 2.0 + dkgrid.imag[condition] ** 2.0
     counts = src.binbyindex(k_index, np.ones(len(k_index)), numk)
     pk = src.binbyindex(k_index, delta2, numk)
-    keff = src.binbyindex(k_index, delta2*kvals, numk)
-    cond = np.where(pk != 0.)[0]
+    keff = src.binbyindex(k_index, delta2 * kvals, numk)
+    cond = np.where(pk != 0.0)[0]
     keff[cond] /= pk[cond]
-    cond = np.where(pk == 0.)[0]
+    cond = np.where(pk == 0.0)[0]
     keff[cond] = np.nan
-    pk *= ((2*np.pi/boxsize)**2.)/counts
+    pk *= ((2 * np.pi / boxsize) ** 2.0) / counts
     return k, keff, pk
 
 
-def get_pofk_3D(dgrid: np.ndarray, boxsize: Union[float, list], ngrid: Union[int, list], kmin: Optional[float]=None, kmax: Optional[float]=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def get_pofk_3D(
+    dgrid: np.ndarray,
+    boxsize: Union[float, list],
+    ngrid: Union[int, list],
+    kmin: Optional[float] = None,
+    kmax: Optional[float] = None,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the power spectrum of a 3D data set.
 
@@ -96,13 +108,13 @@ def get_pofk_3D(dgrid: np.ndarray, boxsize: Union[float, list], ngrid: Union[int
         Measure power spectrum.
     """
     kx3d, ky3d, kz3d = kgrid.kgrid3D(boxsize, ngrid)
-    kmag = np.sqrt(kx3d**2. + ky3d**2. + kz3d**2.)
+    kmag = np.sqrt(kx3d**2.0 + ky3d**2.0 + kz3d**2.0)
     dkgrid = fft.fft3D(dgrid, boxsize)
     if kmin is None:
         kmin = utils.get_kf(boxsize)
     if kmax is None:
-        kmax = np.sqrt(3.)*utils.get_kn(boxsize, ngrid)
-    kedges = np.linspace(kmin, kmax, int((kmax-kmin)/kmin)+1)
+        kmax = np.sqrt(3.0) * utils.get_kn(boxsize, ngrid)
+    kedges = np.linspace(kmin, kmax, int((kmax - kmin) / kmin) + 1)
     k = 0.5 * (kedges[1:] + kedges[:-1])
     dk = kedges[1] - kedges[0]
     pk = np.zeros(len(k))
@@ -110,20 +122,20 @@ def get_pofk_3D(dgrid: np.ndarray, boxsize: Union[float, list], ngrid: Union[int
     kf = utils.get_kf(boxsize)
     kmag = kmag.flatten()
     dkgrid = dkgrid.flatten()
-    k_index = (kmag - kmin)/dk
+    k_index = (kmag - kmin) / dk
     k_index = np.floor(k_index).astype(int)
     # cut data outside of range
     numk = len(k)
     condition = np.where((k_index >= 0) & (k_index < numk))[0]
     k_index = k_index[condition]
     kvals = kmag[condition]
-    delta2 = dkgrid.real[condition]**2. + dkgrid.imag[condition]**2.
+    delta2 = dkgrid.real[condition] ** 2.0 + dkgrid.imag[condition] ** 2.0
     counts = src.binbyindex(k_index, np.ones(len(k_index)), numk)
     pk = src.binbyindex(k_index, delta2, numk)
-    keff = src.binbyindex(k_index, delta2*kvals, numk)
-    cond = np.where(pk != 0.)[0]
+    keff = src.binbyindex(k_index, delta2 * kvals, numk)
+    cond = np.where(pk != 0.0)[0]
     keff[cond] /= pk[cond]
-    cond = np.where(pk == 0.)[0]
+    cond = np.where(pk == 0.0)[0]
     keff[cond] = np.nan
-    pk *= ((2*np.pi/boxsize)**3.)/counts
+    pk *= ((2 * np.pi / boxsize) ** 3.0) / counts
     return k, keff, pk

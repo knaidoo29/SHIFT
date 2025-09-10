@@ -2,10 +2,20 @@ import sys
 
 from typing import Optional
 
-def progress_bar(index: int, length: int, explanation: Optional[str]=None, 
-                 indexing: bool=False, num_refresh: int=50, marker_done: str="#", marker_undone: str="_", 
-                 bar_edges: str="|", bar_edge_left: Optional[str]=None, bar_edge_right: Optional[str]=None, 
-                 bar_length: int=50):
+
+def progress_bar(
+    index: int,
+    length: int,
+    explanation: Optional[str] = None,
+    indexing: bool = False,
+    num_refresh: int = 50,
+    marker_done: str = "#",
+    marker_undone: str = "_",
+    bar_edges: str = "|",
+    bar_edge_left: Optional[str] = None,
+    bar_edge_right: Optional[str] = None,
+    bar_length: int = 50,
+):
     """
     Progress bar for a for-loop.
 
@@ -31,22 +41,26 @@ def progress_bar(index: int, length: int, explanation: Optional[str]=None,
     bar_edge_right : str
         The right bar edge
     """
-    _percentage = (float(index + 1) / float(length)) * 100.
-    _bar_counts = int((_percentage / 100.) * float(bar_length) )
+    _percentage = (float(index + 1) / float(length)) * 100.0
+    _bar_counts = int((_percentage / 100.0) * float(bar_length))
     if bar_edge_left is None:
         bar_edge_left = bar_edges
     if bar_edge_right is None:
         bar_edge_right = bar_edges
     _progress_bar = bar_edge_left
     if _bar_counts != 0 and _bar_counts != bar_length:
-        _progress_bar = _progress_bar + marker_done * _bar_counts + marker_undone * (bar_length - _bar_counts)
+        _progress_bar = (
+            _progress_bar
+            + marker_done * _bar_counts
+            + marker_undone * (bar_length - _bar_counts)
+        )
     elif _bar_counts == 0:
         _progress_bar = _progress_bar + marker_undone * bar_length
     else:
         _progress_bar = _progress_bar + marker_done * bar_length
     _progress_bar = _progress_bar + bar_edge_right
     if indexing is True:
-        _index_string = "[%d/%d]"%(index+1,length)
+        _index_string = "[%d/%d]" % (index + 1, length)
     else:
         _index_string = ""
     if num_refresh >= length:
@@ -60,15 +74,32 @@ def progress_bar(index: int, length: int, explanation: Optional[str]=None,
         _percentage_string = " %d%% " % _percentage
     if (index + 1) % int(_refresh) == 0 or index + 1 == length:
         if explanation is not None:
-            sys.stdout.write("\r" + explanation + " : " + _progress_bar + _percentage_string + _index_string)
+            sys.stdout.write(
+                "\r"
+                + explanation
+                + " : "
+                + _progress_bar
+                + _percentage_string
+                + _index_string
+            )
         else:
             sys.stdout.write("\r" + _progress_bar + _percentage_string + _index_string)
         sys.stdout.flush()
         if index + 1 == length:
             if explanation is not None:
-                sys.stdout.write("\r" + explanation + " : " + _progress_bar + _percentage_string + _index_string + '\n')
+                sys.stdout.write(
+                    "\r"
+                    + explanation
+                    + " : "
+                    + _progress_bar
+                    + _percentage_string
+                    + _index_string
+                    + "\n"
+                )
             else:
-                sys.stdout.write("\r" + _progress_bar + _percentage_string + _index_string + '\n')
+                sys.stdout.write(
+                    "\r" + _progress_bar + _percentage_string + _index_string + "\n"
+                )
             sys.stdout.flush()
     else:
         pass

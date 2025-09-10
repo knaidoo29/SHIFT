@@ -16,7 +16,7 @@ def get_n(Nmax: int) -> np.ndarray:
     n : array
         N values for Bessel zeros.
     """
-    n = np.arange(Nmax+1)[1:]
+    n = np.arange(Nmax + 1)[1:]
     return n
 
 
@@ -34,7 +34,7 @@ def get_m(Nm: int) -> np.ndarray:
         Bessel orders.
     """
     m = np.arange(Nm)
-    condition = np.where(m > float(Nm)/2.)[0]
+    condition = np.where(m > float(Nm) / 2.0)[0]
     m[condition] -= Nm
     return m
 
@@ -55,7 +55,7 @@ def get_knm(xnm: np.ndarray, Rmax: float) -> np.ndarray:
     knm : array
         Corresponding Fourier mode k.
     """
-    knm = xnm/Rmax
+    knm = xnm / Rmax
     return knm
 
 
@@ -77,7 +77,7 @@ def get_Nnm_zero(m: int, xnm: np.ndarray, Rmax: float) -> np.ndarray:
     Nnm : array
         Normalisation constants.
     """
-    Nnm = ((Rmax**2.)/2.)*(bessel.get_Jm(m+1, xnm)**2.)
+    Nnm = ((Rmax**2.0) / 2.0) * (bessel.get_Jm(m + 1, xnm) ** 2.0)
     return Nnm
 
 
@@ -99,7 +99,11 @@ def get_Nnm_deri(m: int, xnm: np.ndarray, Rmax: float) -> np.ndarray:
     Nnm : array
         Normalisation constants.
     """
-    Nnm = ((Rmax**2.)/2.)*(1. - (m**2.)/(xnm**2.))*(bessel.get_Jm(m, xnm)**2.)
+    Nnm = (
+        ((Rmax**2.0) / 2.0)
+        * (1.0 - (m**2.0) / (xnm**2.0))
+        * (bessel.get_Jm(m, xnm) ** 2.0)
+    )
     return Nnm
 
 
@@ -123,7 +127,7 @@ def get_Rnm(r: np.ndarray, m: int, knm: float, Nnm: float) -> np.ndarray:
     Rnm : array
         Radial basis values.
     """
-    Rnm = (1./np.sqrt(Nnm))*bessel.get_Jm(m, knm*r)
+    Rnm = (1.0 / np.sqrt(Nnm)) * bessel.get_Jm(m, knm * r)
     return Rnm
 
 
@@ -141,7 +145,7 @@ def get_eix(x: np.ndarray) -> np.ndarray:
     eix : array
         Euler's equation.
     """
-    eix = np.cos(x) + 1j*np.sin(x)
+    eix = np.cos(x) + 1j * np.sin(x)
     return eix
 
 
@@ -159,7 +163,7 @@ def get_eix_star(x: np.ndarray) -> np.ndarray:
     eix : array
         Euler's equation.
     """
-    eix = np.cos(x) - 1j*np.sin(x)
+    eix = np.cos(x) - 1j * np.sin(x)
     return eix
 
 
@@ -179,7 +183,7 @@ def get_Phi_m(m: int, phi: np.ndarray) -> np.ndarray:
     Phi_m : array
         Angular basis function.
     """
-    Phi_m = get_eix(m*phi)/np.sqrt(2.*np.pi)
+    Phi_m = get_eix(m * phi) / np.sqrt(2.0 * np.pi)
     return Phi_m
 
 
@@ -199,11 +203,13 @@ def get_Phi_star_m(m: int, phi: np.ndarray) -> np.ndarray:
     Phi_m : array
         Angular basis function.
     """
-    Phi_m = get_eix_star(m*phi)/np.sqrt(2.*np.pi)
+    Phi_m = get_eix_star(m * phi) / np.sqrt(2.0 * np.pi)
     return Phi_m
 
 
-def get_Psi_nm(n: int, m: int, r: np.ndarray, phi: np.ndarray, knm: float, Nnm: float) -> np.ndarray:
+def get_Psi_nm(
+    n: int, m: int, r: np.ndarray, phi: np.ndarray, knm: float, Nnm: float
+) -> np.ndarray:
     """
     Polar radial basis function
 
@@ -235,7 +241,9 @@ def get_Psi_nm(n: int, m: int, r: np.ndarray, phi: np.ndarray, knm: float, Nnm: 
     return Psi_nm
 
 
-def get_Psi_star_nm(n: int, m: int, r: np.ndarray, phi: np.ndarray, knm: float, Nnm: float) -> np.ndarray:
+def get_Psi_star_nm(
+    n: int, m: int, r: np.ndarray, phi: np.ndarray, knm: float, Nnm: float
+) -> np.ndarray:
     """Polar radial basis function
 
     Parameters

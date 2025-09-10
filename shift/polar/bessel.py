@@ -100,9 +100,13 @@ def get_dJm_alt(x: Union[float, np.ndarray], m: int) -> Union[float, np.ndarray]
     return get_dJm(m, x)
 
 
-def get_Jm_large_zeros(m: int, nmax: int, nstop: int=10, 
-                       xnm2: Optional[np.ndarray]=None, 
-                       xnm1: Optional[np.ndarray]=None) -> np.ndarray:
+def get_Jm_large_zeros(
+    m: int,
+    nmax: int,
+    nstop: int = 10,
+    xnm2: Optional[np.ndarray] = None,
+    xnm1: Optional[np.ndarray] = None,
+) -> np.ndarray:
     """
     Returns the zeros of the Bessel function. Begins by assuming
     that the zeros of the spherical Bessel function for m lie exactly between
@@ -141,26 +145,31 @@ def get_Jm_large_zeros(m: int, nmax: int, nstop: int=10,
             n = nstop
             while n < nmax:
                 zero_last = xnm[-1]
-                a = zero_last + 0.5*np.pi
-                b = zero_last + 1.5*np.pi
+                a = zero_last + 0.5 * np.pi
+                b = zero_last + 1.5 * np.pi
                 val = optimize.brentq(get_Jm_alt, a, b, args=(m))
                 xnm.append(val)
                 n += 1
     else:
         xnm = []
         dxnm = xnm1 - xnm2
-        xnm_approx = 0.5 * ((xnm1 + dxnm) + (xnm2 + 2*dxnm))
+        xnm_approx = 0.5 * ((xnm1 + dxnm) + (xnm2 + 2 * dxnm))
         for i in range(0, len(xnm_approx)):
-            a = xnm_approx[i] - 0.5*np.pi
-            b = xnm_approx[i] + 0.5*np.pi
+            a = xnm_approx[i] - 0.5 * np.pi
+            b = xnm_approx[i] + 0.5 * np.pi
             val = optimize.brentq(get_Jm_alt, a, b, args=(m))
             xnm.append(val)
     xnm = np.array(xnm)
     return xnm
 
 
-def get_dJm_large_zeros(m: int, nmax: int, nstop: int=10, 
-                        xnm2: Optional[np.ndarray]=None, xnm1: Optional[np.ndarray]=None) -> np.ndarray:
+def get_dJm_large_zeros(
+    m: int,
+    nmax: int,
+    nstop: int = 10,
+    xnm2: Optional[np.ndarray] = None,
+    xnm1: Optional[np.ndarray] = None,
+) -> np.ndarray:
     """
     Returns the zeros of the Bessel function. Begins by assuming
     that the zeros of the spherical Bessel function for l lie exactly between
@@ -199,18 +208,18 @@ def get_dJm_large_zeros(m: int, nmax: int, nstop: int=10,
             n = nstop
             while n < nmax:
                 zero_last = xnm[-1]
-                a = zero_last + 0.5*np.pi
-                b = zero_last + 1.5*np.pi
+                a = zero_last + 0.5 * np.pi
+                b = zero_last + 1.5 * np.pi
                 val = optimize.brentq(get_dJm_alt, a, b, args=(m))
                 xnm.append(val)
                 n += 1
     else:
         xnm = []
         dxnm = xnm1 - xnm2
-        xnm_approx = 0.5 * ((xnm1 + dxnm) + (xnm2 + 2*dxnm))
+        xnm_approx = 0.5 * ((xnm1 + dxnm) + (xnm2 + 2 * dxnm))
         for i in range(0, len(xnm_approx)):
-            a = xnm_approx[i] - 0.5*np.pi
-            b = xnm_approx[i] + 0.5*np.pi
+            a = xnm_approx[i] - 0.5 * np.pi
+            b = xnm_approx[i] + 0.5 * np.pi
             val = optimize.brentq(get_dJm_alt, a, b, args=(m))
             xnm.append(val)
     xnm = np.array(xnm)
