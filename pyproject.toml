@@ -7,7 +7,7 @@ name = "shift-fft"
 description = "SHIFT performs Fast Fourier transforms on data in polar, spherical and cartesian coordinates."
 readme = "README.md"
 requires-python = ">=3.9"
-license = {text = "MIT"}
+license = {file = "LICENSE"}
 authors = [{name = "Krishna Naidoo", email = "krishna.naidoo.11@ucl.ac.uk"}]
 maintainers = [{name = "Krishna Naidoo", email = "krishna.naidoo.11@ucl.ac.uk"}]
 keywords = ["mathematics", "fourier transforms"]
@@ -17,13 +17,13 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Natural Language :: English",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Mathematics",
-    "Topic :: Scientific/Engineering :: Fourier Transforms",
 ]
 dependencies = [
     "numba",
@@ -44,7 +44,6 @@ Changelog = "https://github.com/knaidoo29/SHIFT/blob/main/CHANGELOG.md"
 dev = ["black", "flake8", "ipython", "jupyter", "mypy"]
 docs = ["numpydoc", "sphinx", "sphinx-rtd-theme"]
 test = [
-    "nose",
     "pytest>=6.0",
     "pytest-cov"
 ]
