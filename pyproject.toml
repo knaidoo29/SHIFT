@@ -12,7 +12,7 @@ authors = [{name = "Krishna Naidoo", email = "krishna.naidoo.11@ucl.ac.uk"}]
 maintainers = [{name = "Krishna Naidoo", email = "krishna.naidoo.11@ucl.ac.uk"}]
 keywords = ["mathematics", "fourier transforms"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Natural Language :: English",
