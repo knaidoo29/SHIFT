@@ -88,7 +88,7 @@ Dependencies
 * `scipy <https://scipy.org/>`_
 * `mpi4py <https://mpi4py.readthedocs.io/en/stable/>`_ [Optional: enables MPI distributed processes]
 
-InstallationCITgitgg
+Installation
 ============
 
 SHIFT can be installed via ``pip``::
