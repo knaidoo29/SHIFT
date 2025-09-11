@@ -99,8 +99,7 @@ Or by cloning the github repository::
 
     git clone https://github.com/knaidoo29/SHIFT.git
     cd SHIFT
-    python setup.py build
-    python setup.py install
+    pip install .
 
 The latter of which can be used to install specific branches.
 
