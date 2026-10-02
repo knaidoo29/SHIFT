@@ -34,14 +34,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov coverage mpi4py
-
-      # - name: Run tests with coverage
-      #   run: |
-      #     coverage erase
-      #     coverage run --parallel-mode -m pytest tests/normal_tests
-      #     mpirun -n 2 coverage run --parallel-mode -m pytest tests/mpi_tests
-      #     coverage combine
-      #     coverage report -m
       
       - name: Run tests with coverage
         run: |
