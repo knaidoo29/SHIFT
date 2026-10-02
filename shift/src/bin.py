@@ -3,7 +3,7 @@ from numba import njit
 
 
 @njit
-def binbyindex(ind, weights, binlength):
+def binbyindex(ind, weights, binlength): # pragma: no cover
     """
     Bins weights according to the bin index.
 
