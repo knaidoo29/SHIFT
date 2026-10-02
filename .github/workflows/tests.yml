@@ -10,8 +10,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      # Don't cancel all matrix jobs if one fails
+      fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - name: Checkout code
@@ -27,31 +29,76 @@ jobs:
       - name: Install MPI and system deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y mpich libmpich-dev
+          # Use OpenMPI instead of MPICH — OpenMPI supports --oversubscribe,
+          # which is required to run 3 ranks on a 2-core GitHub Actions runner.
+          sudo apt-get install -y libopenmpi-dev openmpi-bin
 
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov coverage mpi4py
-      
+
+      # Required for coverage to start in MPI subprocesses.
+      # coverage needs a sitecustomize.py hook to activate in spawned processes.
+      - name: Configure coverage for subprocess support
+        run: |
+          python -m coverage --version
+          # Write .coveragerc
+          cat > .coveragerc << 'EOF'
+          [run]
+          parallel = true
+          source = shift
+          concurrency = multiprocessing
+
+          [report]
+          show_missing = true
+          EOF
+
+          # Install the coverage sitecustomize hook so MPI subprocesses
+          # automatically start coverage when spawned
+          SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
+          cat > "$SITE_PACKAGES/sitecustomize.py" << 'EOF'
+          import coverage
+          coverage.process_startup()
+          EOF
+
       - name: Run tests with coverage
+        env:
+          COVERAGE_PROCESS_START: .coveragerc
+          # Suppress OpenMPI warnings about oversubscription
+          OMPI_MCA_rmaps_base_oversubscribe: 1
         run: |
           coverage erase
+
+          # Run standard tests
           coverage run --parallel-mode -m pytest tests/normal_tests
-          mpirun -n 2 pytest tests/mpi_tests
+
+          # Run MPI tests with 3 ranks. --oversubscribe allows more ranks than
+          # physical cores, which is needed on 2-core GitHub Actions runners.
+          mpirun -n 3 --oversubscribe coverage run --parallel-mode -m pytest -s -v tests/mpi_tests
+
+          # Merge all .coverage.* files produced by parallel/MPI runs
           coverage combine
-          coverage report -m
-      
-      # Optional: Upload coverage report to GitHub summary
-      - name: Save coverage to summary
+
+      - name: Generate coverage report
+        # Always generate even if tests had failures, so we can diagnose
+        if: always()
         run: |
-          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+          coverage report -m
+          coverage xml -o coverage.xml
+
+      - name: Save coverage to summary
+        if: always()
+        run: |
+          echo "## Coverage Report (Python ${{ matrix.python-version }})" >> $GITHUB_STEP_SUMMARY
           coverage report -m >> $GITHUB_STEP_SUMMARY
 
-      # Optional: Upload to Codecov (if you use it)
+      # Only upload to Codecov once, from the latest Python version, on success
       - name: Upload coverage reports to Codecov
+        if: success() && matrix.python-version == '3.12'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.xml
           slug: knaidoo29/SHIFT
