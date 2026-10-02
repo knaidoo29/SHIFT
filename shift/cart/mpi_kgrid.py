@@ -5,7 +5,7 @@ from typing import Tuple, Union
 from . import kgrid
 
 
-def mpi_kgrid1D(boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
+def mpi_kgrid1D(boxsize: float, ngrid: int, MPI: type, dtype: np.dtype = np.float32) -> np.ndarray:
     """
     Returns the Fourier modes for the Fast Fourier Transform on a 1D
     cartesian grid.
@@ -18,20 +18,22 @@ def mpi_kgrid1D(boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
         Grid division along one axis.
     MPI : object
         MPIutils MPI object.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
     k : array
         Fourier modes.
     """
-    k = kgrid.kgrid1D(boxsize, ngrid)
+    k = kgrid.kgrid1D(boxsize, ngrid, dtype=dtype)
     split1, split2 = MPI.split(len(k))
     k = k[split1[MPI.rank] : split2[MPI.rank]]
     return k
 
 
 def mpi_kgrid2D(
-    boxsize: Union[float, list], ngrid: Union[int, list], MPI: type
+    boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the Fourier modes for the Fast Fourier Transform on a 2D
@@ -45,6 +47,8 @@ def mpi_kgrid2D(
         Grid division along one axis or a list for each axis.
     MPI : object
         MPIutils MPI object.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -71,15 +75,15 @@ def mpi_kgrid2D(
         ), "Length of list of grid dimensions must be equal to the dimenions 2."
         xngrid = ngrid[0]
         yngrid = ngrid[1]
-    ky = mpi_kgrid1D(yboxsize, yngrid, MPI)
-    kx = kgrid.kgrid1D(xboxsize, xngrid)
+    ky = mpi_kgrid1D(yboxsize, yngrid, MPI, dtype=dtype)
+    kx = kgrid.kgrid1D(xboxsize, xngrid, dtype=dtype)
     # Create Fourier grid
     kx2D, ky2D = np.meshgrid(kx, ky, indexing="ij")
     return kx2D, ky2D
 
 
 def mpi_kgrid3D(
-    boxsize: Union[float, list], ngrid: Union[int, list], MPI: type
+    boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the Fourier modes for the Fast Fourier Transform on a 3D
@@ -93,6 +97,8 @@ def mpi_kgrid3D(
         Grid division along one axis or a list for each axis.
     MPI : object
         MPIutils MPI object.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -125,15 +131,15 @@ def mpi_kgrid3D(
         xngrid = ngrid[0]
         yngrid = ngrid[1]
         zngrid = ngrid[2]
-    ky = mpi_kgrid1D(yboxsize, yngrid, MPI)
-    kx = kgrid.kgrid1D(xboxsize, xngrid)
-    kz = kgrid.kgrid1D(zboxsize, zngrid)
+    ky = mpi_kgrid1D(yboxsize, yngrid, MPI, dtype=dtype)
+    kx = kgrid.kgrid1D(xboxsize, xngrid, dtype=dtype)
+    kz = kgrid.kgrid1D(zboxsize, zngrid, dtype=dtype)
     # Create Fourier grid
     kx3D, ky3D, kz3D = np.meshgrid(kx, ky, kz, indexing="ij")
     return kx3D, ky3D, kz3D
 
 
-def mpi_kgrid1D_dct(boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
+def mpi_kgrid1D_dct(boxsize: float, ngrid: int, MPI: type, dtype: np.dtype = np.float32) -> np.ndarray:
     """
     Returns the Fourier modes for the Discrete Cosine Transform on a 1D
     cartesian grid.
@@ -146,20 +152,22 @@ def mpi_kgrid1D_dct(boxsize: float, ngrid: int, MPI: type) -> np.ndarray:
         Grid division along one axis.
     MPI : object
         MPIutils MPI object.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
     k : array
         Fourier modes.
     """
-    k = kgrid.kgrid1D_dct(boxsize, ngrid)
+    k = kgrid.kgrid1D_dct(boxsize, ngrid, dtype=dtype)
     split1, split2 = MPI.split(len(k))
     k = k[split1[MPI.rank] : split2[MPI.rank]]
     return k
 
 
 def mpi_kgrid2D_dct(
-    boxsize: Union[float, list], ngrid: Union[int, list], MPI: type
+    boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the Fourier modes for the Discrete Cosine Transform on a 2D
@@ -173,6 +181,8 @@ def mpi_kgrid2D_dct(
         Grid division along one axis or a list for each axis.
     MPI : object
         MPIutils MPI object.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -199,15 +209,15 @@ def mpi_kgrid2D_dct(
         ), "Length of list of grid dimensions must be equal to the dimenions 2."
         xngrid = ngrid[0]
         yngrid = ngrid[1]
-    ky = mpi_kgrid1D_dct(yboxsize, yngrid, MPI)
-    kx = kgrid.kgrid1D_dct(xboxsize, xngrid)
+    ky = mpi_kgrid1D_dct(yboxsize, yngrid, MPI, dtype=dtype)
+    kx = kgrid.kgrid1D_dct(xboxsize, xngrid, dtype=dtype)
     # Create Fourier grid
     kx2D, ky2D = np.meshgrid(kx, ky, indexing="ij")
     return kx2D, ky2D
 
 
 def mpi_kgrid3D_dct(
-    boxsize: Union[float, list], ngrid: Union[int, list], MPI: type
+    boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the Fourier modes for the Discrete Cosine Transform on a 3D
@@ -221,6 +231,8 @@ def mpi_kgrid3D_dct(
         Grid division along one axis or a list for each axis.
     MPI : object
         MPIutils MPI object.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -253,15 +265,15 @@ def mpi_kgrid3D_dct(
         xngrid = ngrid[0]
         yngrid = ngrid[1]
         zngrid = ngrid[2]
-    kx = mpi_kgrid1D_dct(yboxsize, yngrid, MPI)
-    ky = kgrid.kgrid1D_dct(xboxsize, xngrid)
-    kz = kgrid.kgrid1D_dct(zboxsize, zngrid)
+    kx = mpi_kgrid1D_dct(yboxsize, yngrid, MPI, dtype=dtype)
+    ky = kgrid.kgrid1D_dct(xboxsize, xngrid, dtype=dtype)
+    kz = kgrid.kgrid1D_dct(zboxsize, zngrid, dtype=dtype)
     # Create Fourier grid
     kx3D, ky3D, kz3D = np.meshgrid(kx, ky, kz, indexing="ij")
     return kx3D, ky3D, kz3D
 
 
-def mpi_kgrid1D_dst(boxsize: float, ngrid: int, MPI: type):
+def mpi_kgrid1D_dst(boxsize: float, ngrid: int, MPI: type, dtype: np.dtype = np.float32):
     """
     Returns the Fourier modes for the Discrete Sine Transform on a 1D
     cartesian grid.
@@ -274,20 +286,22 @@ def mpi_kgrid1D_dst(boxsize: float, ngrid: int, MPI: type):
         Grid division along one axis.
     MPI : object
         MPIutils MPI object.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
     k : array
         Fourier modes.
     """
-    k = kgrid.kgrid1D_dst(boxsize, ngrid)
+    k = kgrid.kgrid1D_dst(boxsize, ngrid, dtype=dtype)
     split1, split2 = MPI.split(len(k))
     k = k[split1[MPI.rank] : split2[MPI.rank]]
     return k
 
 
 def mpi_kgrid2D_dst(
-    boxsize: Union[float, list], ngrid: Union[int, list], MPI: type
+    boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the Fourier modes for the Discrete Sine Transform on a 2D
@@ -301,6 +315,8 @@ def mpi_kgrid2D_dst(
         Grid division along one axis or a list for each axis.
     MPI : object
         MPIutils MPI object.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -327,15 +343,15 @@ def mpi_kgrid2D_dst(
         ), "Length of list of grid dimensions must be equal to the dimenions 2."
         xngrid = ngrid[0]
         yngrid = ngrid[1]
-    ky = mpi_kgrid1D_dst(yboxsize, yngrid, MPI)
-    kx = kgrid.kgrid1D_dst(xboxsize, xngrid)
+    ky = mpi_kgrid1D_dst(yboxsize, yngrid, MPI, dtype=dtype)
+    kx = kgrid.kgrid1D_dst(xboxsize, xngrid, dtype=dtype)
     # Create Fourier grid
     kx2D, ky2D = np.meshgrid(kx, ky, indexing="ij")
     return kx2D, ky2D
 
 
 def mpi_kgrid3D_dst(
-    boxsize: Union[float, list], ngrid: Union[int, list], MPI: type
+    boxsize: Union[float, list], ngrid: Union[int, list], MPI: type, dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the Fourier modes for the Discrete Sine Transform on a 3D
@@ -349,6 +365,8 @@ def mpi_kgrid3D_dst(
         Grid division along one axis or a list for each axis.
     MPI : object
         MPIutils MPI object.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -381,9 +399,9 @@ def mpi_kgrid3D_dst(
         xngrid = ngrid[0]
         yngrid = ngrid[1]
         zngrid = ngrid[2]
-    ky = mpi_kgrid1D_dst(yboxsize, yngrid, MPI)
-    kx = kgrid.kgrid1D_dst(xboxsize, xngrid)
-    kz = kgrid.kgrid1D_dst(zboxsize, zngrid)
+    ky = mpi_kgrid1D_dst(yboxsize, yngrid, MPI, dtype=dtype)
+    kx = kgrid.kgrid1D_dst(xboxsize, xngrid, dtype=dtype)
+    kz = kgrid.kgrid1D_dst(zboxsize, zngrid, dtype=dtype)
     # Create Fourier grid
     kx3D, ky3D, kz3D = np.meshgrid(kx, ky, kz, indexing="ij")
     return kx3D, ky3D, kz3D

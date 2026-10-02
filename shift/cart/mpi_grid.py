@@ -6,7 +6,7 @@ from . import grid
 
 
 def mpi_grid1D(
-    boxsize: float, ngrid: int, MPI: type, origin: float = 0.0
+    boxsize: float, ngrid: int, MPI: type, origin: float = 0.0, dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the x coordinates of a cartesian grid.
@@ -21,6 +21,8 @@ def mpi_grid1D(
         MPIutils MPI object.
     origin : float, optional
         Start point of the grid.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -29,7 +31,7 @@ def mpi_grid1D(
     x : array
         X coordinates bin centers.
     """
-    xedges = np.linspace(0.0, boxsize, ngrid + 1) + origin
+    xedges = np.linspace(0.0, boxsize, ngrid + 1, dtype=dtype) + origin
     x = 0.5 * (xedges[1:] + xedges[:-1])
     split1, split2 = MPI.split(len(x))
     x = x[split1[MPI.rank] : split2[MPI.rank]]
@@ -38,7 +40,7 @@ def mpi_grid1D(
 
 
 def mpi_grid2D(
-    boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float]] = 0.0
+    boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float]] = 0.0, dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the x, y coordinates of a cartesian grid.
@@ -55,6 +57,8 @@ def mpi_grid2D(
         Origin of the grid. If all axes begin at the same origin this can be a scalar,
         if you instead wish to specify different origins for each axis this should
         be added as a list.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -75,14 +79,14 @@ def mpi_grid2D(
         origins = [origin, origin]
     else:
         origins = origin
-    _, x = mpi_grid1D(boxsizes[0], ngrids[0], MPI, origin=origins[0])
-    _, y = grid.grid1D(boxsizes[1], ngrids[1], origin=origins[1])
+    _, x = mpi_grid1D(boxsizes[0], ngrids[0], MPI, origin=origins[0], dtype=dtype)
+    _, y = grid.grid1D(boxsizes[1], ngrids[1], origin=origins[1], dtype=dtype)
     x2D, y2D = np.meshgrid(x, y, indexing="ij")
     return x2D, y2D
 
 
 def mpi_grid3D(
-    boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float]] = 0.0
+    boxsize: float, ngrid: int, MPI: type, origin: Union[float, List[float]] = 0.0, dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the x, y, z coordinates of a cartesian grid.
@@ -100,6 +104,8 @@ def mpi_grid3D(
         Origin of the grid. If all axes begin at the same origin this can be a scalar,
         if you instead wish to specify different origins for each axis this should
         be added as a list.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -122,8 +128,8 @@ def mpi_grid3D(
         origins = [origin, origin, origin]
     else:
         origins = origin
-    _, x = mpi_grid1D(boxsizes[0], ngrids[0], MPI, origin=origins[0])
-    _, y = grid.grid1D(boxsizes[1], ngrids[1], origin=origins[1])
-    _, z = grid.grid1D(boxsizes[2], ngrids[2], origin=origins[2])
+    _, x = mpi_grid1D(boxsizes[0], ngrids[0], MPI, origin=origins[0], dtype=dtype)
+    _, y = grid.grid1D(boxsizes[1], ngrids[1], origin=origins[1], dtype=dtype)
+    _, z = grid.grid1D(boxsizes[2], ngrids[2], origin=origins[2], dtype=dtype)
     x3D, y3D, z3D = np.meshgrid(x, y, z, indexing="ij")
     return x3D, y3D, z3D
