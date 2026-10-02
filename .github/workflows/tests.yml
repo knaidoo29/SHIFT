@@ -44,25 +44,13 @@ jobs:
       - name: Configure coverage for subprocess support
         run: |
           python -m coverage --version
-          # Write .coveragerc
-          cat > .coveragerc << 'EOF'
-          [run]
-          parallel = true
-          source = shift
-          concurrency = multiprocessing
 
-          [report]
-          show_missing = true
-          EOF
-
-          # Install the coverage sitecustomize hook so MPI subprocesses
-          # automatically start coverage when spawned
           SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
           cat > "$SITE_PACKAGES/sitecustomize.py" << 'EOF'
           import coverage
           coverage.process_startup()
           EOF
-
+          
       - name: Run tests with coverage
         env:
           COVERAGE_PROCESS_START: .coveragerc
