@@ -5,7 +5,7 @@ from typing import Tuple, Union
 from . import utils
 
 
-def kgrid1D(boxsize: float, ngrid: int) -> np.ndarray:
+def kgrid1D(boxsize: float, ngrid: int, dtype: np.dtype = np.float32) -> np.ndarray:
     """
     Returns the fourier modes for the Fourier transform of a cartesian grid.
 
@@ -15,6 +15,8 @@ def kgrid1D(boxsize: float, ngrid: int) -> np.ndarray:
         Box size.
     ngrid : int
         Grid division along one axis.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -24,7 +26,7 @@ def kgrid1D(boxsize: float, ngrid: int) -> np.ndarray:
     # fundamental frequency
     kf = utils.get_kf(boxsize)
     # Fourier modes along one axis
-    k = np.arange(0.0, ngrid, 1.0)
+    k = np.arange(0.0, ngrid, 1.0, dtype=dtype)
     condition = np.where(k >= ngrid / 2.0)[0]
     k[condition] -= ngrid
     k *= kf
@@ -32,7 +34,7 @@ def kgrid1D(boxsize: float, ngrid: int) -> np.ndarray:
 
 
 def kgrid2D(
-    boxsize: Union[float, list], ngrid: Union[int, list]
+    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the fourier modes for the Fourier transform of a cartesian grid.
@@ -43,6 +45,8 @@ def kgrid2D(
         Box size or a list of the dimensions of each axis.
     ngrid : int or list
         Grid division along one axis or a list for each axis.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -69,15 +73,15 @@ def kgrid2D(
         ), "Length of list of grid dimensions must be equal to the dimenions 2."
         xngrid = ngrid[0]
         yngrid = ngrid[1]
-    kx = kgrid1D(xboxsize, xngrid)
-    ky = kgrid1D(yboxsize, yngrid)
+    kx = kgrid1D(xboxsize, xngrid, dtype=dtype)
+    ky = kgrid1D(yboxsize, yngrid, dtype=dtype)
     # Create Fourier grid
     kx2D, ky2D = np.meshgrid(kx, ky, indexing="ij")
     return kx2D, ky2D
 
 
 def kgrid3D(
-    boxsize: Union[float, list], ngrid: Union[int, list]
+    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the fourier modes for the Fourier transform of a cartesian grid.
@@ -88,6 +92,8 @@ def kgrid3D(
         Box size or a list of the dimensions of each axis.
     ngrid : int or list
         Grid division along one axis or a list of divisions across each axes.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -120,15 +126,15 @@ def kgrid3D(
         xngrid = ngrid[0]
         yngrid = ngrid[1]
         zngrid = ngrid[2]
-    kx = kgrid1D(xboxsize, xngrid)
-    ky = kgrid1D(yboxsize, yngrid)
-    kz = kgrid1D(zboxsize, zngrid)
+    kx = kgrid1D(xboxsize, xngrid, dtype=dtype)
+    ky = kgrid1D(yboxsize, yngrid, dtype=dtype)
+    kz = kgrid1D(zboxsize, zngrid, dtype=dtype)
     # Create Fourier grid
     kx3D, ky3D, kz3D = np.meshgrid(kx, ky, kz, indexing="ij")
     return kx3D, ky3D, kz3D
 
 
-def kgrid1D_dct(boxsize: float, ngrid: int) -> np.ndarray:
+def kgrid1D_dct(boxsize: float, ngrid: int, dtype: np.dtype = np.float32) -> np.ndarray:
     """
     Returns the fourier modes for the Discrete Cosine transform on a cartesian grid.
 
@@ -138,6 +144,8 @@ def kgrid1D_dct(boxsize: float, ngrid: int) -> np.ndarray:
         Box size.
     ngrid : int
         Grid division along one axis.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -147,13 +155,13 @@ def kgrid1D_dct(boxsize: float, ngrid: int) -> np.ndarray:
     # fundamental frequency
     kf = utils.get_kf(boxsize)
     # Fourier modes along one axis
-    k = np.arange(0.0, ngrid, 1.0)
+    k = np.arange(0.0, ngrid, 1.0, dtype=dtype)
     k *= kf / 2.0
     return k
 
 
 def kgrid2D_dct(
-    boxsize: Union[float, list], ngrid: Union[int, list]
+    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the fourier modes for the Discrete Cosine transform on a 2D cartesian grid.
@@ -164,6 +172,8 @@ def kgrid2D_dct(
         Box size or a list of the dimensions of each axis.
     ngrid : int or list
         Grid division along one axis or a list of divisions across each axes.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -190,15 +200,15 @@ def kgrid2D_dct(
         ), "Length of list of grid dimensions must be equal to the dimenions 2."
         xngrid = ngrid[0]
         yngrid = ngrid[1]
-    kx = kgrid1D_dct(xboxsize, xngrid)
-    ky = kgrid1D_dct(yboxsize, yngrid)
+    kx = kgrid1D_dct(xboxsize, xngrid, dtype=dtype)
+    ky = kgrid1D_dct(yboxsize, yngrid, dtype=dtype)
     # Create Fourier grid
     kx2D, ky2D = np.meshgrid(kx, ky, indexing="ij")
     return kx2D, ky2D
 
 
 def kgrid3D_dct(
-    boxsize: Union[float, list], ngrid: Union[int, list]
+    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the fourier modes for the Discrete Cosine transform on a 3D cartesian grid.
@@ -209,6 +219,8 @@ def kgrid3D_dct(
         Box size or a list of the dimensions of each axis.
     ngrid : int or list
         Grid division along one axis or a list of divisions across each axes.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -241,15 +253,15 @@ def kgrid3D_dct(
         xngrid = ngrid[0]
         yngrid = ngrid[1]
         zngrid = ngrid[2]
-    kx = kgrid1D_dct(xboxsize, xngrid)
-    ky = kgrid1D_dct(yboxsize, yngrid)
-    kz = kgrid1D_dct(zboxsize, zngrid)
+    kx = kgrid1D_dct(xboxsize, xngrid, dtype=dtype)
+    ky = kgrid1D_dct(yboxsize, yngrid, dtype=dtype)
+    kz = kgrid1D_dct(zboxsize, zngrid, dtype=dtype)
     # Create Fourier grid
     kx3D, ky3D, kz3D = np.meshgrid(kx, ky, kz, indexing="ij")
     return kx3D, ky3D, kz3D
 
 
-def kgrid1D_dst(boxsize: float, ngrid: int) -> np.ndarray:
+def kgrid1D_dst(boxsize: float, ngrid: int, dtype: np.dtype = np.float32) -> np.ndarray:
     """
     Returns the fourier modes for the Discrete Sine Transform of a cartesian grid.
 
@@ -259,6 +271,8 @@ def kgrid1D_dst(boxsize: float, ngrid: int) -> np.ndarray:
         Box size.
     ngrid : int
         Grid division along one axis.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -268,13 +282,13 @@ def kgrid1D_dst(boxsize: float, ngrid: int) -> np.ndarray:
     # fundamental frequency
     kf = utils.get_kf(boxsize)
     # Fourier modes along one axis
-    k = np.arange(0.0, ngrid, 1.0) + 1
+    k = np.arange(0.0, ngrid, 1.0, dtype=dtype) + 1
     k *= kf / 2.0
     return k
 
 
 def kgrid2D_dst(
-    boxsize: Union[float, list], ngrid: Union[int, list]
+    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the fourier modes for the Discrete Sine transform on a 2D cartesian grid.
@@ -285,7 +299,9 @@ def kgrid2D_dst(
         Box size or a list of the dimensions of each axis.
     ngrid : int or list
         Grid division along one axis or a list of divisions across each axes.
-
+    dtype : np.dtype, optional
+        Data type of the output array.
+    
     Returns
     -------
     kx2D : array
@@ -311,15 +327,15 @@ def kgrid2D_dst(
         ), "Length of list of grid dimensions must be equal to the dimenions 2."
         xngrid = ngrid[0]
         yngrid = ngrid[1]
-    kx = kgrid1D_dst(xboxsize, xngrid)
-    ky = kgrid1D_dst(yboxsize, yngrid)
+    kx = kgrid1D_dst(xboxsize, xngrid, dtype=dtype)
+    ky = kgrid1D_dst(yboxsize, yngrid, dtype=dtype)
     # Create Fourier grid
     kx2D, ky2D = np.meshgrid(kx, ky, indexing="ij")
     return kx2D, ky2D
 
 
 def kgrid3D_dst(
-    boxsize: Union[float, list], ngrid: Union[int, list]
+    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float32
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the fourier modes for the Discrete Sine transform on a 3D cartesian grid.
@@ -330,6 +346,8 @@ def kgrid3D_dst(
         Box size or a list of the dimensions of each axis.
     ngrid : int or list
         Grid division along one axis or a list of divisions across each axes.
+    dtype : np.dtype, optional
+        Data type of the output array.
 
     Returns
     -------
@@ -362,9 +380,9 @@ def kgrid3D_dst(
         xngrid = ngrid[0]
         yngrid = ngrid[1]
         zngrid = ngrid[2]
-    kx = kgrid1D_dst(xboxsize, xngrid)
-    ky = kgrid1D_dst(yboxsize, yngrid)
-    kz = kgrid1D_dst(zboxsize, zngrid)
+    kx = kgrid1D_dst(xboxsize, xngrid, dtype=dtype)
+    ky = kgrid1D_dst(yboxsize, yngrid, dtype=dtype)
+    kz = kgrid1D_dst(zboxsize, zngrid, dtype=dtype)
     # Create Fourier grid
     kx3D, ky3D, kz3D = np.meshgrid(kx, ky, kz, indexing="ij")
     return kx3D, ky3D, kz3D
