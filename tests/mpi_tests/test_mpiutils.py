@@ -500,3 +500,107 @@ def test_structured_Alltoall_arrays(mpi):
         for r in range(mpi.size)
     ])
     np.testing.assert_array_equal(got, expected)
+
+# ---------------------------------------------------------------------------
+# Input validation (no MPI communication should take place)
+# ---------------------------------------------------------------------------
+
+
+class _ForbiddenMPIComm:
+    """Fail immediately if an invalid-input test reaches an MPI collective."""
+
+    def __getattr__(self, name):
+        def forbidden(*args, **kwargs):
+            pytest.fail(f"Unexpected MPI call to {name} during input validation")
+        return forbidden
+
+
+@pytest.fixture
+def mpi_validation(mpi, monkeypatch):
+    """Temporarily replace the communicator to avoid hanging on regressions."""
+    monkeypatch.setattr(mpi, "comm", _ForbiddenMPIComm())
+    return mpi
+
+
+def test_byte_view_rejects_object_dtype_and_noncontiguous_arrays(mpi):
+    with pytest.raises(TypeError, match="Object dtypes"):
+        mpi._byte_view(np.array([{"value": 1}], dtype=object))
+
+    noncontiguous = np.arange(12, dtype=np.float64)[::2]
+    assert not noncontiguous.flags.c_contiguous
+    with pytest.raises(ValueError, match="C-contiguous"):
+        mpi._byte_view(noncontiguous)
+
+
+def test_Gather_rejects_multidimensional_arrays(mpi_validation):
+    with pytest.raises(ValueError, match="one-dimensional"):
+        mpi_validation.Gather(np.arange(6).reshape(2, 3))
+
+
+@pytest.mark.parametrize("case", ["missing", "multidimensional", "wrong_dtype"])
+def test_Scatter_invalid_root_inputs(mpi_validation, case):
+    # Every process tests its own root-validation path. The stub communicator
+    # prevents an accidental MPI hang if one of the checks is removed.
+    root = mpi_validation.rank
+
+    if case == "missing":
+        data, dtype = None, np.float32
+        error, message = ValueError, "cannot be None"
+    elif case == "multidimensional":
+        data, dtype = np.zeros((2, 3), dtype=np.float32), np.float32
+        error, message = ValueError, "one-dimensional"
+    else:
+        data, dtype = np.arange(4, dtype=np.int64), np.float32
+        error, message = TypeError, "does not match"
+
+    with pytest.raises(error, match=message):
+        mpi_validation.Scatter(data, dtype=dtype, root=root)
+
+
+@pytest.mark.parametrize("case", ["dtype", "send_partition", "recv_partition"])
+def test_Alltoall_invalid_buffers(mpi_validation, case):
+    p = mpi_validation.size
+
+    if case == "dtype":
+        send = np.zeros(p, dtype=np.float32)
+        recv = np.empty(p, dtype=np.float64)
+        error, message = TypeError, "dtypes must match"
+    else:
+        if p == 1:
+            pytest.skip("A byte buffer is always divisible by one MPI rank")
+        if case == "send_partition":
+            send = np.arange(p + 1, dtype=np.uint8)
+            recv = np.empty(p, dtype=np.uint8)
+            message = "Send buffer cannot be divided"
+        else:
+            send = np.arange(p, dtype=np.uint8)
+            recv = np.empty(p + 1, dtype=np.uint8)
+            message = "Receive buffer cannot be divided"
+        error = ValueError
+
+    with pytest.raises(error, match=message):
+        mpi_validation.Alltoall(send, recv)
+
+
+def test_Alltoallv_rejects_mismatched_dtypes(mpi_validation):
+    p = mpi_validation.size
+    counts = np.ones(p, dtype=np.int64)
+    displs = np.arange(p, dtype=np.int64)
+
+    with pytest.raises(TypeError, match="dtypes must match"):
+        mpi_validation.Alltoallv(
+            np.zeros(p, dtype=np.float32), counts, displs,
+            np.empty(p, dtype=np.float64), counts, displs,
+        )
+
+
+def test_Alltoall_arrays_rejects_scalar_data(mpi_validation):
+    with pytest.raises(ValueError, match="at least one dimension"):
+        mpi_validation.Alltoall_arrays(np.array(7), np.array([0]))
+
+
+@pytest.mark.parametrize("method", ["Min", "Max"])
+def test_Min_Max_reject_unsupported_complex_dtype(mpi_validation, method):
+    data = np.array([1 + 2j, 3 - 4j], dtype=np.complex128)
+    with pytest.raises(TypeError, match="does not support dtype"):
+        getattr(mpi_validation, method)(data)

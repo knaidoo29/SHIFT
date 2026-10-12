@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.fft as scfft
 
-from typing import Tuple, Union
+from typing import Union
 
 
 def slab_fft1D(
