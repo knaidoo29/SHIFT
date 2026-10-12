@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.fft as scfft
 
-from typing import Tuple, Union
+from typing import Union
 
 
 def slab_fft1D(
@@ -168,438 +168,663 @@ def slab_idst1D(
     return f_real
 
 
-def _get_splits_subset_2D(
-    rank1: int,
-    rank2: int,
-    xsplits1: np.ndarray,
-    xsplits2: np.ndarray,
-    ysplits1: np.ndarray,
-    ysplits2: np.ndarray,
-    reverse: bool = False,
-) -> Tuple[int, int, int, int]:
-    """
-    Internal function for finding index splits across two axes based on input
-    node ranks.
-
-    Parameters
-    ----------
-    rank1, rank2 : int
-        Node ranks.
-    xsplits1, xsplits2, ysplits1, ysplits2 : int array
-        Arrays showing the split index for splitting x and y axis across nodes.
-    """
-    if reverse == True:
-        return xsplits1[rank1], xsplits2[rank1], ysplits1[rank2], ysplits2[rank2]
-    else:
-        return xsplits1[rank2], xsplits2[rank2], ysplits1[rank1], ysplits2[rank1]
-
-
-def _get_splits_2D(
-    MPI: type, xngrid: int, yngrid: int
-) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """
-    Finds the beginning and end index for splitting arrays in 2 dimensions.
-
-    Parameters
-    ----------
-    MPI : function
-        MPIutils MPI object.
-    xngrid, yngrid : int
-        Grid size along each axis.
-
-    Returns
-    -------
-    xsplits1, xsplits2, ysplits1, ysplits2 : int array
-        Arrays showing the split index for splitting x and y axis across nodes.
-    """
-    xsplits1, xsplits2 = MPI.split(xngrid)
-    ysplits1, ysplits2 = MPI.split(yngrid)
-    return xsplits1, xsplits2, ysplits1, ysplits2
-
-
-def _get_splits_3D(
-    MPI: type, xngrid: int, yngrid: int, zngrid: int
-) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """
-    Finds the beginning and end index for splitting arrays in 3 dimensions.
-
-    Parameters
-    ----------
-    MPI : function
-        MPIutils MPI object.
-    xngrid, yngrid, zngrid : int
-        Grid size along each axis.
-
-    Returns
-    -------
-    xsplits1, xsplits2, ysplits1, ysplits2, zsplits1, zsplits2 : int array
-        Arrays showing the split index for splitting x, y and z axis across nodes.
-    """
-    xsplits1, xsplits2 = MPI.split(xngrid)
-    ysplits1, ysplits2 = MPI.split(yngrid)
-    zsplits1, zsplits2 = MPI.split(zngrid)
-    return xsplits1, xsplits2, ysplits1, ysplits2, zsplits1, zsplits2
-
-
-def _get_empty_split_array_2D(
-    xsplits1: np.ndarray,
-    xsplits2: np.ndarray,
-    ysplits1: np.ndarray,
-    ysplits2: np.ndarray,
-    rank: int,
-    axis: int = 0,
-    iscomplex: bool = False,
-) -> np.ndarray:
-    """
-    Returns a normal or complex array with zeros.
-
-    Parameters
-    ----------
-    xsplits1, xsplits2, ysplits1, ysplits2 : int array
-        Arrays showing the split index for splitting x and y axis across nodes.
-    rank : int
-        MPI node rank.
-    axis : int, optional
-        Axis where the array is being split across.
-    iscomplex : bool, optional
-        Is the output array complex.
-    """
-    assert axis == 0 or axis == 1, "axis %i is unsupported for 2D grid" % axis
-    if axis == 0:
-        xsplit1, xsplit2 = xsplits1[rank], xsplits2[rank]
-        ysplit1, ysplit2 = ysplits1[0], ysplits2[-1]
-    else:
-        xsplit1, xsplit2 = xsplits1[0], xsplits2[-1]
-        ysplit1, ysplit2 = ysplits1[rank], ysplits2[rank]
-    if iscomplex:
-        return np.zeros((xsplit2 - xsplit1, ysplit2 - ysplit1)) + 1j * np.zeros(
-            (xsplit2 - xsplit1, ysplit2 - ysplit1)
-        )
-    else:
-        return np.zeros((xsplit2 - xsplit1, ysplit2 - ysplit1))
-
-
-def _get_empty_split_array_3D(
-    xsplits1: np.ndarray,
-    xsplits2: np.ndarray,
-    ysplits1: np.ndarray,
-    ysplits2: np.ndarray,
-    zsplits1: np.ndarray,
-    zsplits2: np.ndarray,
-    rank: int,
-    axis: int = 0,
-    iscomplex: bool = False,
-) -> np.ndarray:
-    """
-    Returns a normal or complex array with zeros.
-
-    Parameters
-    ----------
-    xsplits1, xsplits2, ysplits1, ysplits2, zsplits1, zsplits2 : int array
-        Arrays showing the split index for splitting x, y and z axis across nodes.
-    rank : int
-        MPI node rank.
-    axis : int, optional
-        Axis where the array is being split across.
-    iscomplex : bool, optional
-        Is the output array complex.
-    """
-    assert axis == 0 or axis == 1, "axis %i is unsupported for 3D grid" % axis
-    if axis == 0:
-        xsplit1, xsplit2 = xsplits1[rank], xsplits2[rank]
-        ysplit1, ysplit2 = ysplits1[0], ysplits2[-1]
-        zsplit1, zsplit2 = zsplits1[0], zsplits2[-1]
-    else:
-        xsplit1, xsplit2 = xsplits1[0], xsplits2[-1]
-        ysplit1, ysplit2 = ysplits1[rank], ysplits2[rank]
-        zsplit1, zsplit2 = zsplits1[0], zsplits2[-1]
-    if iscomplex:
-        return np.zeros(
-            (xsplit2 - xsplit1, ysplit2 - ysplit1, zsplit2 - zsplit1)
-        ) + 1j * np.zeros((xsplit2 - xsplit1, ysplit2 - ysplit1, zsplit2 - zsplit1))
-    else:
-        return np.zeros((xsplit2 - xsplit1, ysplit2 - ysplit1, zsplit2 - zsplit1))
-
-
 def redistribute_forward_2D(
-    f: np.ndarray, ngrid: Union[int, list], MPI: type, iscomplex: bool = False
+    f: np.ndarray,
+    ngrid: Union[int, list],
+    MPI: type,
 ) -> np.ndarray:
     """
-    Redistributes a 2D array from the conventional axis split across x to a
-    split across y.
+    Redistribute a 2D array from an x-axis slab decomposition to a
+    y-axis slab decomposition.
+
+    The input array is assumed to be split across MPI ranks along the
+    x-axis, such that each rank stores a local array with shape
+    ``(nx_local, Ny)``. The output is redistributed so that each rank
+    instead stores a local y-slab with shape ``(Nx, ny_local)``.
+
+    When the x and y dimensions are both evenly divisible by the number
+    of MPI ranks, the redistribution is performed with ``Alltoall``.
+    Otherwise, ``Alltoallv`` is used to support unequal slab sizes.
 
     Parameters
     ----------
-    f : 2darray
-        Input data split across the x axis.
+    f : np.ndarray
+        Local input array with shape ``(nx_local, Ny)``.
     ngrid : int or list
-        Grid size along each axis or a list of grid sizes along each axes.
+        Global grid size. If an integer is supplied, the same grid size
+        is assumed along both axes. If a sequence is supplied, it must
+        contain ``[Nx, Ny]``.
     MPI : object
         MPIutils MPI object.
-    iscomplex : bool, optional
-        Is the input data complex.
+
+    Returns
+    -------
+    fnew : np.ndarray
+        Redistributed local array with shape ``(Nx, ny_local)``.
+
+    Notes
+    -----
+    The dtype of the input array is preserved.
+
+    For equal slab sizes, the local array is reshaped so that the first
+    axis of the communication buffer identifies the destination rank.
+    After ``Alltoall``, this axis identifies the source rank, allowing
+    the received blocks to be reshaped directly into global x ordering.
     """
     if np.isscalar(ngrid):
-        xngrid, yngrid = ngrid, ngrid
+        xngrid = yngrid = ngrid
     else:
-        assert len(ngrid) == 2, "Length of grid dimensions must be 2."
-        xngrid, yngrid = ngrid[0], ngrid[1]
-    _xsplits1, _xsplits2, _ysplits1, _ysplits2 = _get_splits_2D(MPI, xngrid, yngrid)
-    for i in range(0, MPI.size):
-        if i == MPI.rank:
-            fnew = _get_empty_split_array_2D(
-                _xsplits1,
-                _xsplits2,
-                _ysplits1,
-                _ysplits2,
-                MPI.rank,
-                axis=1,
-                iscomplex=iscomplex,
-            )
-            for j in range(0, MPI.size):
-                if j != MPI.rank:
-                    _f = MPI.recv(j, tag=i * MPI.size + j)
-                else:
-                    _xsplit1, _xsplit2, _ysplit1, _ysplit2 = _get_splits_subset_2D(
-                        MPI.rank,
-                        i,
-                        _xsplits1,
-                        _xsplits2,
-                        _ysplits1,
-                        _ysplits2,
-                        reverse=True,
-                    )
-                    _f = f[:, _ysplit1:_ysplit2]
-                _xsplit1, _xsplit2, _ysplit1, _ysplit2 = _get_splits_subset_2D(
-                    j,
-                    MPI.rank,
-                    _xsplits1,
-                    _xsplits2,
-                    _ysplits1,
-                    _ysplits2,
-                    reverse=True,
-                )
-                fnew[_xsplit1:_xsplit2, :] = _f
-            fnew = np.array(fnew)
-        else:
-            _xsplit1, _xsplit2, _ysplit1, _ysplit2 = _get_splits_subset_2D(
-                MPI.rank, i, _xsplits1, _xsplits2, _ysplits1, _ysplits2, reverse=True
-            )
-            MPI.send(f[:, _ysplit1:_ysplit2], to_rank=i, tag=i * MPI.size + MPI.rank)
-        MPI.wait()
+        if len(ngrid) != 2:
+            raise ValueError("Length of grid dimensions must be 2.")
+        xngrid, yngrid = ngrid
+
+    xsplits1, xsplits2 = MPI.split(xngrid)
+    ysplits1, ysplits2 = MPI.split(yngrid)
+
+    nxs = xsplits2 - xsplits1
+    nys = ysplits2 - ysplits1
+
+    nx = nxs[MPI.rank]
+    ny = nys[MPI.rank]
+
+    if f.shape != (nx, yngrid):
+        raise ValueError(
+            f"Expected local shape {(nx, yngrid)}, "
+            f"received {f.shape}."
+        )
+
+    equal_splits = (
+        np.all(nxs == nxs[0])
+        and np.all(nys == nys[0])
+    )
+
+    if equal_splits:
+        # (nx, Ny)
+        #   -> (nx, P, ny)
+        #   -> (P, nx, ny)
+        #
+        # The first axis identifies the destination rank.
+        sendbuf = np.ascontiguousarray(
+            f.reshape(nx, MPI.size, ny)
+             .transpose(1, 0, 2)
+        )
+
+        recvbuf = np.empty_like(sendbuf)
+
+        MPI.Alltoall(
+            sendbuf,
+            recvbuf,
+        )
+
+        # The first axis now identifies the source rank.
+        # Source-rank ordering is the same as global x ordering.
+        return recvbuf.reshape(
+            xngrid,
+            ny,
+        )
+
+    # Number of scalar elements sent to each destination rank.
+    sendcounts = (
+        nx * nys
+    ).astype(np.int64)
+
+    senddispls = np.zeros(
+        MPI.size,
+        dtype=np.int64,
+    )
+    senddispls[1:] = np.cumsum(
+        sendcounts[:-1]
+    )
+
+    sendbuf = np.empty(
+        int(np.sum(sendcounts)),
+        dtype=f.dtype,
+    )
+
+    # Pack the y-slab belonging to each destination rank.
+    for dest in range(MPI.size):
+        start = senddispls[dest]
+        stop = start + sendcounts[dest]
+
+        sendbuf[start:stop] = (
+            f[
+                :,
+                ysplits1[dest]:ysplits2[dest],
+            ]
+            .reshape(-1)
+        )
+
+    # This rank receives one x-slab contribution from every source rank.
+    recvcounts = (
+        nxs * ny
+    ).astype(np.int64)
+
+    recvdispls = np.zeros(
+        MPI.size,
+        dtype=np.int64,
+    )
+    recvdispls[1:] = np.cumsum(
+        recvcounts[:-1]
+    )
+
+    recvbuf = np.empty(
+        int(np.sum(recvcounts)),
+        dtype=f.dtype,
+    )
+
+    MPI.Alltoallv(
+        sendbuf,
+        sendcounts,
+        senddispls,
+        recvbuf,
+        recvcounts,
+        recvdispls,
+    )
+
+    fnew = np.empty(
+        (xngrid, ny),
+        dtype=f.dtype,
+    )
+
+    # Reconstruct global x ordering from source-rank contributions.
+    for source in range(MPI.size):
+        start = recvdispls[source]
+        stop = start + recvcounts[source]
+
+        fnew[
+            xsplits1[source]:xsplits2[source],
+            :
+        ] = recvbuf[start:stop].reshape(
+            nxs[source],
+            ny,
+        )
+
     return fnew
 
 
 def redistribute_forward_3D(
-    f: np.ndarray, ngrid: Union[int, list], MPI: type, iscomplex: bool = False
+    f: np.ndarray,
+    ngrid: Union[int, list],
+    MPI: type,
 ) -> np.ndarray:
     """
-    Redistributes a 3D array from the conventional axis split across x to a
-    split across y.
+    Redistribute a 3D array from an x-axis slab decomposition to a
+    y-axis slab decomposition.
 
     Parameters
     ----------
-    f : 3darray
-        Input data split across the x axis.
+    f : np.ndarray
+        Local array with shape ``(nx_local, Ny, Nz)``.
     ngrid : int or list
-        Grid size along each axis or a list of grid sizes along each axes.
+        Global grid size along each axis.
     MPI : object
         MPIutils MPI object.
-    iscomplex : bool, optional
-        Is the input data complex.
+
+    Returns
+    -------
+    fnew : np.ndarray
+        Redistributed local array with shape ``(Nx, ny_local, Nz)``.
     """
     if np.isscalar(ngrid):
-        xngrid, yngrid, zngrid = ngrid, ngrid, ngrid
+        xngrid = yngrid = zngrid = ngrid
     else:
-        assert len(ngrid) == 3, "Length of grid dimensions must be 3."
-        xngrid, yngrid, zngrid = ngrid[0], ngrid[1], ngrid[2]
-    _xsplits1, _xsplits2, _ysplits1, _ysplits2, _zsplits1, _zsplits2 = _get_splits_3D(
-        MPI, xngrid, yngrid, zngrid
+        if len(ngrid) != 3:
+            raise ValueError("Length of grid dimensions must be 3.")
+        xngrid, yngrid, zngrid = ngrid
+
+    xsplits1, xsplits2 = MPI.split(xngrid)
+    ysplits1, ysplits2 = MPI.split(yngrid)
+
+    nxs = xsplits2 - xsplits1
+    nys = ysplits2 - ysplits1
+
+    nx = nxs[MPI.rank]
+    ny = nys[MPI.rank]
+
+    if f.shape != (nx, yngrid, zngrid):
+        raise ValueError(
+            f"Expected local shape {(nx, yngrid, zngrid)}, "
+            f"received {f.shape}."
+        )
+
+    # Fast path: equal x and y slab widths.
+    equal_splits = (
+        np.all(nxs == nxs[0])
+        and np.all(nys == nys[0])
     )
-    for i in range(0, MPI.size):
-        if i == MPI.rank:
-            fnew = _get_empty_split_array_3D(
-                _xsplits1,
-                _xsplits2,
-                _ysplits1,
-                _ysplits2,
-                _zsplits1,
-                _zsplits2,
-                MPI.rank,
-                axis=1,
-                iscomplex=iscomplex,
-            )
-            for j in range(0, MPI.size):
-                if j != MPI.rank:
-                    _f = MPI.recv(j, tag=i * MPI.size + j)
-                else:
-                    _xsplit1, _xsplit2, _ysplit1, _ysplit2 = _get_splits_subset_2D(
-                        MPI.rank,
-                        i,
-                        _xsplits1,
-                        _xsplits2,
-                        _ysplits1,
-                        _ysplits2,
-                        reverse=True,
-                    )
-                    _f = f[:, _ysplit1:_ysplit2, :]
-                _xsplit1, _xsplit2, _ysplit1, _ysplit2 = _get_splits_subset_2D(
-                    j,
-                    MPI.rank,
-                    _xsplits1,
-                    _xsplits2,
-                    _ysplits1,
-                    _ysplits2,
-                    reverse=True,
-                )
-                fnew[_xsplit1:_xsplit2, :, :] = _f
-            fnew = np.array(fnew)
-        else:
-            _xsplit1, _xsplit2, _ysplit1, _ysplit2 = _get_splits_subset_2D(
-                MPI.rank, i, _xsplits1, _xsplits2, _ysplits1, _ysplits2, reverse=True
-            )
-            MPI.send(f[:, _ysplit1:_ysplit2, :], to_rank=i, tag=i * MPI.size + MPI.rank)
-        MPI.wait()
+
+    if equal_splits:
+
+        # (nx, Ny, Nz)
+        #       ↓
+        # (nx, P, ny, Nz)
+        #       ↓ transpose
+        # (P, nx, ny, Nz)
+        #
+        # First axis now identifies destination rank.
+        sendbuf = np.ascontiguousarray(
+            f.reshape(nx, MPI.size, ny, zngrid)
+             .transpose(1, 0, 2, 3)
+        )
+
+        recvbuf = np.empty_like(sendbuf)
+
+        MPI.Alltoall(sendbuf, recvbuf)
+
+        # First axis of recvbuf now identifies source rank.
+        # Source-rank ordering is exactly global x ordering.
+        return recvbuf.reshape(
+            xngrid,
+            ny,
+            zngrid,
+        )
+
+    # General path for unequal slab widths.
+    sendcounts = (
+        nx * nys * zngrid
+    ).astype(np.int64)
+
+    senddispls = np.zeros(MPI.size, dtype=np.int64)
+    senddispls[1:] = np.cumsum(sendcounts[:-1])
+
+    sendbuf = np.empty(
+        int(np.sum(sendcounts)),
+        dtype=f.dtype,
+    )
+
+    # Pack each destination y-slab contiguously.
+    for dest in range(MPI.size):
+        start = senddispls[dest]
+        stop = start + sendcounts[dest]
+
+        sendbuf[start:stop] = (
+            f[:, ysplits1[dest]:ysplits2[dest], :]
+            .reshape(-1)
+        )
+
+    # This rank owns ny rows in y after the redistribution.
+    # Each source contributes its own x slab.
+    recvcounts = (
+        nxs * ny * zngrid
+    ).astype(np.int64)
+
+    recvdispls = np.zeros(MPI.size, dtype=np.int64)
+    recvdispls[1:] = np.cumsum(recvcounts[:-1])
+
+    recvbuf = np.empty(
+        int(np.sum(recvcounts)),
+        dtype=f.dtype,
+    )
+
+    MPI.Alltoallv(
+        sendbuf,
+        sendcounts,
+        senddispls,
+        recvbuf,
+        recvcounts,
+        recvdispls,
+    )
+
+    # Reassemble source x-slabs into global x order.
+    fnew = np.empty(
+        (xngrid, ny, zngrid),
+        dtype=f.dtype,
+    )
+
+    for source in range(MPI.size):
+        start = recvdispls[source]
+        stop = start + recvcounts[source]
+
+        block = recvbuf[start:stop].reshape(
+            nxs[source],
+            ny,
+            zngrid,
+        )
+
+        fnew[
+            xsplits1[source]:xsplits2[source],
+            :,
+            :
+        ] = block
+
     return fnew
 
 
+
 def redistribute_backward_2D(
-    f: np.ndarray, ngrid: Union[int, list], MPI: type, iscomplex: int = False
+    f: np.ndarray,
+    ngrid: Union[int, list],
+    MPI: type,
 ) -> np.ndarray:
     """
-    Redistributes a 2D array backwards a split across y to a split across x.
+    Redistribute a 2D array from a y-axis slab decomposition back to an
+    x-axis slab decomposition.
+
+    The input array is assumed to be split across MPI ranks along the
+    y-axis, such that each rank stores a local array with shape
+    ``(Nx, ny_local)``. The output is redistributed so that each rank
+    instead stores an x-slab with shape ``(nx_local, Ny)``.
+
+    When the x and y dimensions are both evenly divisible by the number
+    of MPI ranks, the redistribution is performed with ``Alltoall``.
+    Otherwise, ``Alltoallv`` is used to support unequal slab sizes.
 
     Parameters
     ----------
-    f : 2darray
-        Input data split across the x axis.
+    f : np.ndarray
+        Local input array with shape ``(Nx, ny_local)``.
     ngrid : int or list
-        Grid size along each axis or a list of grid sizes along each axes.
+        Global grid size. If an integer is supplied, the same grid size
+        is assumed along both axes. If a sequence is supplied, it must
+        contain ``[Nx, Ny]``.
     MPI : object
         MPIutils MPI object.
-    iscomplex : bool, optional
-        Is the input data complex.
+
+    Returns
+    -------
+    fnew : np.ndarray
+        Redistributed local array with shape ``(nx_local, Ny)``.
+
+    Notes
+    -----
+    The dtype of the input array is preserved.
+
+    This operation is the inverse of ``redistribute_forward_2D``.
+    For equal slab sizes, the input is divided into destination x-slabs,
+    exchanged with ``Alltoall``, then transposed and reshaped so that
+    source-rank ordering reconstructs the global y-axis.
     """
     if np.isscalar(ngrid):
-        xngrid, yngrid = ngrid, ngrid
+        xngrid = yngrid = ngrid
     else:
-        assert len(ngrid) == 2, "Length of grid dimensions must be 2."
-        xngrid, yngrid = ngrid[0], ngrid[1]
-    _xsplits1, _xsplits2, _ysplits1, _ysplits2 = _get_splits_2D(MPI, xngrid, yngrid)
-    for i in range(0, MPI.size):
-        if i == MPI.rank:
-            fnew = _get_empty_split_array_2D(
-                _xsplits1,
-                _xsplits2,
-                _ysplits1,
-                _ysplits2,
-                MPI.rank,
-                axis=0,
-                iscomplex=iscomplex,
+        if len(ngrid) != 2:
+            raise ValueError("Length of grid dimensions must be 2.")
+        xngrid, yngrid = ngrid
+
+    xsplits1, xsplits2 = MPI.split(xngrid)
+    ysplits1, ysplits2 = MPI.split(yngrid)
+
+    nxs = xsplits2 - xsplits1
+    nys = ysplits2 - ysplits1
+
+    nx = nxs[MPI.rank]
+    ny = nys[MPI.rank]
+
+    if f.shape != (xngrid, ny):
+        raise ValueError(
+            f"Expected local shape {(xngrid, ny)}, "
+            f"received {f.shape}."
+        )
+
+    equal_splits = (
+        np.all(nxs == nxs[0])
+        and np.all(nys == nys[0])
+    )
+
+    if equal_splits:
+        # (Nx, ny)
+        #   -> (P, nx, ny)
+        #
+        # The first axis identifies the destination x-rank.
+        sendbuf = np.ascontiguousarray(
+            f.reshape(
+                MPI.size,
+                nx,
+                ny,
             )
-            for j in range(0, MPI.size):
-                if j != MPI.rank:
-                    _f = MPI.recv(j, tag=i * MPI.size + j)
-                else:
-                    _xsplit1, _xsplit2, _ysplit1, _ysplit2 = _get_splits_subset_2D(
-                        MPI.rank,
-                        i,
-                        _xsplits1,
-                        _xsplits2,
-                        _ysplits1,
-                        _ysplits2,
-                        reverse=False,
-                    )
-                    _f = f[_xsplit1:_xsplit2, :]
-                _xsplit1, _xsplit2, _ysplit1, _ysplit2 = _get_splits_subset_2D(
-                    j,
-                    MPI.rank,
-                    _xsplits1,
-                    _xsplits2,
-                    _ysplits1,
-                    _ysplits2,
-                    reverse=False,
-                )
-                fnew[:, _ysplit1:_ysplit2] = _f
-            fnew = np.array(fnew)
-        else:
-            _xsplit1, _xsplit2, _ysplit1, _ysplit2 = _get_splits_subset_2D(
-                MPI.rank, i, _xsplits1, _xsplits2, _ysplits1, _ysplits2, reverse=False
-            )
-            MPI.send(f[_xsplit1:_xsplit2, :], to_rank=i, tag=i * MPI.size + MPI.rank)
-        MPI.wait()
+        )
+
+        recvbuf = np.empty_like(sendbuf)
+
+        MPI.Alltoall(
+            sendbuf,
+            recvbuf,
+        )
+
+        # recvbuf has shape
+        # (source_y_rank, nx, ny).
+        #
+        # Rearrange to
+        # (nx, source_y_rank, ny)
+        # and collapse the final two axes into global y ordering.
+        return np.ascontiguousarray(
+            recvbuf.transpose(1, 0, 2)
+        ).reshape(
+            nx,
+            yngrid,
+        )
+
+    # Number of scalar elements sent to each destination rank.
+    sendcounts = (
+        nxs * ny
+    ).astype(np.int64)
+
+    senddispls = np.zeros(
+        MPI.size,
+        dtype=np.int64,
+    )
+    senddispls[1:] = np.cumsum(
+        sendcounts[:-1]
+    )
+
+    sendbuf = np.empty(
+        int(np.sum(sendcounts)),
+        dtype=f.dtype,
+    )
+
+    # Pack the x-slab belonging to each destination rank.
+    for dest in range(MPI.size):
+        start = senddispls[dest]
+        stop = start + sendcounts[dest]
+
+        sendbuf[start:stop] = (
+            f[
+                xsplits1[dest]:xsplits2[dest],
+                :
+            ]
+            .reshape(-1)
+        )
+
+    # This rank receives one y-slab contribution from every source rank.
+    recvcounts = (
+        nx * nys
+    ).astype(np.int64)
+
+    recvdispls = np.zeros(
+        MPI.size,
+        dtype=np.int64,
+    )
+    recvdispls[1:] = np.cumsum(
+        recvcounts[:-1]
+    )
+
+    recvbuf = np.empty(
+        int(np.sum(recvcounts)),
+        dtype=f.dtype,
+    )
+
+    MPI.Alltoallv(
+        sendbuf,
+        sendcounts,
+        senddispls,
+        recvbuf,
+        recvcounts,
+        recvdispls,
+    )
+
+    fnew = np.empty(
+        (nx, yngrid),
+        dtype=f.dtype,
+    )
+
+    # Reconstruct global y ordering from source-rank contributions.
+    for source in range(MPI.size):
+        start = recvdispls[source]
+        stop = start + recvcounts[source]
+
+        fnew[
+            :,
+            ysplits1[source]:ysplits2[source],
+        ] = recvbuf[start:stop].reshape(
+            nx,
+            nys[source],
+        )
+
     return fnew
 
 
 def redistribute_backward_3D(
-    f: np.ndarray, ngrid: Union[int, list], MPI: type, iscomplex: bool = False
+    f: np.ndarray,
+    ngrid: Union[int, list],
+    MPI: type,
 ) -> np.ndarray:
     """
-    Redistributes a 3D array backwards a split across y to a split across x.
+    Redistribute a 3D array from a y-axis slab decomposition back to an
+    x-axis slab decomposition.
 
     Parameters
     ----------
-    f : 3darray
-        Input data split across the x axis.
+    f : np.ndarray
+        Local array with shape ``(Nx, ny_local, Nz)``.
     ngrid : int or list
-        Grid size along each axis or a list of grid sizes along each axes.
+        Global grid size along each axis.
     MPI : object
         MPIutils MPI object.
-    iscomplex : bool, optional
-        Is the input data complex.
+
+    Returns
+    -------
+    fnew : np.ndarray
+        Redistributed local array with shape ``(nx_local, Ny, Nz)``.
     """
     if np.isscalar(ngrid):
-        xngrid, yngrid, zngrid = ngrid, ngrid, ngrid
+        xngrid = yngrid = zngrid = ngrid
     else:
-        assert len(ngrid) == 3, "Length of grid dimensions must be 3."
-        xngrid, yngrid, zngrid = ngrid[0], ngrid[1], ngrid[2]
-    _xsplits1, _xsplits2, _ysplits1, _ysplits2, _zsplits1, _zsplits2 = _get_splits_3D(
-        MPI, xngrid, yngrid, zngrid
+        if len(ngrid) != 3:
+            raise ValueError("Length of grid dimensions must be 3.")
+        xngrid, yngrid, zngrid = ngrid
+
+    xsplits1, xsplits2 = MPI.split(xngrid)
+    ysplits1, ysplits2 = MPI.split(yngrid)
+
+    nxs = xsplits2 - xsplits1
+    nys = ysplits2 - ysplits1
+
+    nx = nxs[MPI.rank]
+    ny = nys[MPI.rank]
+
+    if f.shape != (xngrid, ny, zngrid):
+        raise ValueError(
+            f"Expected local shape {(xngrid, ny, zngrid)}, "
+            f"received {f.shape}."
+        )
+
+    equal_splits = (
+        np.all(nxs == nxs[0])
+        and np.all(nys == nys[0])
     )
-    for i in range(0, MPI.size):
-        if i == MPI.rank:
-            fnew = _get_empty_split_array_3D(
-                _xsplits1,
-                _xsplits2,
-                _ysplits1,
-                _ysplits2,
-                _zsplits1,
-                _zsplits2,
-                MPI.rank,
-                axis=0,
-                iscomplex=iscomplex,
+
+    if equal_splits:
+
+        # (Nx, ny, Nz)
+        #       ↓
+        # (P, nx, ny, Nz)
+        #
+        # First axis identifies destination x-rank.
+        sendbuf = np.ascontiguousarray(
+            f.reshape(
+                MPI.size,
+                nx,
+                ny,
+                zngrid,
             )
-            for j in range(0, MPI.size):
-                if j != MPI.rank:
-                    _f = MPI.recv(j, tag=i * MPI.size + j)
-                else:
-                    _xsplit1, _xsplit2, _ysplit1, _ysplit2 = _get_splits_subset_2D(
-                        MPI.rank,
-                        i,
-                        _xsplits1,
-                        _xsplits2,
-                        _ysplits1,
-                        _ysplits2,
-                        reverse=False,
-                    )
-                    _f = f[_xsplit1:_xsplit2, :, :]
-                _xsplit1, _xsplit2, _ysplit1, _ysplit2 = _get_splits_subset_2D(
-                    j,
-                    MPI.rank,
-                    _xsplits1,
-                    _xsplits2,
-                    _ysplits1,
-                    _ysplits2,
-                    reverse=False,
-                )
-                fnew[:, _ysplit1:_ysplit2, :] = _f
-            fnew = np.array(fnew)
-        else:
-            _xsplit1, _xsplit2, _ysplit1, _ysplit2 = _get_splits_subset_2D(
-                MPI.rank, i, _xsplits1, _xsplits2, _ysplits1, _ysplits2, reverse=False
-            )
-            MPI.send(f[_xsplit1:_xsplit2, :, :], to_rank=i, tag=i * MPI.size + MPI.rank)
-        MPI.wait()
+        )
+
+        recvbuf = np.empty_like(sendbuf)
+
+        MPI.Alltoall(sendbuf, recvbuf)
+
+        # recvbuf:
+        # (source_y_rank, nx, ny, Nz)
+        #
+        # Rearrange to:
+        # (nx, source_y_rank, ny, Nz)
+        #
+        # then collapse source_y_rank × ny -> Ny.
+        return np.ascontiguousarray(
+            recvbuf.transpose(1, 0, 2, 3)
+        ).reshape(
+            nx,
+            yngrid,
+            zngrid,
+        )
+
+    # General unequal-slab case.
+    sendcounts = (
+        nxs * ny * zngrid
+    ).astype(np.int64)
+
+    senddispls = np.zeros(MPI.size, dtype=np.int64)
+    senddispls[1:] = np.cumsum(sendcounts[:-1])
+
+    sendbuf = np.empty(
+        int(np.sum(sendcounts)),
+        dtype=f.dtype,
+    )
+
+    # Send each destination its x slab.
+    for dest in range(MPI.size):
+        start = senddispls[dest]
+        stop = start + sendcounts[dest]
+
+        sendbuf[start:stop] = (
+            f[xsplits1[dest]:xsplits2[dest], :, :]
+            .reshape(-1)
+        )
+
+    # Every source contributes its y slab to this x slab.
+    recvcounts = (
+        nx * nys * zngrid
+    ).astype(np.int64)
+
+    recvdispls = np.zeros(MPI.size, dtype=np.int64)
+    recvdispls[1:] = np.cumsum(recvcounts[:-1])
+
+    recvbuf = np.empty(
+        int(np.sum(recvcounts)),
+        dtype=f.dtype,
+    )
+
+    MPI.Alltoallv(
+        sendbuf,
+        sendcounts,
+        senddispls,
+        recvbuf,
+        recvcounts,
+        recvdispls,
+    )
+
+    fnew = np.empty(
+        (nx, yngrid, zngrid),
+        dtype=f.dtype,
+    )
+
+    # Reconstruct global y ordering from source-rank order.
+    for source in range(MPI.size):
+        start = recvdispls[source]
+        stop = start + recvcounts[source]
+
+        block = recvbuf[start:stop].reshape(
+            nx,
+            nys[source],
+            zngrid,
+        )
+
+        fnew[
+            :,
+            ysplits1[source]:ysplits2[source],
+            :
+        ] = block
+
     return fnew
 
 
@@ -637,7 +862,7 @@ def mpi_fft2D(
         xngrid, yngrid = ngrid[0], ngrid[1]
     # fft along y
     f_fourier = slab_fft1D(f_real, yboxsize, yngrid, axis=1)
-    f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI, iscomplex=True)
+    f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI)
     # fft along x
     f_fourier = slab_fft1D(f_fourier, xboxsize, xngrid, axis=0)
     return f_fourier
@@ -680,7 +905,7 @@ def mpi_ifft2D(
         xngrid, yngrid = ngrid[0], ngrid[1]
     # fft along x
     _f_fourier = slab_ifft1D(f_fourier, xboxsize, xngrid, axis=0)
-    _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI, iscomplex=True)
+    _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI)
     # fft along y
     f = slab_ifft1D(_f_fourier, yboxsize, yngrid, axis=1)
     return f.real
@@ -726,7 +951,7 @@ def mpi_dct2D(
         xngrid, yngrid = ngrid[0], ngrid[1]
     # fft along y
     f_fourier = slab_dct1D(f_real, yboxsize, yngrid, axis=1, type=type)
-    f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI, iscomplex=False)
+    f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI)
     # fft along x
     f_fourier = slab_dct1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
     return f_fourier
@@ -772,7 +997,7 @@ def mpi_idct2D(
         xngrid, yngrid = ngrid[0], ngrid[1]
     # fft along x
     _f_fourier = slab_idct1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
-    _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI, iscomplex=False)
+    _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI)
     # fft along y
     f = slab_idct1D(_f_fourier, yboxsize, yngrid, axis=1, type=type)
     return f
@@ -818,7 +1043,7 @@ def mpi_dst2D(
         xngrid, yngrid = ngrid[0], ngrid[1]
     # fft along y
     f_fourier = slab_dst1D(f_real, yboxsize, yngrid, axis=1, type=type)
-    f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI, iscomplex=False)
+    f_fourier = redistribute_forward_2D(f_fourier, ngrid, MPI)
     # fft along x
     f_fourier = slab_dst1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
     return f_fourier
@@ -864,7 +1089,7 @@ def mpi_idst2D(
         xngrid, yngrid = ngrid[0], ngrid[1]
     # fft along x
     _f_fourier = slab_idst1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
-    _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI, iscomplex=False)
+    _f_fourier = redistribute_backward_2D(_f_fourier, ngrid, MPI)
     # fft along y
     f = slab_idst1D(_f_fourier, yboxsize, yngrid, axis=1, type=type)
     return f
@@ -906,7 +1131,7 @@ def mpi_fft3D(
     f_fourier = slab_fft1D(f_real, yboxsize, yngrid, axis=1)
     # fft along z
     f_fourier = slab_fft1D(f_fourier, zboxsize, zngrid, axis=2)
-    f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI, iscomplex=True)
+    f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI)
     # fft along x
     f_fourier = slab_fft1D(f_fourier, xboxsize, xngrid, axis=0)
     return f_fourier
@@ -949,7 +1174,7 @@ def mpi_ifft3D(
         xngrid, yngrid, zngrid = ngrid[0], ngrid[1], ngrid[2]
     # fft along x
     _f_fourier = slab_ifft1D(f_fourier, xboxsize, xngrid, axis=0)
-    _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI, iscomplex=True)
+    _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI)
     # fft along y
     _f_fourier = slab_ifft1D(_f_fourier, yboxsize, yngrid, axis=1)
     # fft along z
@@ -999,7 +1224,7 @@ def mpi_dct3D(
     f_fourier = slab_dct1D(f_real, yboxsize, yngrid, axis=1, type=type)
     # fft along z
     f_fourier = slab_dct1D(f_fourier, zboxsize, zngrid, axis=2, type=type)
-    f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI, iscomplex=False)
+    f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI)
     # fft along x
     f_fourier = slab_dct1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
     return f_fourier
@@ -1045,7 +1270,7 @@ def mpi_idct3D(
         xngrid, yngrid, zngrid = ngrid[0], ngrid[1], ngrid[2]
     # fft along x
     _f_fourier = slab_idct1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
-    _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI, iscomplex=False)
+    _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI)
     # fft along y
     _f_fourier = slab_idct1D(_f_fourier, yboxsize, yngrid, axis=1, type=type)
     # fft along z
@@ -1095,7 +1320,7 @@ def mpi_dst3D(
     f_fourier = slab_dst1D(f_real, yboxsize, yngrid, axis=1, type=type)
     # fft along z
     f_fourier = slab_dst1D(f_fourier, zboxsize, zngrid, axis=2, type=type)
-    f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI, iscomplex=False)
+    f_fourier = redistribute_forward_3D(f_fourier, ngrid, MPI)
     # fft along x
     f_fourier = slab_dst1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
     return f_fourier
@@ -1141,7 +1366,7 @@ def mpi_idst3D(
         xngrid, yngrid, zngrid = ngrid[0], ngrid[1], ngrid[2]
     # fft along x
     _f_fourier = slab_idst1D(f_fourier, xboxsize, xngrid, axis=0, type=type)
-    _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI, iscomplex=False)
+    _f_fourier = redistribute_backward_3D(_f_fourier, ngrid, MPI)
     # fft along y
     _f_fourier = slab_idst1D(_f_fourier, yboxsize, yngrid, axis=1, type=type)
     # fft along z
