@@ -441,7 +441,7 @@ class MPI:
         self,
         data: np.ndarray,
         root: int = 0,
-    ) -> np.ndarray | None:
+    ) -> Optional[np.ndarray]:
         """
         Gather one-dimensional NumPy arrays onto a single MPI rank.
 
@@ -501,7 +501,7 @@ class MPI:
 
     def Scatter(
         self,
-        data: np.ndarray | None,
+        data: Optional[np.ndarray],
         dtype: np.dtype,
         root: int = 0,
     ) -> np.ndarray:
