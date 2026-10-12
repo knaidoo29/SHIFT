@@ -1,6 +1,6 @@
 import numpy as np
 
-from typing import Any, List, Tuple, Optional, Union
+from typing import Any, Tuple, Optional, Union
 
 
 def get_MPI_loop_size(loop_size: int, MPI_size: int) -> int:
@@ -152,38 +152,35 @@ class MPI:
         """
         if self.rank == 0:
             self.mpi_print(*value)
+
+
+    @staticmethod
+    def _byte_view(data: np.ndarray) -> np.ndarray:
+        """
+        Return a one-dimensional byte view of a contiguous NumPy array.
+
+        The view shares memory with the original array and does not
+        perform any numerical conversion or data copying.
+        """
+        data = np.asarray(data)
+
+        if data.dtype.hasobject:
+            raise TypeError("Object dtypes cannot be transferred as raw bytes.")
+
+        if not data.flags.c_contiguous:
+            raise ValueError("MPI buffers must be C-contiguous.")
+
+        return data.reshape(-1).view(np.uint8)
     
 
     def Bcast(self, data: np.ndarray, root: int = 0) -> None:
         """
         Broadcast a NumPy array from one MPI rank to all ranks.
-
-        This uses the buffer-based ``mpi4py`` broadcast operation and therefore
-        communicates the array directly without Python object serialization.
-
-        Parameters
-        ----------
-        data : np.ndarray
-            Array buffer to broadcast. On the root rank, this contains the data
-            to be sent. On all other ranks, this must be an allocated array with
-            the same shape and dtype as the root array. The receive buffers are
-            overwritten in place.
-        root : int, optional
-            Rank from which the data are broadcast. Default is 0.
-
-        Returns
-        -------
-        None
-            The input array is modified in place on non-root ranks.
-
-        Notes
-        -----
-        All MPI ranks in the communicator must call this function collectively
-        with the same value of ``root``.
-
-        The shape and dtype of ``data`` must be compatible across all ranks.
         """
-        self.comm.Bcast(data, root=root)
+        self.comm.Bcast(
+            [self._byte_view(data), self.mpi.BYTE],
+            root=root,
+        )
 
 
     def bcast(self, data, root=0):
@@ -446,53 +443,58 @@ class MPI:
         root: int = 0,
     ) -> np.ndarray | None:
         """
-        Gather distributed NumPy arrays onto one MPI rank.
+        Gather one-dimensional NumPy arrays onto a single MPI rank.
 
-        Uses ``Gather`` when all ranks contribute arrays of equal length and
-        ``Gatherv`` when the lengths differ.
-
-        Parameters
-        ----------
-        data : np.ndarray
-            One-dimensional array held by the local MPI rank.
-        root : int, optional
-            Rank on which the collected array is returned. Default is 0.
-
-        Returns
-        -------
-        dataout : np.ndarray or None
-            Concatenated array on the root rank. None on all other ranks.
+        Uses Gather when all ranks contribute equal-sized arrays and
+        Gatherv otherwise. Supports numerical and structured dtypes.
         """
         data = np.ascontiguousarray(data)
 
-        # Determine contribution size from each rank.
+        if data.ndim != 1:
+            raise ValueError("Gather requires one-dimensional arrays.")
+
+        # Determine the number of entries contributed by each rank.
         nlocal = np.array([data.size], dtype=np.int64)
         counts = np.empty(self.size, dtype=np.int64)
 
         self.comm.Allgather(nlocal, counts)
 
-        equal_size = np.all(counts == counts[0])
+        # Allocate the receive array.
+        if self.rank == root:
+            dataout = np.empty(int(counts.sum()), dtype=data.dtype)
+            recvbuf = self._byte_view(dataout)
+        else:
+            dataout = None
+            recvbuf = None
 
-        if equal_size:
+        sendbuf = self._byte_view(data)
 
-            if self.rank == root:
-                dataout = np.empty(counts[0] * self.size, dtype=data.dtype)
-            else:
-                dataout = None
+        if np.all(counts == counts[0]):
 
-            self.comm.Gather(data, dataout, root=root)
+            self.comm.Gather(
+                [sendbuf, self.mpi.BYTE],
+                [recvbuf, self.mpi.BYTE] if self.rank == root else None,
+                root=root,
+            )
 
         else:
 
-            displs = np.zeros(self.size, dtype=np.int64)
-            displs[1:] = np.cumsum(counts[:-1])
+            # Convert element counts and displacements to bytes.
+            bytecounts = counts * data.dtype.itemsize
 
-            if self.rank == root:
-                dataout = np.empty(np.sum(counts), dtype=data.dtype,)
-            else:
-                dataout = None
+            bytedispls = np.zeros(self.size, dtype=np.int64)
+            bytedispls[1:] = np.cumsum(bytecounts[:-1])
 
-            self.comm.Gatherv(data, [dataout, counts, displs], root=root)
+            self.comm.Gatherv(
+                [sendbuf, self.mpi.BYTE],
+                [
+                    recvbuf,
+                    bytecounts,
+                    bytedispls,
+                    self.mpi.BYTE,
+                ] if self.rank == root else None,
+                root=root,
+            )
 
         return dataout
 
@@ -504,71 +506,66 @@ class MPI:
         root: int = 0,
     ) -> np.ndarray:
         """
-        Split a one-dimensional NumPy array across MPI ranks.
+        Distribute a one-dimensional NumPy array across MPI ranks.
 
-        Uses ``Scatter`` when all ranks receive equal-sized chunks and
-        ``Scatterv`` otherwise.
-
-        Parameters
-        ----------
-        data : np.ndarray or None
-            Full array on the root rank. May be None on all other ranks.
-        dtype : np.dtype
-            Data type of the distributed array.
-        root : int, optional
-            Rank containing the full input array. Default is 0.
-
-        Returns
-        -------
-        data_local : np.ndarray
-            Portion of the array assigned to the local MPI rank.
+        Uses Scatter for equal-sized partitions and Scatterv otherwise.
+        Supports numerical and structured dtypes.
         """
         dtype = np.dtype(dtype)
 
-        # Determine the global array length.
+        # Determine global array length.
         n = np.empty(1, dtype=np.int64)
 
         if self.rank == root:
+
             if data is None:
                 raise ValueError("data cannot be None on the root rank.")
 
             data = np.ascontiguousarray(data)
 
             if data.ndim != 1:
-                raise ValueError("Scatter currently supports one-dimensional arrays.")
+                raise ValueError("Scatter requires one-dimensional arrays.")
 
             if data.dtype != dtype:
-                raise TypeError(
-                    f"Input dtype {data.dtype} does not match requested dtype {dtype}."
-                )
+                raise TypeError("Input dtype does not match requested dtype.")
 
             n[0] = data.size
 
-        self.comm.Bcast(n, root=root)
+        self.Bcast(n, root=root)
 
         split1, split2 = self.split(int(n[0]))
         counts = split2 - split1
 
         data_local = np.empty(
-            counts[self.rank],
+            int(counts[self.rank]),
             dtype=dtype,
         )
 
-        sendbuf = data if self.rank == root else None
+        sendbuf = self._byte_view(data) if self.rank == root else None
+        recvbuf = self._byte_view(data_local)
 
         if np.all(counts == counts[0]):
+
             self.comm.Scatter(
-                sendbuf,
-                data_local,
+                [sendbuf, self.mpi.BYTE] if self.rank == root else None,
+                [recvbuf, self.mpi.BYTE],
                 root=root,
             )
+
         else:
-            if self.rank == root:
-                sendbuf = [data, counts, split1]
+
+            # Convert element counts and displacements to bytes.
+            bytecounts = counts * dtype.itemsize
+            bytedispls = split1 * dtype.itemsize
 
             self.comm.Scatterv(
-                sendbuf,
-                data_local,
+                [
+                    sendbuf,
+                    bytecounts,
+                    bytedispls,
+                    self.mpi.BYTE,
+                ] if self.rank == root else None,
+                [recvbuf, self.mpi.BYTE],
                 root=root,
             )
 
@@ -581,35 +578,27 @@ class MPI:
         recvbuf: np.ndarray,
     ) -> None:
         """
-        Perform an all-to-all exchange between MPI ranks.
-
-        Each MPI rank sends an equal number of elements to every other rank and
-        receives an equal number of elements from every other rank. The send and
-        receive buffers must therefore be compatible with an equal partition
-        across all ranks.
-
-        Parameters
-        ----------
-        sendbuf : np.ndarray
-            Contiguous buffer containing the data to send. The buffer is divided
-            equally between destination MPI ranks.
-        recvbuf : np.ndarray
-            Preallocated buffer into which the received data are written. The
-            buffer must have a compatible shape and dtype with ``sendbuf``.
-
-        Returns
-        -------
-        None
-            The received data are written into ``recvbuf`` in place.
-
-        Notes
-        -----
-        This function uses the buffer-based ``mpi4py`` ``Alltoall`` collective
-        and does not perform Python object serialization.
-
-        All MPI ranks in the communicator must call this function collectively.
+        Perform an equal-sized all-to-all exchange using raw bytes.
         """
-        self.comm.Alltoall(sendbuf, recvbuf)
+        sendbuf = np.asarray(sendbuf)
+        recvbuf = np.asarray(recvbuf)
+
+        if sendbuf.dtype != recvbuf.dtype:
+            raise TypeError("Send and receive dtypes must match.")
+
+        sendbytes = self._byte_view(sendbuf)
+        recvbytes = self._byte_view(recvbuf)
+
+        if sendbytes.size % self.size != 0:
+            raise ValueError("Send buffer cannot be divided equally among ranks.")
+
+        if recvbytes.size % self.size != 0:
+            raise ValueError("Receive buffer cannot be divided equally among ranks.")
+
+        self.comm.Alltoall(
+            [sendbytes, self.mpi.BYTE],
+            [recvbytes, self.mpi.BYTE],
+        )
 
 
     def Alltoallv(
@@ -622,49 +611,44 @@ class MPI:
         recvdispls: np.ndarray,
     ) -> None:
         """
-        Perform a variable-size all-to-all exchange between MPI ranks.
+        Perform a variable-sized all-to-all exchange using raw bytes.
 
-        Each MPI rank may send a different number of elements to every other
-        rank and receive a different number of elements from every other rank.
-
-        Parameters
-        ----------
-        sendbuf : np.ndarray
-            Contiguous buffer containing all data to send.
-        sendcounts : np.ndarray
-            Number of elements in ``sendbuf`` to send to each destination rank.
-            Must have length equal to the number of MPI ranks.
-        senddispls : np.ndarray
-            Starting displacement in ``sendbuf`` for the data sent to each
-            destination rank. Must have length equal to the number of MPI ranks.
-        recvbuf : np.ndarray
-            Preallocated buffer into which the received data are written.
-        recvcounts : np.ndarray
-            Number of elements expected from each source rank. Must have length
-            equal to the number of MPI ranks.
-        recvdispls : np.ndarray
-            Starting displacement in ``recvbuf`` for the data received from each
-            source rank. Must have length equal to the number of MPI ranks.
-
-        Returns
-        -------
-        None
-            The received data are written into ``recvbuf`` in place.
-
-        Notes
-        -----
-        Counts and displacements are specified in units of array elements, not
-        bytes.
-
-        This function uses the buffer-based ``mpi4py`` ``Alltoallv`` collective
-        and does not perform Python object serialization.
-
-        All MPI ranks in the communicator must call this function collectively.
+        Counts and displacements are supplied in array elements and
+        converted internally to bytes.
         """
+        sendbuf = np.asarray(sendbuf)
+        recvbuf = np.asarray(recvbuf)
+
+        if sendbuf.dtype != recvbuf.dtype:
+            raise TypeError("Send and receive dtypes must match.")
+
+        itemsize = sendbuf.dtype.itemsize
+
+        sendbytes = self._byte_view(sendbuf)
+        recvbytes = self._byte_view(recvbuf)
+
+        # Convert counts and displacements to bytes.
+        sendcounts_bytes = np.asarray(sendcounts, dtype=np.int64) * itemsize
+        recvcounts_bytes = np.asarray(recvcounts, dtype=np.int64) * itemsize
+
+        senddispls_bytes = np.asarray(senddispls, dtype=np.int64) * itemsize
+        recvdispls_bytes = np.asarray(recvdispls, dtype=np.int64) * itemsize
+
         self.comm.Alltoallv(
-            [sendbuf, sendcounts, senddispls],
-            [recvbuf, recvcounts, recvdispls],
+            [
+                sendbytes,
+                sendcounts_bytes,
+                senddispls_bytes,
+                self.mpi.BYTE,
+            ],
+            [
+                recvbytes,
+                recvcounts_bytes,
+                recvdispls_bytes,
+                self.mpi.BYTE,
+            ],
         )
+
 
     def Alltoall_arrays(
         self,
@@ -729,12 +713,12 @@ class MPI:
 
         recvcounts_rows = np.empty_like(sendcounts_rows)
 
-        self.comm.Alltoall(
+        self.Alltoall(
             sendcounts_rows,
             recvcounts_rows,
         )
 
-        # Number of scalar elements in each entry.
+        # Number of dtype elements in each row.
         row_size = int(np.prod(data.shape[1:], dtype=np.int64))
 
         sendcounts = sendcounts_rows * row_size
@@ -746,22 +730,24 @@ class MPI:
         senddispls[1:] = np.cumsum(sendcounts[:-1])
         recvdispls[1:] = np.cumsum(recvcounts[:-1])
 
-        sendbuf = senddata.reshape(-1)
-
-        recvbuf = np.empty(
-            int(recvcounts.sum()),
+        # Allocate the receiving array.
+        dataout = np.empty(
+            (int(recvcounts_rows.sum()), *data.shape[1:]),
             dtype=data.dtype,
         )
 
-        self.comm.Alltoallv(
-            [sendbuf, sendcounts, senddispls],
-            [recvbuf, recvcounts, recvdispls],
+        # Exchange the array entries.
+        self.Alltoallv(
+            senddata.reshape(-1),
+            sendcounts,
+            senddispls,
+            dataout.reshape(-1),
+            recvcounts,
+            recvdispls,
         )
 
-        return recvbuf.reshape(
-            (-1, *data.shape[1:])
-        )
-    
+        return dataout
+            
 
     def Sum(
         self,
@@ -827,13 +813,14 @@ class MPI:
         """
         data = np.asarray(data)
 
-        # Match the natural precision used for the mean.
         if np.issubdtype(data.dtype, np.integer):
             dtype = np.float64
         elif data.dtype == np.float16:
             dtype = np.float32
         else:
             dtype = data.dtype
+
+        dtype = np.dtype(dtype)
 
         local_sum = np.array(
             [np.sum(data, dtype=dtype)],
@@ -909,7 +896,7 @@ class MPI:
         self.comm.Allreduce(
             sendbuf,
             recvbuf,
-            op=self.mpi.MIN,
+            op = self.mpi.LAND if data.dtype == np.dtype(bool) else self.mpi.MIN
         )
 
         return recvbuf[0]
@@ -957,7 +944,7 @@ class MPI:
         self.comm.Allreduce(
             sendbuf,
             recvbuf,
-            op=self.mpi.MAX,
+            op = self.mpi.LOR if data.dtype == np.dtype(bool) else self.mpi.MAX
         )
 
         return recvbuf[0]
