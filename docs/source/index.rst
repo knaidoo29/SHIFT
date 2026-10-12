@@ -40,34 +40,48 @@
       <a href="https://opensource.org/licenses/MIT">
       <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
       </a>
-      <a href="https://github.com/psf/black">
-      <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
-      </a>
       <a href="https://doi.org/10.5281/zenodo.17093446">
       <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17093446.svg" alt="zenodo: DOI">
       </a>
    </p>
 
-================================================
-Scalable Helper Interface for Fourier Transforms
-================================================
+====================================================
+Scalable High-level Interface for Fourier Transforms
+====================================================
 
 Introduction
 ============
 
-SHIFT is a scalable interface library for computing FFTs in scipy. The library wraps scipy 
-FFT routines and makes it easy to keep track of corresponding Fourier modes in Fourier 
-space. The package can be scaled using MPI (using the ``mpi4py`` library), using a slab 
-decomposition to perform distributed FFTs.
+SHIFT is a lightweight Python library designed to simplify Fourier
+transforms and spectral calculations on regular grids. Built around
+SciPy's FFT routines, SHIFT provides a convenient interface for
+computing Fourier, discrete cosine (DCT), and discrete sine (DST)
+transforms in one, two, and three dimensions, alongside utilities
+for constructing grids and their corresponding Fourier-space modes.
+
+A central motivation behind SHIFT is to make parallel Fourier
+transforms easier to install, use, and integrate into scientific
+applications. Unlike implementations requiring FFTW and additional
+compiled extensions, SHIFT uses SciPy's FFT backend and supports
+distributed transforms through ``mpi4py``, employing an MPI slab
+decomposition. This avoids the need for a separate FFTW installation
+while retaining compatibility with standard scientific Python
+environments.
+
+In addition to spectral transforms, SHIFT provides utilities for
+MPI communication and distributed array operations, making it
+suitable for integration into larger scientific computing workflows.
 
 .. note ::
 
-  SHIFT was originally designed to be a Spherical/Polar Fourier Transform library. However, 
-  the package has developed into being predominanty a helper and MPI interface for FFTs in 
-  1D/2D/3D cartesian grids. The development of the Polar and Spherical Bessel transforms is 
-  still ongoing but is no longer the focus -- functions in ``shift.polar`` and ``shift.sphere``
-  should be used with extreme caution and are only available from the ``sphere`` branch of the 
-  code.
+  SHIFT was originally conceived as a framework for Fourier
+  transforms in Cartesian, polar, and spherical coordinate systems.
+  Current development focuses on Cartesian spectral transforms and
+  MPI-based scientific computing. Experimental polar and spherical
+  transform implementations are available in the ``sphere`` branch,
+  but are not part of the supported release and should be used
+  with caution. Further development of these capabilities is
+  planned.
 
 Contents
 ========
