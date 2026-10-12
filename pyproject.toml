@@ -34,17 +34,15 @@ dynamic = ["version"]
 [project.urls]
 Homepage = "https://github.com/knaidoo29/SHIFT"
 Repository = "https://github.com/knaidoo29/SHIFT"
-Documentation = "https://shift-doc.readthedocs.io/en/latest/"
+Documentation = "https://shift.readthedocs.io/en/latest/"
 "Bug Tracker" = "https://github.com/knaidoo29/SHIFT/issues"
 Changelog = "https://github.com/knaidoo29/SHIFT/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = ["black", "flake8", "ipython", "jupyter", "mypy"]
 docs = ["numpydoc", "sphinx", "sphinx-rtd-theme"]
-test = [
-    "pytest>=6.0",
-    "pytest-cov"
-]
+test = ["pytest>=6.0", "pytest-cov"]
+mpi = ["mpi4py"]
 
 [tool.setuptools.dynamic]
 version = {file = "VERSION"}

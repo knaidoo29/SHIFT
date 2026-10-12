@@ -1,5 +1,6 @@
 import sys
 import vinfo
+from datetime import date
 
 version = vinfo.version
 release = vinfo.release
@@ -55,17 +56,29 @@ if __name__ == "__main__":
     print("")
     print("Update CITATION.cff")
 
-    readme_file = open("CITATION.cff", "r")
-    list_of_lines = readme_file.readlines()
-    for i in range(0, len(list_of_lines)):
-        if list_of_lines[i][:8] == 'version:':
-            list_of_lines[i] = 'version: ' + vstr_after
-            list_of_lines[i] += '\n'
-    readme_file.close()
+    release_date = date.today().isoformat()
 
-    readme_file = open("CITATION.cff", "w")
-    readme_file.writelines(list_of_lines)
-    readme_file.close()
+    with open("CITATION.cff", "r", encoding="utf-8") as file:
+        lines = file.readlines()
+
+    has_release_date = False
+
+    for i, line in enumerate(lines):
+
+        if line.startswith("version:"):
+            lines[i] = f'version: "{vstr_after}"\n'
+
+        elif line.startswith("date-released:"):
+            has_release_date = True
+            if mode != "test":
+                lines[i] = f'date-released: "{release_date}"\n'
+
+    # Add the release date if the field doesn't already exist.
+    if not has_release_date and mode != "test":
+        lines.append(f'date-released: "{release_date}"\n')
+
+    with open("CITATION.cff", "w", encoding="utf-8") as file:
+        file.writelines(lines)
 
     print("")
     print("Update VERSION")
