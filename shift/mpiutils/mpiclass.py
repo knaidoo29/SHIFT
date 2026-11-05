@@ -1100,6 +1100,10 @@ class MPI:
         dtype = np.dtype(dtype)
         
         if self.size == 1:
+            if data.size == 0:
+                raise ValueError(
+                    "Cannot compute the mean of an empty distributed array."
+                )
             return np.mean(data, dtype=dtype)
         else:
 
@@ -1151,14 +1155,14 @@ class MPI:
         minval : scalar
             Global minimum, returned on every MPI rank.
         """
-        if self.size == 1:
-            if isinstance(data, (int, float)):
-                return data
-            else:
-                return np.min(data)
-        else:
-            data = np.asarray(data)
+        data = np.asarray(data)
 
+        if data.dtype.kind not in "biuf":
+            raise TypeError(f"Min does not support dtype {data.dtype}.")
+
+        if self.size == 1:
+            return np.min(data)
+        else:
             if np.issubdtype(data.dtype, np.floating):
                 local_min = np.inf if data.size == 0 else np.min(data)
 
@@ -1205,11 +1209,13 @@ class MPI:
         maxval : scalar
             Global maximum, returned on every MPI rank.
         """
+        data = np.asarray(data)
+
+        if data.dtype.kind not in "biuf":
+            raise TypeError(f"Max does not support dtype {data.dtype}.")
+
         if self.size == 1:
-            if isinstance(data, (int, float)):
-                return data
-            else:
-                return np.max(data)
+            return np.max(data)
         else:
             data = np.asarray(data)
 
