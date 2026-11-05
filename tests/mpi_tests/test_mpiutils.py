@@ -557,7 +557,7 @@ def test_Scatter_invalid_root_inputs(mpi_validation, case):
         mpi_validation.Scatter(data, dtype=dtype, root=root)
 
 
-@pytest.mark.parametrize("case", ["dtype", "send_partition", "recv_partition"])
+@pytest.mark.parametrize("case", ["dtype", "size", "partition"])
 def test_Alltoall_invalid_buffers(mpi_validation, case):
     p = mpi_validation.size
 
@@ -565,18 +565,19 @@ def test_Alltoall_invalid_buffers(mpi_validation, case):
         send = np.zeros(p, dtype=np.float32)
         recv = np.empty(p, dtype=np.float64)
         error, message = TypeError, "dtypes must match"
+
+    elif case == "size":
+        send = np.arange(p + 1, dtype=np.uint8)
+        recv = np.empty(p, dtype=np.uint8)
+        error, message = ValueError, "must have equal sizes"
+
     else:
         if p == 1:
             pytest.skip("A byte buffer is always divisible by one MPI rank")
-        if case == "send_partition":
-            send = np.arange(p + 1, dtype=np.uint8)
-            recv = np.empty(p, dtype=np.uint8)
-            message = "Send buffer cannot be divided"
-        else:
-            send = np.arange(p, dtype=np.uint8)
-            recv = np.empty(p + 1, dtype=np.uint8)
-            message = "Receive buffer cannot be divided"
-        error = ValueError
+
+        send = np.arange(p + 1, dtype=np.uint8)
+        recv = np.empty(p + 1, dtype=np.uint8)
+        error, message = ValueError, "cannot be divided equally"
 
     with pytest.raises(error, match=message):
         mpi_validation.Alltoall(send, recv)
@@ -593,6 +594,63 @@ def test_Alltoallv_rejects_mismatched_dtypes(mpi_validation):
             np.empty(p, dtype=np.float64), counts, displs,
         )
 
+
+@pytest.mark.parametrize("case", [
+    "mismatched_counts",
+    "negative_count",
+    "negative_senddispl",
+    "negative_recvdispl",
+    "send_out_of_bounds",
+    "recv_out_of_bounds",
+])
+def test_Alltoallv_invalid_serial_arguments(mpi_validation, case):
+
+    if mpi_validation.size != 1:
+        pytest.skip("Validation only applies to single-rank execution.")
+
+    send = np.arange(4, dtype=np.int64)
+    recv = np.zeros(4, dtype=np.int64)
+
+    sendcounts = np.array([2], dtype=np.int64)
+    recvcounts = np.array([2], dtype=np.int64)
+
+    senddispls = np.array([1], dtype=np.int64)
+    recvdispls = np.array([1], dtype=np.int64)
+
+    if case == "mismatched_counts":
+        recvcounts[0] = 1
+        message = "Send and receive counts must match"
+
+    elif case == "negative_count":
+        sendcounts[0] = -1
+        recvcounts[0] = -1
+        message = "Invalid counts or displacements"
+
+    elif case == "negative_senddispl":
+        senddispls[0] = -1
+        message = "Invalid counts or displacements"
+
+    elif case == "negative_recvdispl":
+        recvdispls[0] = -1
+        message = "Invalid counts or displacements"
+
+    elif case == "send_out_of_bounds":
+        senddispls[0] = 3
+        message = "Invalid counts or displacements"
+
+    elif case == "recv_out_of_bounds":
+        recvdispls[0] = 3
+        message = "Invalid counts or displacements"
+
+    with pytest.raises(ValueError, match=message):
+        mpi_validation.Alltoallv(
+            send,
+            sendcounts,
+            senddispls,
+            recv,
+            recvcounts,
+            recvdispls,
+        )
 
 def test_Alltoall_arrays_rejects_scalar_data(mpi_validation):
     with pytest.raises(ValueError, match="at least one dimension"):
