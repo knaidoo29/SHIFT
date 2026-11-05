@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       # Don't cancel all matrix jobs if one fails
       fail-fast: false
@@ -26,12 +26,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install MPI and system deps
+      - name: Install OpenMPI
         run: |
           sudo apt-get update
-          # Use OpenMPI instead of MPICH — OpenMPI supports --oversubscribe,
-          # which is required to run 3 ranks on a 2-core GitHub Actions runner.
-          sudo apt-get install -y libopenmpi-dev openmpi-bin
+          sudo apt-get install -y --no-install-recommends \
+            openmpi-bin libopenmpi-dev
 
       - name: Install Python dependencies
         run: |
