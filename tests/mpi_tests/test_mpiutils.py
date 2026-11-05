@@ -557,7 +557,7 @@ def test_Scatter_invalid_root_inputs(mpi_validation, case):
         mpi_validation.Scatter(data, dtype=dtype, root=root)
 
 
-@pytest.mark.parametrize("case", ["dtype", "send_partition", "recv_partition"])
+@pytest.mark.parametrize("case", ["dtype", "size", "partition"])
 def test_Alltoall_invalid_buffers(mpi_validation, case):
     p = mpi_validation.size
 
@@ -565,18 +565,19 @@ def test_Alltoall_invalid_buffers(mpi_validation, case):
         send = np.zeros(p, dtype=np.float32)
         recv = np.empty(p, dtype=np.float64)
         error, message = TypeError, "dtypes must match"
+
+    elif case == "size":
+        send = np.arange(p + 1, dtype=np.uint8)
+        recv = np.empty(p, dtype=np.uint8)
+        error, message = ValueError, "must have equal sizes"
+
     else:
         if p == 1:
             pytest.skip("A byte buffer is always divisible by one MPI rank")
-        if case == "send_partition":
-            send = np.arange(p + 1, dtype=np.uint8)
-            recv = np.empty(p, dtype=np.uint8)
-            message = "Send buffer cannot be divided"
-        else:
-            send = np.arange(p, dtype=np.uint8)
-            recv = np.empty(p + 1, dtype=np.uint8)
-            message = "Receive buffer cannot be divided"
-        error = ValueError
+
+        send = np.arange(p + 1, dtype=np.uint8)
+        recv = np.empty(p + 1, dtype=np.uint8)
+        error, message = ValueError, "cannot be divided equally"
 
     with pytest.raises(error, match=message):
         mpi_validation.Alltoall(send, recv)
