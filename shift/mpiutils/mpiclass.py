@@ -1176,11 +1176,6 @@ class MPI:
             elif np.issubdtype(data.dtype, np.bool_):
                 local_min = True if data.size == 0 else np.min(data)
 
-            else:
-                raise TypeError(
-                    f"Min does not support dtype {data.dtype}."
-                )
-
             sendbuf = np.array([local_min], dtype=data.dtype)
             recvbuf = np.empty_like(sendbuf)
 
@@ -1231,11 +1226,6 @@ class MPI:
 
             elif np.issubdtype(data.dtype, np.bool_):
                 local_max = False if data.size == 0 else np.max(data)
-
-            else:
-                raise TypeError(
-                    f"Max does not support dtype {data.dtype}."
-                )
 
             sendbuf = np.array([local_max], dtype=data.dtype)
             recvbuf = np.empty_like(sendbuf)

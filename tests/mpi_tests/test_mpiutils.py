@@ -595,6 +595,63 @@ def test_Alltoallv_rejects_mismatched_dtypes(mpi_validation):
         )
 
 
+@pytest.mark.parametrize("case", [
+    "mismatched_counts",
+    "negative_count",
+    "negative_senddispl",
+    "negative_recvdispl",
+    "send_out_of_bounds",
+    "recv_out_of_bounds",
+])
+def test_Alltoallv_invalid_serial_arguments(mpi_validation, case):
+
+    if mpi_validation.size != 1:
+        pytest.skip("Validation only applies to single-rank execution.")
+
+    send = np.arange(4, dtype=np.int64)
+    recv = np.zeros(4, dtype=np.int64)
+
+    sendcounts = np.array([2], dtype=np.int64)
+    recvcounts = np.array([2], dtype=np.int64)
+
+    senddispls = np.array([1], dtype=np.int64)
+    recvdispls = np.array([1], dtype=np.int64)
+
+    if case == "mismatched_counts":
+        recvcounts[0] = 1
+        message = "Send and receive counts must match"
+
+    elif case == "negative_count":
+        sendcounts[0] = -1
+        recvcounts[0] = -1
+        message = "Invalid counts or displacements"
+
+    elif case == "negative_senddispl":
+        senddispls[0] = -1
+        message = "Invalid counts or displacements"
+
+    elif case == "negative_recvdispl":
+        recvdispls[0] = -1
+        message = "Invalid counts or displacements"
+
+    elif case == "send_out_of_bounds":
+        senddispls[0] = 3
+        message = "Invalid counts or displacements"
+
+    elif case == "recv_out_of_bounds":
+        recvdispls[0] = 3
+        message = "Invalid counts or displacements"
+
+    with pytest.raises(ValueError, match=message):
+        mpi_validation.Alltoallv(
+            send,
+            sendcounts,
+            senddispls,
+            recv,
+            recvcounts,
+            recvdispls,
+        )
+
 def test_Alltoall_arrays_rejects_scalar_data(mpi_validation):
     with pytest.raises(ValueError, match="at least one dimension"):
         mpi_validation.Alltoall_arrays(np.array(7), np.array([0]))
