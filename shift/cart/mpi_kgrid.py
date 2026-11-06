@@ -209,8 +209,8 @@ def mpi_kgrid2D_dct(
         ), "Length of list of grid dimensions must be equal to the dimenions 2."
         xngrid = ngrid[0]
         yngrid = ngrid[1]
-    ky = mpi_kgrid1D_dct(yboxsize, yngrid, MPI, dtype=dtype)
     kx = kgrid.kgrid1D_dct(xboxsize, xngrid, dtype=dtype)
+    ky = mpi_kgrid1D_dct(yboxsize, yngrid, MPI, dtype=dtype)
     # Create Fourier grid
     kx2D, ky2D = np.meshgrid(kx, ky, indexing="ij")
     return kx2D, ky2D
@@ -265,8 +265,8 @@ def mpi_kgrid3D_dct(
         xngrid = ngrid[0]
         yngrid = ngrid[1]
         zngrid = ngrid[2]
-    kx = mpi_kgrid1D_dct(yboxsize, yngrid, MPI, dtype=dtype)
-    ky = kgrid.kgrid1D_dct(xboxsize, xngrid, dtype=dtype)
+    kx = kgrid.kgrid1D_dct(xboxsize, xngrid, dtype=dtype)
+    ky = mpi_kgrid1D_dct(yboxsize, yngrid, MPI, dtype=dtype)
     kz = kgrid.kgrid1D_dct(zboxsize, zngrid, dtype=dtype)
     # Create Fourier grid
     kx3D, ky3D, kz3D = np.meshgrid(kx, ky, kz, indexing="ij")
