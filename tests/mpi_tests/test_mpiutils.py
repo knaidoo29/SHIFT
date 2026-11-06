@@ -184,7 +184,7 @@ def test_gather_preserves_array_boundaries(mpi):
 
 
 @pytest.mark.parametrize("mode", ["equal", "unequal", "some_empty"])
-@pytest.mark.parametrize("dtype", [np.int64, np.float32])
+@pytest.mark.parametrize("dtype", [np.int64, np.float32, np.float64])
 def test_Gather_numeric(mpi, mode, dtype):
     root = mpi.size - 1
     n = {
@@ -208,7 +208,7 @@ def test_Gather_numeric(mpi, mode, dtype):
 
 
 @pytest.mark.parametrize("n_mode", ["even", "uneven", "smaller_than_ranks", "empty"])
-@pytest.mark.parametrize("dtype", [np.float32, np.uint64])
+@pytest.mark.parametrize("dtype", [np.float32, np.float64, np.uint64])
 def test_Scatter_numeric(mpi, n_mode, dtype):
     root = mpi.size - 1
     n = {
@@ -272,7 +272,7 @@ def test_Send_up_and_down_structured(mpi, precision):
 
 
 @pytest.mark.parametrize("direction", ["up", "down"])
-@pytest.mark.parametrize("dtype", [np.float32, np.uint64])
+@pytest.mark.parametrize("dtype", [np.float32, np.float64, np.uint64])
 def test_Send_variable_numeric(mpi, direction, dtype):
     # Rank 1 (if present) sends an empty array, other ranks send different lengths.
     n = lambda r: 0 if (r % 3 == 1) else r + 2
@@ -445,7 +445,7 @@ def test_Mean_empty_global_raises(mpi):
         mpi.Mean(np.empty(0, dtype=np.float64))
 
 
-@pytest.mark.parametrize("dtype", [np.int64, np.uint64, np.float32, np.bool_])
+@pytest.mark.parametrize("dtype", [np.int64, np.uint64, np.float32, np.float64, np.bool_])
 def test_Min_Max_with_some_empty_ranks(mpi, dtype):
     # Rank 1 is empty if present. Other ranks contribute two elements.
     if mpi.rank == 1:
@@ -544,13 +544,13 @@ def test_Scatter_invalid_root_inputs(mpi_validation, case):
     root = mpi_validation.rank
 
     if case == "missing":
-        data, dtype = None, np.float32
+        data, dtype = None, np.float64
         error, message = ValueError, "cannot be None"
     elif case == "multidimensional":
-        data, dtype = np.zeros((2, 3), dtype=np.float32), np.float32
+        data, dtype = np.zeros((2, 3), dtype=np.float64), np.float64
         error, message = ValueError, "one-dimensional"
     else:
-        data, dtype = np.arange(4, dtype=np.int64), np.float32
+        data, dtype = np.arange(4, dtype=np.int64), np.float64
         error, message = TypeError, "does not match"
 
     with pytest.raises(error, match=message):
@@ -562,7 +562,7 @@ def test_Alltoall_invalid_buffers(mpi_validation, case):
     p = mpi_validation.size
 
     if case == "dtype":
-        send = np.zeros(p, dtype=np.float32)
+        send = np.zeros(p, dtype=np.float64)
         recv = np.empty(p, dtype=np.float64)
         error, message = TypeError, "dtypes must match"
 
@@ -590,7 +590,7 @@ def test_Alltoallv_rejects_mismatched_dtypes(mpi_validation):
 
     with pytest.raises(TypeError, match="dtypes must match"):
         mpi_validation.Alltoallv(
-            np.zeros(p, dtype=np.float32), counts, displs,
+            np.zeros(p, dtype=np.float64), counts, displs,
             np.empty(p, dtype=np.float64), counts, displs,
         )
 
