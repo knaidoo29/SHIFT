@@ -562,7 +562,7 @@ def test_Alltoall_invalid_buffers(mpi_validation, case):
     p = mpi_validation.size
 
     if case == "dtype":
-        send = np.zeros(p, dtype=np.float64)
+        send = np.zeros(p, dtype=np.float32)
         recv = np.empty(p, dtype=np.float64)
         error, message = TypeError, "dtypes must match"
 
@@ -590,7 +590,7 @@ def test_Alltoallv_rejects_mismatched_dtypes(mpi_validation):
 
     with pytest.raises(TypeError, match="dtypes must match"):
         mpi_validation.Alltoallv(
-            np.zeros(p, dtype=np.float64), counts, displs,
+            np.zeros(p, dtype=np.float32), counts, displs,
             np.empty(p, dtype=np.float64), counts, displs,
         )
 
