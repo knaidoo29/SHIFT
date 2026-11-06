@@ -198,7 +198,7 @@ def _redistribution_grid(size, ndim, grid_mode):
 
 @pytest.mark.parametrize("ndim", [2, 3])
 @pytest.mark.parametrize("grid_mode", ["equal_scalar", "equal_rectangular", "unequal_rectangular"])
-@pytest.mark.parametrize("dtype", [np.float32, np.complex64])
+@pytest.mark.parametrize("dtype", [np.float32, np.float64, np.complex64])
 def test_redistribute_matches_global_array(ndim, grid_mode, dtype):
     """Check x-to-y and y-to-x redistributions against known global slices."""
     mpi = shift.mpiutils.MPI()

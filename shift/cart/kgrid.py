@@ -5,7 +5,7 @@ from typing import Tuple, Union
 from . import utils
 
 
-def kgrid1D(boxsize: float, ngrid: int, dtype: np.dtype = np.float32) -> np.ndarray:
+def kgrid1D(boxsize: float, ngrid: int, dtype: np.dtype = np.float64) -> np.ndarray:
     """
     Returns the fourier modes for the Fourier transform of a cartesian grid.
 
@@ -34,7 +34,7 @@ def kgrid1D(boxsize: float, ngrid: int, dtype: np.dtype = np.float32) -> np.ndar
 
 
 def kgrid2D(
-    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float32
+    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float64
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the fourier modes for the Fourier transform of a cartesian grid.
@@ -81,7 +81,7 @@ def kgrid2D(
 
 
 def kgrid3D(
-    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float32
+    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float64
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the fourier modes for the Fourier transform of a cartesian grid.
@@ -134,7 +134,7 @@ def kgrid3D(
     return kx3D, ky3D, kz3D
 
 
-def kgrid1D_dct(boxsize: float, ngrid: int, dtype: np.dtype = np.float32) -> np.ndarray:
+def kgrid1D_dct(boxsize: float, ngrid: int, dtype: np.dtype = np.float64) -> np.ndarray:
     """
     Returns the fourier modes for the Discrete Cosine transform on a cartesian grid.
 
@@ -161,7 +161,7 @@ def kgrid1D_dct(boxsize: float, ngrid: int, dtype: np.dtype = np.float32) -> np.
 
 
 def kgrid2D_dct(
-    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float32
+    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float64
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the fourier modes for the Discrete Cosine transform on a 2D cartesian grid.
@@ -208,7 +208,7 @@ def kgrid2D_dct(
 
 
 def kgrid3D_dct(
-    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float32
+    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float64
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the fourier modes for the Discrete Cosine transform on a 3D cartesian grid.
@@ -261,7 +261,7 @@ def kgrid3D_dct(
     return kx3D, ky3D, kz3D
 
 
-def kgrid1D_dst(boxsize: float, ngrid: int, dtype: np.dtype = np.float32) -> np.ndarray:
+def kgrid1D_dst(boxsize: float, ngrid: int, dtype: np.dtype = np.float64) -> np.ndarray:
     """
     Returns the fourier modes for the Discrete Sine Transform of a cartesian grid.
 
@@ -288,7 +288,7 @@ def kgrid1D_dst(boxsize: float, ngrid: int, dtype: np.dtype = np.float32) -> np.
 
 
 def kgrid2D_dst(
-    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float32
+    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float64
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the fourier modes for the Discrete Sine transform on a 2D cartesian grid.
@@ -335,7 +335,7 @@ def kgrid2D_dst(
 
 
 def kgrid3D_dst(
-    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float32
+    boxsize: Union[float, list], ngrid: Union[int, list], dtype: np.dtype = np.float64
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Returns the fourier modes for the Discrete Sine transform on a 3D cartesian grid.
